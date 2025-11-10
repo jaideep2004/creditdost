@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   Typography,
@@ -16,8 +16,12 @@ import {
   TableHead,
   TableRow,
   Paper,
+  IconButton,
+  Tooltip,
+  Chip,
 } from '@mui/material';
-import { GroupAdd, Send } from '@mui/icons-material';
+import { GroupAdd, Send, ContentCopy, Check } from '@mui/icons-material';
+import { franchiseAPI } from '../../services/api';
 
 const Referrals = () => {
   const [formData, setFormData] = useState({
@@ -25,40 +29,29 @@ const Referrals = () => {
     email: '',
     phone: '',
   });
+  const [referrals, setReferrals] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [dataLoading, setDataLoading] = useState(true);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [copiedId, setCopiedId] = useState(null);
 
-  // Mock referrals data
-  const referrals = [
-    {
-      id: 1,
-      name: 'John Doe',
-      email: 'john@example.com',
-      phone: '9876543210',
-      status: 'Pending',
-      creditsEarned: 0,
-      createdAt: '2023-05-15',
-    },
-    {
-      id: 2,
-      name: 'Jane Smith',
-      email: 'jane@example.com',
-      phone: '9876543211',
-      status: 'Registered',
-      creditsEarned: 10,
-      createdAt: '2023-05-16',
-    },
-    {
-      id: 3,
-      name: 'Robert Johnson',
-      email: 'robert@example.com',
-      phone: '9876543212',
-      status: 'Purchased',
-      creditsEarned: 25,
-      createdAt: '2023-05-17',
-    },
-  ];
+  useEffect(() => {
+    fetchReferrals();
+  }, []);
+
+  const fetchReferrals = async () => {
+    try {
+      setDataLoading(true);
+      const response = await franchiseAPI.getReferrals();
+      setReferrals(response.data);
+    } catch (error) {
+      setError('Failed to fetch referrals');
+      console.error('Error fetching referrals:', error);
+    } finally {
+      setDataLoading(false);
+    }
+  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -74,12 +67,35 @@ const Referrals = () => {
     setError('');
     setSuccess('');
     
-    // In a real app, this would submit to the API
-    setTimeout(() => {
-      setLoading(false);
+    try {
+      await franchiseAPI.createReferral(formData);
       setSuccess('Referral sent successfully!');
       setFormData({ name: '', email: '', phone: '' });
-    }, 1000);
+      fetchReferrals(); // Refresh the referrals list
+    } catch (error) {
+      setError(error.response?.data?.message || 'Failed to send referral');
+      console.error('Error sending referral:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const copyReferralLink = (referralId) => {
+    const referralLink = `${window.location.origin}/register?ref=${referralId}`;
+    navigator.clipboard.writeText(referralLink).then(() => {
+      setCopiedId(referralId);
+      setTimeout(() => setCopiedId(null), 2000); // Reset after 2 seconds
+    });
+  };
+
+  const getStatusColor = (status) => {
+    switch (status) {
+      case 'pending': return 'warning';
+      case 'registered': return 'info';
+      case 'purchased': return 'primary';
+      case 'credited': return 'success';
+      default: return 'default';
+    }
   };
 
   return (
@@ -89,19 +105,19 @@ const Referrals = () => {
       </Typography>
       
       {error && (
-        <Alert severity="error" sx={{ mb: 2 }}>
+        <Alert severity="error" sx={{ mb: 2 }} onClose={() => setError('')}>
           {error}
         </Alert>
       )}
       
       {success && (
-        <Alert severity="success" sx={{ mb: 2 }}>
+        <Alert severity="success" sx={{ mb: 2 }} onClose={() => setSuccess('')}>
           {success}
         </Alert>
       )}
       
-      <Grid container spacing={3}>
-        <Grid item xs={12} md={6}>
+      <Grid container spacing={3} style={{flexWrap: 'nowrap'}}>
+        <Grid item xs={12} md={6} style={{ flex: '1' }}>
           <Card sx={{ height: '100%', boxShadow: 3, borderRadius: 2 }}>
             <CardContent>
               <Typography variant="h6" gutterBottom>
@@ -109,7 +125,7 @@ const Referrals = () => {
               </Typography>
               
               <Box component="form" onSubmit={handleRefer}>
-                <Grid container spacing={3}>
+                <Grid container spacing={3} style={{flexDirection:"column" }}>
                   <Grid item xs={12}>
                     <TextField
                       required
@@ -164,7 +180,7 @@ const Referrals = () => {
           </Card>
         </Grid>
         
-        <Grid item xs={12} md={6}>
+        <Grid item xs={12} md={6} style={{ flex: '1' }}>
           <Card sx={{ height: '100%', boxShadow: 3, borderRadius: 2 }}>
             <CardContent>
               <Typography variant="h6" gutterBottom>
@@ -179,7 +195,7 @@ const Referrals = () => {
               <ul>
                 <li>
                   <Typography variant="body2">
-                    Refer a friend using the form
+                    Refer a friend using the form or share your referral link
                   </Typography>
                 </li>
                 <li>
@@ -199,12 +215,12 @@ const Referrals = () => {
               <ul>
                 <li>
                   <Typography variant="body2">
-                    10 credits for registration
+                    Bonus credits based on package purchased by your referral
                   </Typography>
                 </li>
                 <li>
                   <Typography variant="body2">
-                    25 credits for first package purchase
+                    Percentage varies by package type
                   </Typography>
                 </li>
               </ul>
@@ -219,37 +235,69 @@ const Referrals = () => {
             Your Referrals
           </Typography>
           
-          <TableContainer component={Paper}>
-            <Table sx={{ minWidth: 650 }} aria-label="referrals table">
-              <TableHead>
-                <TableRow>
-                  <TableCell>Name</TableCell>
-                  <TableCell>Email</TableCell>
-                  <TableCell>Phone</TableCell>
-                  <TableCell>Status</TableCell>
-                  <TableCell>Credits Earned</TableCell>
-                  <TableCell>Date</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {referrals.map((referral) => (
-                  <TableRow
-                    key={referral.id}
-                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                  >
-                    <TableCell component="th" scope="row">
-                      {referral.name}
-                    </TableCell>
-                    <TableCell>{referral.email}</TableCell>
-                    <TableCell>{referral.phone}</TableCell>
-                    <TableCell>{referral.status}</TableCell>
-                    <TableCell>{referral.creditsEarned}</TableCell>
-                    <TableCell>{referral.createdAt}</TableCell>
+          {dataLoading ? (
+            <Box sx={{ display: 'flex', justifyContent: 'center', py: 3 }}>
+              <CircularProgress />
+            </Box>
+          ) : (
+            <TableContainer component={Paper}>
+              <Table sx={{ minWidth: 650 }} aria-label="referrals table">
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Name</TableCell>
+                    <TableCell>Email</TableCell>
+                    <TableCell>Phone</TableCell>
+                    <TableCell>Status</TableCell>
+                    <TableCell>Bonus Amount</TableCell>
+                    <TableCell>Referral Link</TableCell>
+                    <TableCell>Date</TableCell>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
+                </TableHead>
+                <TableBody>
+                  {referrals.map((referral) => (
+                    <TableRow
+                      key={referral._id}
+                      sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                    >
+                      <TableCell component="th" scope="row">
+                        {referral.referredName}
+                      </TableCell>
+                      <TableCell>{referral.referredEmail}</TableCell>
+                      <TableCell>{referral.referredPhone}</TableCell>
+                      <TableCell>
+                        <Typography 
+                          variant="body2" 
+                          color={getStatusColor(referral.status)}
+                          sx={{ fontWeight: 'bold' }}
+                        >
+                          {referral.status}
+                        </Typography>
+                      </TableCell>
+                      <TableCell>
+                        {referral.bonusAmount > 0 ? `${referral.bonusAmount} credits` : 'N/A'}
+                      </TableCell>
+                      <TableCell>
+                        <Tooltip title="Copy referral link">
+                          <IconButton 
+                            onClick={() => copyReferralLink(referral._id)}
+                            size="small"
+                          >
+                            {copiedId === referral._id ? <Check color="success" /> : <ContentCopy />}
+                          </IconButton>
+                        </Tooltip>
+                        <Typography variant="caption" display="block" sx={{ mt: 1 }}>
+                          {window.location.origin}/register?ref={referral._id}
+                        </Typography>
+                      </TableCell>
+                      <TableCell>
+                        {new Date(referral.createdAt).toLocaleDateString()}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          )}
         </CardContent>
       </Card>
     </Box>

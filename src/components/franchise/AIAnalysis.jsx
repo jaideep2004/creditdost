@@ -1,5 +1,5 @@
-import React from 'react';
-import { Box, Typography, Card, CardContent } from '@mui/material';
+import React from "react";
+import { Box, Typography, Card, CardContent } from "@mui/material";
 
 const AIAnalysis = () => {
   return (
@@ -7,23 +7,22 @@ const AIAnalysis = () => {
       <Typography variant="h4" gutterBottom>
         AI Analysis
       </Typography>
-      
+
       <Card sx={{ mt: 3, boxShadow: 3, borderRadius: 2 }}>
         <CardContent>
           <Typography variant="h6" gutterBottom>
             Artificial Intelligence Insights
           </Typography>
           <Typography variant="body1" paragraph>
-            This section will provide AI-powered analysis and insights for franchise partners.
+            This section will provide AI-powered analysis and insights for
+            franchise partners.
           </Typography>
           <Typography variant="body1" paragraph>
             Features to implement:
           </Typography>
           <ul>
             <li>
-              <Typography variant="body2">
-                Predictive lead scoring
-              </Typography>
+              <Typography variant="body2">Predictive lead scoring</Typography>
             </li>
             <li>
               <Typography variant="body2">
@@ -31,9 +30,7 @@ const AIAnalysis = () => {
               </Typography>
             </li>
             <li>
-              <Typography variant="body2">
-                Market trend predictions
-              </Typography>
+              <Typography variant="body2">Market trend predictions</Typography>
             </li>
             <li>
               <Typography variant="body2">

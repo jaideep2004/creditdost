@@ -9,8 +9,8 @@ const packageSchema = new mongoose.Schema({
   description: {
     type: String,
     required: true,
-  },
-  price: {
+  }, 
+  price: { 
     type: Number,
     required: true,
     min: 0,
@@ -20,12 +20,7 @@ const packageSchema = new mongoose.Schema({
     required: true,
     min: 0,
   },
-  validityDays: {
-    type: Number,
-    required: true,
-    min: 1,
-  },
-  features: [{
+  features: [{ 
     type: String,
   }],
   isActive: {
@@ -33,11 +28,31 @@ const packageSchema = new mongoose.Schema({
     default: true,
   },
   sortOrder: {
+    type: Number, 
+    default: 0,
+  },
+  // Business payout settings
+  businessPayoutPercentage: {
+    type: Number,
+    default: 20, // Default 20% payout
+    min: 0,
+    max: 100,
+  },
+  businessPayoutType: {
+    type: String,
+    enum: ['fixed', 'percentage'],
+    default: 'percentage',
+  },
+  businessPayoutFixedAmount: {
     type: Number,
     default: 0,
+    min: 0,
   },
 }, {
   timestamps: true,
 });
+
+// Set default value for features array
+packageSchema.path('features').default(() => []);
 
 module.exports = mongoose.model('Package', packageSchema);

@@ -1,117 +1,123 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
-import FranchiseRoutes from './Routes';
-import { useAuth } from '../../hooks/useAuth.jsx';
+import React, { useState } from "react";
 import {
-  AppBar,
   Box,
   CssBaseline,
-  Divider,
-  Drawer,
-  IconButton,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
+  AppBar,
   Toolbar,
   Typography,
+  IconButton,
+  Drawer,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  Divider,
   Avatar,
   Menu,
   MenuItem,
-  Tooltip,
   styled,
-  alpha,
-} from '@mui/material';
+  useTheme,
+  useMediaQuery,
+  Tooltip,
+} from "@mui/material";
+import { alpha } from "@mui/material/styles";
+import { Outlet } from "react-router-dom";
 import {
   Menu as MenuIcon,
   Dashboard as DashboardIcon,
-  Person as PersonIcon,  
-  Description as DescriptionIcon,
+  Person as PersonIcon,
   Business as BusinessIcon,
-  Assessment as AssessmentIcon,
+  Payment as PaymentIcon,
+  VerifiedUser as VerifiedUserIcon,
+  CreditScore as CreditScoreIcon,
   People as PeopleIcon,
   AccountBalance as AccountBalanceIcon,
-  CreditScore as CreditScoreIcon,
   GroupAdd as GroupAddIcon,
-  Article as ArticleIcon,
-  Logout as LogoutIcon,
+  Assessment as AssessmentIcon,
+  Settings as SettingsIcon,
+  Notifications as NotificationsIcon,
+  Description as DescriptionIcon,
+  CardMembership as CardMembershipIcon,
+  AutoGraph as AutoGraphIcon,
+  BusinessCenter as BusinessCenterIcon,
   ChevronLeft as ChevronLeftIcon,
-  ChevronRight as ChevronRightIcon,
-} from '@mui/icons-material';
-
+} from "@mui/icons-material";
+import { useAuth } from "../../hooks/useAuth.jsx";
+import { useNavigate, useLocation } from "react-router-dom";
+import { useEffect } from "react";
+import LogoutIcon from "@mui/icons-material/Logout";
 // Styled components for enhanced UI
 const drawerWidth = 260;
 
 const openedMixin = (theme) => ({
   width: drawerWidth,
-  transition: theme.transitions.create('width', {
+  transition: theme.transitions.create("width", {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.enteringScreen,
   }),
-  overflowX: 'hidden',
+  overflowX: "hidden",
 });
 
 const closedMixin = (theme) => ({
-  transition: theme.transitions.create('width', {
+  transition: theme.transitions.create("width", {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen,
   }),
-  overflowX: 'hidden',
+  overflowX: "hidden",
   width: `calc(${theme.spacing(7)} + 1px)`,
-  [theme.breakpoints.up('sm')]: {
+  [theme.breakpoints.up("sm")]: {
     width: `calc(${theme.spacing(8)} + 1px)`,
   },
 });
 
-const DrawerHeader = styled('div')(({ theme }) => ({
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'flex-end',
+const DrawerHeader = styled("div")(({ theme }) => ({
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "flex-end",
   padding: theme.spacing(0, 1),
   ...theme.mixins.toolbar,
 }));
 
 const AppBarStyled = styled(AppBar, {
-  shouldForwardProp: (prop) => prop !== 'open',
+  shouldForwardProp: (prop) => prop !== "open",
 })(({ theme, open }) => ({
   zIndex: theme.zIndex.drawer + 1,
-  transition: theme.transitions.create(['width', 'margin'], {
+  transition: theme.transitions.create(["width", "margin"], {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen,
   }),
   ...(open && {
     marginLeft: drawerWidth,
     width: `calc(100% - ${drawerWidth}px)`,
-    transition: theme.transitions.create(['width', 'margin'], {
+    transition: theme.transitions.create(["width", "margin"], {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.enteringScreen,
     }),
   }),
 }));
 
-const DrawerStyled = styled(Drawer, { shouldForwardProp: (prop) => prop !== 'open' })(
-  ({ theme, open }) => ({
-    width: drawerWidth,
-    flexShrink: 0,
-    whiteSpace: 'nowrap',
-    boxSizing: 'border-box',
-    ...(open && {
-      ...openedMixin(theme),
-      '& .MuiDrawer-paper': openedMixin(theme),
-    }),
-    ...(!open && {
-      ...closedMixin(theme),
-      '& .MuiDrawer-paper': closedMixin(theme),
-    }),
+const DrawerStyled = styled(Drawer, {
+  shouldForwardProp: (prop) => prop !== "open",
+})(({ theme, open }) => ({
+  width: drawerWidth,
+  flexShrink: 0,
+  whiteSpace: "nowrap",
+  boxSizing: "border-box",
+  ...(open && {
+    ...openedMixin(theme),
+    "& .MuiDrawer-paper": openedMixin(theme),
   }),
-);
+  ...(!open && {
+    ...closedMixin(theme),
+    "& .MuiDrawer-paper": closedMixin(theme),
+  }),
+}));
 
 const SidebarLogo = styled(Box)(({ theme }) => ({
   padding: theme.spacing(2),
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
   backgroundColor: alpha(theme.palette.primary.main, 0.1),
   margin: theme.spacing(1),
   borderRadius: theme.shape.borderRadius,
@@ -119,31 +125,37 @@ const SidebarLogo = styled(Box)(({ theme }) => ({
 
 const SidebarTitle = styled(Typography)(({ theme }) => ({
   fontWeight: 700,
-  fontSize: '1.2rem',
+  fontSize: "1.2rem",
   background: `linear-gradient(45deg, ${theme.palette.primary.main}, ${theme.palette.secondary.main})`,
-  WebkitBackgroundClip: 'text',
-  WebkitTextFillColor: 'transparent',
+  WebkitBackgroundClip: "text",
+  WebkitTextFillColor: "transparent",
   marginLeft: theme.spacing(1),
 }));
 
-const NavItem = styled(ListItemButton)(({ theme, active }) => ({
+const NavItem = styled(ListItem)(({ theme, active }) => ({
   borderRadius: theme.shape.borderRadius,
   margin: theme.spacing(0.5, 1),
-  backgroundColor: active ? alpha(theme.palette.primary.main, 0.1) : 'transparent',
-  '&:hover': {
+  backgroundColor: active
+    ? alpha(theme.palette.primary.main, 0.1)
+    : "transparent",
+  "&:hover": {
     backgroundColor: alpha(theme.palette.primary.main, 0.05),
   },
-  '& .MuiListItemIcon-root': {
+  "& .MuiListItemIcon-root": {
     color: active ? theme.palette.primary.main : theme.palette.text.secondary,
   },
-  '& .MuiListItemText-primary': {
+  "& .MuiListItemText-primary": {
     fontWeight: active ? 600 : 400,
     color: active ? theme.palette.primary.main : theme.palette.text.primary,
   },
+  cursor: "pointer",
 }));
 
 const FranchiseDashboard = () => {
-  const [open, setOpen] = useState(true);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const [open, setOpen] = useState(!isMobile);
+  const [mobileOpen, setMobileOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const navigate = useNavigate();
   const location = useLocation();
@@ -151,17 +163,49 @@ const FranchiseDashboard = () => {
 
   // Redirect admin users to admin dashboard
   useEffect(() => {
-    if (user && user.role === 'admin') {
-      navigate('/admin/dashboard');
+    if (user && user.role === "admin") {
+      navigate("/admin");
     }
   }, [user, navigate]);
+
+  // Redirect from base route to default child route only on initial load
+  useEffect(() => {
+    if (
+      (location.pathname === "/franchise" ||
+        location.pathname === "/franchise/") &&
+      location.state?.redirect !== false
+    ) {
+      navigate("/franchise", { replace: true });
+    }
+  }, [location.pathname, navigate, location.state]);
+
+  // Handle responsive drawer
+  useEffect(() => {
+    setOpen(!isMobile);
+  }, [isMobile]);
+
+  const handleDrawerToggle = () => {
+    if (isMobile) {
+      setMobileOpen(!mobileOpen);
+    } else {
+      setOpen(!open);
+    }
+  };
+
+  const handleDrawerTransitionEnd = () => {
+    // Handle drawer transition end if needed
+  };
 
   const handleDrawerOpen = () => {
     setOpen(true);
   };
 
   const handleDrawerClose = () => {
-    setOpen(false);
+    if (isMobile) {
+      setMobileOpen(false);
+    } else {
+      setOpen(false);
+    }
   };
 
   const handleMenuOpen = (event) => {
@@ -174,43 +218,86 @@ const FranchiseDashboard = () => {
 
   const handleLogout = async () => {
     await logout();
-    navigate('/login');
+    navigate("/login");
     handleMenuClose();
   };
 
   const menuItems = [
-    { text: 'Dashboard', icon: <DashboardIcon />, path: '/franchise/dashboard' },
-    { text: 'KYC Verification', icon: <PersonIcon />, path: '/franchise/kyc' },
-    { text: 'Profile', icon: <DescriptionIcon />, path: '/franchise/profile' },
-    { text: 'Digital Agreement', icon: <ArticleIcon />, path: '/franchise/agreement' },
-    { text: 'Business', icon: <BusinessIcon />, path: '/franchise/business' },
-    { text: 'Business MIS', icon: <AssessmentIcon />, path: '/franchise/mis' },
-    { text: 'Leads', icon: <PeopleIcon />, path: '/franchise/leads' },
-    { text: 'Payouts', icon: <AccountBalanceIcon />, path: '/franchise/payouts' },
-    { text: 'Credit Check', icon: <CreditScoreIcon />, path: '/franchise/credit-check' },
-    { text: 'View Reports', icon: <DescriptionIcon />, path: '/franchise/reports' },
-    { text: 'Referrals', icon: <GroupAddIcon />, path: '/franchise/referrals' },
-    { text: 'Certificate', icon: <ArticleIcon />, path: '/franchise/certificate' },
-    { text: 'AI Analysis', icon: <AssessmentIcon />, path: '/franchise/ai-analysis' },
+    { text: "Dashboard", icon: <DashboardIcon />, path: "/franchise" },
+    { text: "My Profile", icon: <PersonIcon />, path: "/franchise/profile" },
+    {
+      text: "KYC Verification",
+      icon: <VerifiedUserIcon />,
+      path: "/franchise/kyc",
+    },
+    {
+      text: "Credit Check",
+      icon: <CreditScoreIcon />,
+      path: "/franchise/credit-check",
+    },
+    { text: "My Leads", icon: <PeopleIcon />, path: "/franchise/leads" },
+    {
+      text: "Payouts",
+      icon: <AccountBalanceIcon />,
+      path: "/franchise/payouts",
+    },
+    { text: "Referrals", icon: <GroupAddIcon />, path: "/franchise/referrals" },
+    {
+      text: "Business",
+      icon: <BusinessCenterIcon />,
+      path: "/franchise/business",
+    },
+    {
+      text: "Business MIS",
+      icon: <AssessmentIcon />,
+      path: "/franchise/business-mis",
+    },
+    {
+      text: "View Reports",
+      icon: <AssessmentIcon />,
+      path: "/franchise/reports",
+    },
+    {
+      text: "Digital Agreement",
+      icon: <DescriptionIcon />,
+      path: "/franchise/agreement",
+    },
+    {
+      text: "Certificate",
+      icon: <CardMembershipIcon />,
+      path: "/franchise/certificate",
+    },
+    {
+      text: "AI Analysis",
+      icon: <AutoGraphIcon />,
+      path: "/franchise/ai-analysis",
+    },
   ];
 
   const isActive = (path) => {
-    return location.pathname === `/franchise${path}`;
+    // Special handling for the Dashboard item (first tab)
+    if (path === "/franchise") {
+      // When on the base route, the Dashboard tab should be active
+      return (
+        location.pathname === "/franchise" ||
+        location.pathname === "/franchise/"
+      );
+    }
+    // For all other items, do exact match
+    return location.pathname === path;
   };
 
   const drawer = (
-    <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+    <Box sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
       <DrawerHeader>
         <SidebarLogo>
           {open ? (
             <>
-              <Box
-                component="img"
-                src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIiB2aWV3Qm94PSIwIDAgMTAwIDEwMCI+PGNpcmNsZSBjeD0iNTAiIGN5PSI1MCIgcj0iNDAiIGZpbGw9IiM2MjAwZWEiLz48cGF0aCBkPSJNNjAsMzAgTDQwLDUwIEw2MCw3MCIgZmlsbD0id2hpdGUiLz48L3N2Zz4="
+              <img
+                src="/images/cred.png"
                 alt="Logo"
-                sx={{ width: 30, height: 30 }}
+                style={{ width: "140px" }}
               />
-              <SidebarTitle>CreditDost</SidebarTitle>
             </>
           ) : (
             <Box
@@ -230,10 +317,17 @@ const FranchiseDashboard = () => {
       <Divider />
       <List sx={{ flexGrow: 1, pt: 2 }}>
         {menuItems.map((item) => (
-          <NavItem 
-            key={item.text} 
-            active={isActive(item.path)}
-            onClick={() => navigate(item.path)}
+          <NavItem
+            key={item.text}
+            active={isActive(item.path) ? true : undefined} // Fix the warning
+            onClick={() => {
+              if (item.path === "/franchise") {
+                // For the Dashboard tab, navigate to the base route without redirect
+                navigate("/franchise", { state: { redirect: false } });
+              } else {
+                navigate(item.path);
+              }
+            }}
           >
             <ListItemIcon>{item.icon}</ListItemIcon>
             <ListItemText primary={item.text} sx={{ opacity: open ? 1 : 0 }} />
@@ -242,18 +336,13 @@ const FranchiseDashboard = () => {
       </List>
       <Divider />
       <List>
-        <NavItem onClick={handleLogout}>
-          <ListItemIcon>
-            <LogoutIcon />
-          </ListItemIcon>
-          <ListItemText primary="Logout" sx={{ opacity: open ? 1 : 0 }} />
-        </NavItem>
+        {/* Logout is now in the top right dropdown menu */}
       </List>
     </Box>
   );
 
   return (
-    <Box sx={{ display: 'flex' }}>
+    <Box sx={{ display: "flex" }}>
       <CssBaseline />
       <AppBarStyled position="fixed" open={open}>
         <Toolbar>
@@ -264,23 +353,34 @@ const FranchiseDashboard = () => {
             edge="start"
             sx={{
               marginRight: 5,
-              ...(open && { display: 'none' }),
+              ...(open && { display: "none" }),
             }}
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
-            Franchise Dashboard
-          </Typography>
-          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          <Box sx={{ flexGrow: 1 }} />
+          <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+            <IconButton size="large" color="inherit">
+              <NotificationsIcon />
+            </IconButton>
+            <IconButton size="large" color="inherit">
+              <SettingsIcon />
+            </IconButton>
             <Tooltip title="Account settings">
-              <IconButton
-                color="inherit"
+              <IconButton 
+                color="inherit" 
                 onClick={handleMenuOpen}
+                sx={{ display: "flex", alignItems: "center", gap: 1 }}
               >
-                <Avatar sx={{ width: 36, height: 36, bgcolor: 'secondary.main' }}>
-                  {user?.name?.charAt(0) || 'U'}
+                <Avatar sx={{ width: 36, height: 36, bgcolor: "primary.main" }}>
+                  {user?.name?.charAt(0) || "U"}
                 </Avatar>
+                <Typography
+                  variant="body2"
+                  sx={{ display: { xs: "none", md: "block" } }}
+                >
+                  {user?.name || "User"}
+                </Typography>
               </IconButton>
             </Tooltip>
             <Menu
@@ -288,24 +388,34 @@ const FranchiseDashboard = () => {
               open={Boolean(anchorEl)}
               onClose={handleMenuClose}
               anchorOrigin={{
-                vertical: 'bottom',
-                horizontal: 'right',
+                vertical: "bottom",
+                horizontal: "right",
               }}
               transformOrigin={{
-                vertical: 'top',
-                horizontal: 'right',
+                vertical: "top",
+                horizontal: "right",
               }}
             >
               <MenuItem>
-                <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+                <Box sx={{ display: "flex", flexDirection: "column" }}>
                   <Typography variant="subtitle1" sx={{ fontWeight: 600 }}>
                     {user?.name}
                   </Typography>
                   <Typography variant="body2" color="textSecondary">
                     {user?.email}
                   </Typography>
-                  <Typography variant="caption" sx={{ mt: 0.5, bgcolor: 'primary.light', px: 1, py: 0.5, borderRadius: 1, alignSelf: 'flex-start' }}>
-                    {user?.role === 'franchise_user' ? 'Franchise Partner' : user?.role}
+                  <Typography
+                    variant="caption"
+                    sx={{
+                      mt: 0.5,
+                      bgcolor: "primary.light",
+                      px: 1,
+                      py: 0.5,
+                      borderRadius: 1,
+                      alignSelf: "flex-start",
+                    }}
+                  >
+                    {user?.role}
                   </Typography>
                 </Box>
               </MenuItem>
@@ -320,21 +430,60 @@ const FranchiseDashboard = () => {
           </Box>
         </Toolbar>
       </AppBarStyled>
-      <DrawerStyled variant="permanent" open={open}>
-        {drawer}
-      </DrawerStyled>
+      <Box
+        component="nav"
+        // sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
+        aria-label="mailbox folders"
+      >
+        <Drawer
+          variant="temporary"
+          open={mobileOpen}
+          onTransitionEnd={handleDrawerTransitionEnd}
+          onClose={handleDrawerClose}
+          ModalProps={{
+            keepMounted: true, // Better open performance on mobile.
+          }}
+          sx={{
+            display: { xs: "block", sm: "none" },
+            "& .MuiDrawer-paper": {
+              boxSizing: "border-box",
+              width: drawerWidth,
+            },
+          }}
+        >
+          {drawer}
+        </Drawer>
+        <DrawerStyled variant="permanent" open={open}>
+          {drawer}
+        </DrawerStyled>
+      </Box>
       <Box
         component="main"
         sx={{
           flexGrow: 1,
           p: 3,
-          width: { sm: `calc(100% - ${drawerWidth}px)` },
-          minHeight: '100vh',
-          bgcolor: 'background.default',
-          mt: '64px'
+          minHeight: "100vh",
+          backgroundColor: "#f8f9fa",
+          mt: "64px",
+          width: {
+            xs: "100%",
+            sm: open
+              ? `calc(100% - ${drawerWidth}px)`
+              : `calc(100% - ${theme.spacing(8)}px - 1px)`,
+          },
+          // marginLeft: {
+          //   xs: 0,
+          //   sm: open ? `${drawerWidth}px` : `${theme.spacing(8) + 1}px`
+          // },
+          transition: theme.transitions.create(["width", "margin"], {
+            easing: theme.transitions.easing.sharp,
+            duration: open
+              ? theme.transitions.duration.enteringScreen
+              : theme.transitions.duration.leavingScreen,
+          }),
         }}
       >
-        <FranchiseRoutes />
+        <Outlet />
       </Box>
     </Box>
   );

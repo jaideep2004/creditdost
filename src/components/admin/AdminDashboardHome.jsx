@@ -115,7 +115,7 @@ const AdminDashboardHome = () => {
         const statsResponse = await adminAPI.getDashboardStats();
         setStats(statsResponse.data);
         
-        // Fetch recent activities
+        // Fetch recent activities (now limited to 5 entries by backend)
         const activitiesResponse = await adminAPI.getRecentActivities();
         setRecentActivities(activitiesResponse.data);
       } catch (err) {

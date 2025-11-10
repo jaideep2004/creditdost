@@ -38,7 +38,8 @@ import {
   CheckCircle, 
   Cancel, 
   Pending, 
-  Download 
+  Download,
+  PictureAsPdf as PictureAsPdfIcon
 } from '@mui/icons-material';
 import { adminAPI } from '../../services/api';
 
@@ -244,6 +245,81 @@ const ManageFranchises = () => {
     }
   };
 
+  // Function to determine if a file is an image based on its URL
+  const isImageFile = (url) => {
+    if (!url) return false;
+    const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.webp'];
+    return imageExtensions.some(ext => url.toLowerCase().includes(ext));
+  };
+
+  // Function to render document preview
+  const renderDocumentPreview = (documentUrl, documentName) => {
+    if (!documentUrl) {
+      return (
+        <Box sx={{ 
+          width: '100%', 
+          height: 140, 
+          display: 'flex', 
+          alignItems: 'center', 
+          justifyContent: 'center',
+          bgcolor: '#fafafa',
+          borderRadius: 1,
+          border: '1px dashed #ccc'
+        }}>
+          <Typography color="textSecondary" variant="body2">
+            No document
+          </Typography>
+        </Box>
+      );
+    }
+
+    if (isImageFile(documentUrl)) {
+      return (
+        <Box sx={{ 
+          width: '100%', 
+          height: 140, 
+          display: 'flex', 
+          alignItems: 'center', 
+          justifyContent: 'center',
+          overflow: 'hidden',
+          borderRadius: 1,
+          border: '1px solid #ddd',
+          bgcolor: '#fff'
+        }}>
+          <img 
+            src={documentUrl} 
+            alt={documentName}
+            style={{ 
+              maxWidth: '100%', 
+              maxHeight: '100%', 
+              objectFit: 'contain' 
+            }} 
+          />
+        </Box>
+      );
+    } else {
+      // For PDF or other documents, show a placeholder
+      return (
+        <Box sx={{ 
+          width: '100%', 
+          height: 140, 
+          display: 'flex', 
+          flexDirection: 'column',
+          alignItems: 'center', 
+          justifyContent: 'center',
+          bgcolor: '#fafafa',
+          borderRadius: 1,
+          border: '1px solid #ddd'
+        }}>
+          <PictureAsPdfIcon sx={{ fontSize: 40, color: '#d32f2f' }} />
+          <Typography variant="body2" sx={{ mt: 1, color: 'text.secondary' }}>
+            PDF Document
+          </Typography>
+        </Box>
+      );
+    }
+  };
+
   return (
     <Box>
       <Typography variant="h4" gutterBottom>
@@ -379,11 +455,11 @@ const ManageFranchises = () => {
       </Card>
 
       {/* KYC Documents Dialog */}
-      <Dialog open={kycDialogOpen} onClose={handleCloseKycDialog} maxWidth="md" fullWidth>
-        <DialogTitle>
+      <Dialog open={kycDialogOpen} onClose={handleCloseKycDialog} maxWidth="lg" fullWidth>
+        <DialogTitle sx={{ bgcolor: 'primary.main', color: 'white', fontWeight: 'bold' }}>
           KYC Documents - {selectedFranchise?.businessName}
         </DialogTitle>
-        <DialogContent>
+        <DialogContent sx={{ bgcolor: '#f5f5f5' }}>
           {kycLoading ? (
             <Box display="flex" justifyContent="center" my={4}>
               <CircularProgress />
@@ -392,91 +468,143 @@ const ManageFranchises = () => {
             <Box sx={{ mt: 2 }}>
               <Grid container spacing={3}>
                 <Grid item xs={12} md={6}>
-                  <Typography variant="h6" gutterBottom>
+                  <Typography variant="h6" gutterBottom sx={{ color: 'primary.main', fontWeight: 'bold' }}>
                     Personal Information
                   </Typography>
-                  <Typography><strong>Aadhaar Number:</strong> {kycData.aadhaarNumber}</Typography>
-                  <Typography><strong>PAN Number:</strong> {kycData.panNumber}</Typography>
-                  <Typography><strong>Submitted At:</strong> {formatDate(kycData.submittedAt)}</Typography>
-                  <Typography><strong>Status:</strong> {getStatusChip(kycData.status)}</Typography>
+                  <Card variant="outlined" sx={{ boxShadow: 3, borderRadius: 2, bgcolor: 'white' }}>
+                    <CardContent>
+                      <Grid container spacing={2}>
+                        <Grid item xs={12} sm={6}>
+                          <Typography variant="body2" color="textSecondary"><strong>Aadhaar Number:</strong></Typography>
+                          <Typography variant="body1" sx={{ mt: 0.5 }}>{kycData.aadhaarNumber || 'N/A'}</Typography>
+                        </Grid>
+                        <Grid item xs={12} sm={6}>
+                          <Typography variant="body2" color="textSecondary"><strong>PAN Number:</strong></Typography>
+                          <Typography variant="body1" sx={{ mt: 0.5 }}>{kycData.panNumber || 'N/A'}</Typography>
+                        </Grid>
+                        <Grid item xs={12} sm={6}>
+                          <Typography variant="body2" color="textSecondary"><strong>Submitted At:</strong></Typography>
+                          <Typography variant="body1" sx={{ mt: 0.5 }}>{formatDate(kycData.submittedAt)}</Typography>
+                        </Grid>
+                        <Grid item xs={12} sm={6}>
+                          <Typography variant="body2" color="textSecondary"><strong>Status:</strong></Typography>
+                          <Box sx={{ mt: 0.5 }}>
+                            {getStatusChip(kycData.status)}
+                          </Box>
+                        </Grid>
+                      </Grid>
+                    </CardContent>
+                  </Card>
                 </Grid>
                 
                 <Grid item xs={12}>
-                  <Typography variant="h6" gutterBottom sx={{ mt: 2 }}>
+                  <Typography variant="h6" gutterBottom sx={{ mt: 2, color: 'primary.main', fontWeight: 'bold' }}>
                     Documents
                   </Typography>
                   <Grid container spacing={2}>
-                    <Grid item xs={12} sm={6}>
-                      <Card variant="outlined">
-                        <CardContent>
-                          <Typography variant="subtitle1">Aadhaar Front</Typography>
+                    <Grid item xs={12} sm={6} md={3} style={{ flex: "1" }}>
+                      <Card variant="outlined" sx={{ height: '100%', display: 'flex', flexDirection: 'column', boxShadow: 3, borderRadius: 2, bgcolor: 'white' }}>
+                        <CardContent sx={{ flexGrow: 1, p: 2 }}>
+                          <Typography variant="subtitle1" gutterBottom align="center" sx={{ fontWeight: 'medium', color: 'primary.dark', mb: 1 }}>
+                            Aadhaar Front
+                          </Typography>
+                          {renderDocumentPreview(kycData.aadhaarFrontDocument, 'Aadhaar Front')}
                           {kycData.aadhaarFrontDocument ? (
                             <Button
                               startIcon={<Visibility />}
                               onClick={() => handleViewDocument(kycData.aadhaarFrontDocument, 'Aadhaar Front')}
                               fullWidth
+                              sx={{ mt: 1.5 }}
+                              variant="outlined"
+                              size="small"
                             >
-                              View Document
+                              View Full
                             </Button>
                           ) : (
-                            <Typography color="textSecondary">Document not available</Typography>
+                            <Typography color="textSecondary" variant="body2" align="center" sx={{ mt: 1.5 }}>
+                              Document not available
+                            </Typography>
                           )}
                         </CardContent>
                       </Card>
                     </Grid>
                     
-                    <Grid item xs={12} sm={6}>
-                      <Card variant="outlined">
-                        <CardContent>
-                          <Typography variant="subtitle1">Aadhaar Back</Typography>
+                    <Grid item xs={12} sm={6} md={3} style={{ flex: "1" }}>
+                      <Card variant="outlined" sx={{ height: '100%', display: 'flex', flexDirection: 'column', boxShadow: 3, borderRadius: 2, bgcolor: 'white' }}>
+                        <CardContent sx={{ flexGrow: 1, p: 2 }}>
+                          <Typography variant="subtitle1" gutterBottom align="center" sx={{ fontWeight: 'medium', color: 'primary.dark', mb: 1 }}>
+                            Aadhaar Back
+                          </Typography>
+                          {renderDocumentPreview(kycData.aadhaarBackDocument, 'Aadhaar Back')}
                           {kycData.aadhaarBackDocument ? (
                             <Button
                               startIcon={<Visibility />}
                               onClick={() => handleViewDocument(kycData.aadhaarBackDocument, 'Aadhaar Back')}
                               fullWidth
+                              sx={{ mt: 1.5 }}
+                              variant="outlined"
+                              size="small"
                             >
-                              View Document
+                              View Full
                             </Button>
                           ) : (
-                            <Typography color="textSecondary">Document not available</Typography>
+                            <Typography color="textSecondary" variant="body2" align="center" sx={{ mt: 1.5 }}>
+                              Document not available
+                            </Typography>
                           )}
                         </CardContent>
                       </Card>
                     </Grid>
                     
-                    <Grid item xs={12} sm={6}>
-                      <Card variant="outlined">
-                        <CardContent>
-                          <Typography variant="subtitle1">PAN Card</Typography>
+                    <Grid item xs={12} sm={6} md={3} style={{ flex: "1" }}>
+                      <Card variant="outlined" sx={{ height: '100%', display: 'flex', flexDirection: 'column', boxShadow: 3, borderRadius: 2, bgcolor: 'white' }}>
+                        <CardContent sx={{ flexGrow: 1, p: 2 }}>
+                          <Typography variant="subtitle1" gutterBottom align="center" sx={{ fontWeight: 'medium', color: 'primary.dark', mb: 1 }}>
+                            PAN Card
+                          </Typography>
+                          {renderDocumentPreview(kycData.panDocument, 'PAN Card')}
                           {kycData.panDocument ? (
                             <Button
                               startIcon={<Visibility />}
                               onClick={() => handleViewDocument(kycData.panDocument, 'PAN Card')}
                               fullWidth
+                              sx={{ mt: 1.5 }}
+                              variant="outlined"
+                              size="small"
                             >
-                              View Document
+                              View Full
                             </Button>
                           ) : (
-                            <Typography color="textSecondary">Document not available</Typography>
+                            <Typography color="textSecondary" variant="body2" align="center" sx={{ mt: 1.5 }}>
+                              Document not available
+                            </Typography>
                           )}
                         </CardContent>
                       </Card>
                     </Grid>
                     
-                    <Grid item xs={12} sm={6}>
-                      <Card variant="outlined">
-                        <CardContent>
-                          <Typography variant="subtitle1">Business Registration</Typography>
+                    <Grid item xs={12} sm={6} md={3} style={{ flex: "1" }}>
+                      <Card variant="outlined" sx={{ height: '100%', display: 'flex', flexDirection: 'column', boxShadow: 3, borderRadius: 2, bgcolor: 'white' }}>
+                        <CardContent sx={{ flexGrow: 1, p: 2 }}>
+                          <Typography variant="subtitle1" gutterBottom align="center" sx={{ fontWeight: 'medium', color: 'primary.dark', mb: 1 }}>
+                            Business Registration
+                          </Typography>
+                          {renderDocumentPreview(kycData.businessRegistrationDocument, 'Business Registration')}
                           {kycData.businessRegistrationDocument ? (
                             <Button
                               startIcon={<Visibility />}
                               onClick={() => handleViewDocument(kycData.businessRegistrationDocument, 'Business Registration')}
                               fullWidth
+                              sx={{ mt: 1.5 }}
+                              variant="outlined"
+                              size="small"
                             >
-                              View Document
+                              View Full
                             </Button>
                           ) : (
-                            <Typography color="textSecondary">Document not available</Typography>
+                            <Typography color="textSecondary" variant="body2" align="center" sx={{ mt: 1.5 }}>
+                              Document not available
+                            </Typography>
                           )}
                         </CardContent>
                       </Card>
@@ -489,8 +617,19 @@ const ManageFranchises = () => {
             <Typography>No KYC data available</Typography>
           )}
         </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseKycDialog}>Close</Button>
+        <DialogActions sx={{ bgcolor: '#f5f5f5', p: 2 }}>
+          <Button 
+            onClick={handleCloseKycDialog} 
+            variant="contained" 
+            color="primary"
+            sx={{ 
+              bgcolor: 'primary.main', 
+              '&:hover': { bgcolor: 'primary.dark' },
+              fontWeight: 'bold'
+            }}
+          >
+            Close
+          </Button>
         </DialogActions>
       </Dialog>
 

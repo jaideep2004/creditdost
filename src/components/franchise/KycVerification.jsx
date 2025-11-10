@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   Typography,
@@ -12,11 +12,19 @@ import {
   Step,
   StepLabel,
   CircularProgress,
+  Radio,
+  RadioGroup,
+  FormControlLabel,
+  FormControl,
+  FormLabel,
+  Divider,
 } from '@mui/material';
 import api from '../../services/api';
+import { franchiseAPI } from '../../services/api'; // Import franchiseAPI
 
 const KycVerification = () => {
   const [activeStep, setActiveStep] = useState(0);
+  const [verificationMethod, setVerificationMethod] = useState('manual'); // 'manual' or 'digilocker'
   const [formData, setFormData] = useState({
     aadhaarNumber: '',
     panNumber: '',
@@ -26,10 +34,12 @@ const KycVerification = () => {
     businessRegistration: null,
   });
   const [loading, setLoading] = useState(false);
+  const [digilockerLoading, setDigilockerLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [digilockerToken, setDigilockerToken] = useState(null);
 
-  const steps = ['Personal Info', 'Document Upload', 'Review & Submit'];
+  const steps = ['Choose Method', 'Provide Details', 'Document Upload/Verification', 'Review & Submit'];
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -56,6 +66,21 @@ const KycVerification = () => {
   };
 
   const handleSubmit = async () => {
+    if (verificationMethod === 'digilocker') {
+      // For DigiLocker, we just show a success message since documents are fetched automatically
+      setSuccess('KYC documents submitted successfully via DigiLocker! Awaiting approval.');
+      setActiveStep(0);
+      setFormData({
+        aadhaarNumber: '',
+        panNumber: '',
+        aadhaarFront: null,
+        aadhaarBack: null,
+        panDocument: null,
+        businessRegistration: null,
+      });
+      return;
+    }
+
     setLoading(true);
     setError('');
     setSuccess('');
@@ -82,11 +107,7 @@ const KycVerification = () => {
     }
     
     try {
-      const response = await api.post('/kyc/submit', formDataToSend, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
+      const response = await franchiseAPI.submitKyc(formDataToSend);
       
       setSuccess('KYC documents submitted successfully! Awaiting approval.');
       setActiveStep(0);
@@ -105,12 +126,143 @@ const KycVerification = () => {
     }
   };
 
+  // Initialize DigiLocker SDK
+  const initializeDigiLockerSDK = (token) => {
+    try {
+      console.log('Initializing DigiLocker SDK with token:', token);
+      
+      // Use a configurable gateway setting instead of relying on development mode
+      // Check for explicit environment variable first, then fall back to mode-based detection
+      const gateway = import.meta.env.VITE_DIGILOCKER_GATEWAY || 
+                     (import.meta.env.MODE === 'development' ? 'sandbox' : 'production');
+      
+      console.log('Using gateway:', gateway);
+      console.log('Environment mode:', import.meta.env.MODE);
+      
+      window.DigiboostSdk({
+        gateway: gateway,
+        token: token,
+        selector: '#digilocker-button',
+        style: {
+          backgroundColor: '#613AF5',
+          color: 'white',
+          padding: '12px 24px',
+          borderRadius: '6px',
+          border: 'none',
+          cursor: 'pointer',
+          width: '100%',
+          fontSize: '16px',
+          fontWeight: '600'
+        },
+        onSuccess: function(data) {
+          console.log('DigiLocker verification successful:', data);
+          setSuccess('DigiLocker verification completed successfully! Documents have been fetched.');
+          setDigilockerLoading(false);
+          // Move to the next step
+          handleNext();
+        },
+        onFailure: function(error) {
+          console.log('DigiLocker verification failed:', error);
+          setError('DigiLocker verification was cancelled or failed. Please try again.');
+          setDigilockerLoading(false);
+        }
+      });
+    } catch (err) {
+      console.error('Failed to initialize DigiLocker SDK:', err);
+      setError('Failed to initialize DigiLocker SDK. Please try again.');
+      setDigilockerLoading(false);
+    }
+  };
+
+  // Load DigiLocker SDK script and initialize it
+  const loadDigiLockerSDK = (token) => {
+    // Check if script is already loaded
+    if (window.DigiboostSdk) {
+      initializeDigiLockerSDK(token);
+      return;
+    }
+
+    // Create script element
+    const script = document.createElement('script');
+    script.src = 'https://cdn.jsdelivr.net/gh/surepassio/surepass-digiboost-web-sdk@latest/index.min.js';
+    script.async = true;
+    script.onload = () => {
+      initializeDigiLockerSDK(token);
+    };
+    script.onerror = () => {
+      setError('Failed to load DigiLocker SDK. Please try again.');
+      setDigilockerLoading(false);
+    };
+    
+    document.body.appendChild(script);
+  };
+
+  // Initialize DigiLocker
+  const initDigiLocker = async () => {
+    setDigilockerLoading(true);
+    setError('');
+    
+    try {
+      const response = await franchiseAPI.initDigiLocker();
+      const { token } = response.data;
+      setDigilockerToken(token);
+      
+      // Load the DigiLocker SDK script dynamically
+      loadDigiLockerSDK(token);
+    } catch (err) {
+      console.error('Failed to initialize DigiLocker:', err);
+      setError(err.response?.data?.message || 'Failed to initialize DigiLocker. Please try again.');
+      setDigilockerLoading(false);
+    }
+  };
+
   const getStepContent = (step) => {
     switch (step) {
       case 0:
         return (
+          <Box>
+            <Typography variant="h6" gutterBottom>
+              Select KYC Verification Method
+            </Typography>
+            <FormControl component="fieldset">
+              <RadioGroup
+                aria-label="verification-method"
+                name="verificationMethod"
+                value={verificationMethod}
+                onChange={(e) => setVerificationMethod(e.target.value)}
+              >
+                <FormControlLabel
+                  value="manual"
+                  control={<Radio />}
+                  label={
+                    <Box>
+                      <Typography variant="subtitle1">Manual Document Upload</Typography>
+                      <Typography variant="body2" color="textSecondary">
+                        Upload your documents manually
+                      </Typography>
+                    </Box>
+                  }
+                />
+                <FormControlLabel
+                  value="digilocker"
+                  control={<Radio />}
+                  label={
+                    <Box>
+                      <Typography variant="subtitle1">DigiLocker Verification</Typography>
+                      <Typography variant="body2" color="textSecondary">
+                        Fetch documents directly from DigiLocker (Aadhaar, PAN, etc.)
+                      </Typography>
+                    </Box>
+                  }
+                />
+              </RadioGroup>
+            </FormControl>
+          </Box>
+        );
+      case 1:
+        return (
           <Grid container spacing={3}>
-            <Grid item xs={12} style={{flex: "1"}}>
+            <Grid item xs={12}>
               <TextField
                 required
                 id="aadhaarNumber"
@@ -122,7 +274,7 @@ const KycVerification = () => {
                 inputProps={{ maxLength: 12 }}
               />
             </Grid>
-            <Grid item xs={12} style={{flex: "1"}}>
+            <Grid item xs={12}>
               <TextField
                 required
                 id="panNumber"
@@ -136,60 +288,107 @@ const KycVerification = () => {
             </Grid>
           </Grid>
         );
-      case 1:
-        return (
-          <Grid container spacing={3}>
-            <Grid item xs={12}>
-              <Typography variant="subtitle1" gutterBottom>
-                Aadhaar Front
-              </Typography>
-              <input
-                accept="image/*,.pdf"
-                type="file"
-                onChange={(e) => handleFileChange(e, 'aadhaarFront')}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <Typography variant="subtitle1" gutterBottom>
-                Aadhaar Back
-              </Typography>
-              <input
-                accept="image/*,.pdf"
-                type="file"
-                onChange={(e) => handleFileChange(e, 'aadhaarBack')}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <Typography variant="subtitle1" gutterBottom>
-                PAN Card
-              </Typography>
-              <input
-                accept="image/*,.pdf"
-                type="file"
-                onChange={(e) => handleFileChange(e, 'panDocument')}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <Typography variant="subtitle1" gutterBottom>
-                Business Registration Document
-              </Typography>
-              <input
-                accept="image/*,.pdf"
-                type="file"
-                onChange={(e) => handleFileChange(e, 'businessRegistration')}
-              />
-            </Grid>
-          </Grid>
-        );
       case 2:
+        if (verificationMethod === 'digilocker') {
+          return (
+            <Box>
+              <Typography variant="h6" gutterBottom>
+                DigiLocker Verification
+              </Typography>
+              <Typography variant="body1" paragraph>
+                Click the button below to start the DigiLocker verification process. 
+                You'll be redirected to DigiLocker to authenticate and select documents.
+              </Typography>
+              
+              {error && (
+                <Alert severity="error" sx={{ mb: 2 }}>
+                  {error}
+                </Alert>
+              )}
+              
+              <Box id="digilocker-button" sx={{ mt: 2, mb: 2 }}>
+                {/* DigiLocker button will be rendered here */}
+              </Box>
+              
+              <Button
+                variant="contained"
+                onClick={initDigiLocker}
+                disabled={digilockerLoading}
+                sx={{ py: 1.5, px: 4 }}
+              >
+                {digilockerLoading ? <CircularProgress size={24} /> : 'Start DigiLocker Verification'}
+              </Button>
+              
+              <Divider sx={{ my: 3 }} />
+              
+              <Typography variant="body2" color="textSecondary">
+                Note: You'll need your DigiLocker account credentials to complete this process.
+              </Typography>
+            </Box>
+          );
+        } else {
+          return (
+            <Grid container spacing={3}>
+              <Grid item xs={12}>
+                <Typography variant="subtitle1" gutterBottom>
+                  Aadhaar Front
+                </Typography>
+                <input
+                  accept="image/*,.pdf"
+                  type="file"
+                  onChange={(e) => handleFileChange(e, 'aadhaarFront')}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <Typography variant="subtitle1" gutterBottom>
+                  Aadhaar Back
+                </Typography>
+                <input
+                  accept="image/*,.pdf"
+                  type="file"
+                  onChange={(e) => handleFileChange(e, 'aadhaarBack')}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <Typography variant="subtitle1" gutterBottom>
+                  PAN Card
+                </Typography>
+                <input
+                  accept="image/*,.pdf"
+                  type="file"
+                  onChange={(e) => handleFileChange(e, 'panDocument')}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <Typography variant="subtitle1" gutterBottom>
+                  Business Registration Document
+                </Typography>
+                <input
+                  accept="image/*,.pdf"
+                  type="file"
+                  onChange={(e) => handleFileChange(e, 'businessRegistration')}
+                />
+              </Grid>
+            </Grid>
+          );
+        }
+      case 3:
         return (
           <Box>
             <Typography variant="h6" gutterBottom>
               Please review your information before submitting:
             </Typography>
-            <Typography>Aadhaar Number: {formData.aadhaarNumber}</Typography>
-            <Typography>PAN Number: {formData.panNumber}</Typography>
-            <Typography>Documents uploaded: {Object.values(formData).filter(file => file instanceof File).length}</Typography>
+            <Typography><strong>Verification Method:</strong> {verificationMethod === 'manual' ? 'Manual Upload' : 'DigiLocker'}</Typography>
+            <Typography><strong>Aadhaar Number:</strong> {formData.aadhaarNumber}</Typography>
+            <Typography><strong>PAN Number:</strong> {formData.panNumber}</Typography>
+            
+            {verificationMethod === 'manual' && (
+              <Typography><strong>Documents uploaded:</strong> {Object.values(formData).filter(file => file instanceof File).length}</Typography>
+            )}
+            
+            {verificationMethod === 'digilocker' && (
+              <Typography><strong>Status:</strong> DigiLocker verification completed</Typography>
+            )}
           </Box>
         );
       default:
@@ -217,9 +416,9 @@ const KycVerification = () => {
       
       <Card sx={{ mt: 3, boxShadow: 3, borderRadius: 2 }}>
         <CardContent>
-          <Stepper activeStep={activeStep} alternativeLabel >
+          <Stepper activeStep={activeStep} alternativeLabel>
             {steps.map((label) => (
-              <Step key={label} >
+              <Step key={label}>
                 <StepLabel>{label}</StepLabel>
               </Step>
             ))}
@@ -249,6 +448,7 @@ const KycVerification = () => {
               <Button
                 variant="contained"
                 onClick={handleNext}
+                disabled={activeStep === 2 && verificationMethod === 'digilocker' && !digilockerToken}
                 sx={{ py: 1.5, px: 4 }}
               >
                 Next

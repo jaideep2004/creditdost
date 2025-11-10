@@ -7,6 +7,7 @@ import StatsSection from './StatsSection';
 import TestimonialsSection from './TestimonialsSection';
 import CTASection from './CTASection';
 import HomePageFooter from './HomePageFooter';
+import FAQSection from './FAQSection';
 
 const HomePage = () => {
   return (
@@ -17,6 +18,7 @@ const HomePage = () => {
       <StatsSection />
       <TestimonialsSection />
       <CTASection />
+      <FAQSection/>
       <HomePageFooter />
     </Box>
   );

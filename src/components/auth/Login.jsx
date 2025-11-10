@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, useLocation } from "react-router-dom";
 import {
   Container,
   Typography,
@@ -18,23 +18,29 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  Chip,
 } from "@mui/material";
 import { useAuth } from "../../hooks/useAuth.jsx";
 import { authAPI } from "../../services/api.jsx";
+import Header from "../homepage/Header.jsx";
 import {
   Email as EmailIcon,
   Lock as LockIcon,
   Visibility,
   VisibilityOff,
 } from "@mui/icons-material";
+import HomePageFooter from "../homepage/HomePageFooter.jsx";
 
 const GradientBackground = styled(Box)(({ theme }) => ({
-  minHeight: "100vh",
-  background: `linear-gradient(135deg, ${theme.palette.primary.light} 0%, ${theme.palette.secondary.light} 100%)`,
+  minHeight: "80vh",
   display: "flex",
+  background: "url('/images/reg.jpg')",
   alignItems: "center",
   justifyContent: "center",
   padding: theme.spacing(2),
+  backgroundSize: "cover",
+  backgroundRepeat: "no-repeat",
+  backgroundPosition: "center center",
 }));
 
 const StyledCard = styled(Card)(({ theme }) => ({
@@ -128,6 +134,8 @@ const FormSection = styled(Box)(({ theme }) => ({
 }));
 
 const Login = () => {
+  const location = useLocation();
+  const selectedPackage = location.state?.selectedPackage;
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -138,7 +146,7 @@ const Login = () => {
   const [forgotError, setForgotError] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const { login } = useAuth();
+  const { login, user } = useAuth();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -158,8 +166,16 @@ const Login = () => {
     }
 
     try {
-      await login({ email, password });
-      navigate("/franchise/dashboard");
+      const response = await login({ email, password });
+      // Redirect based on user role from the response
+      if (response.user?.role === "admin") {
+        navigate("/admin");
+      } else if (selectedPackage) {
+        // If user came from packages page, redirect to payment with selected package
+        navigate("/franchise/payment", { state: { package: selectedPackage } });
+      } else {
+        navigate("/franchise");
+      }
     } catch (err) {
       console.error("Login component error:", err);
       if (err.response) {
@@ -211,9 +227,11 @@ const Login = () => {
   };
 
   return (
-    <GradientBackground>
-      <style>
-        {`
+    <>
+      <Header />
+      <GradientBackground>
+        <style>
+          {`
           @keyframes gradientShift {
             0% {
               background-position: 0% 50%;
@@ -256,233 +274,255 @@ const Login = () => {
             }
           }
         `}
-      </style>
-      <Container maxWidth="lg">
-        <StyledCard>
-          <Grid container style={{ flexWrap: "nowrap", minHeight: "60vh" }}>
-            <Grid item xs={12} md={5} flex={1}>
-              <IllustrationSection>
-                <LogoBox>
-                  <img src="/images/cred.png" alt="Logo" style={{width: "292px"}}/>
-                </LogoBox>
-                <Typography
-                  variant="h4"
-                  fontWeight="700"
-                  textAlign="center"
-                  mb={2}
-                  sx={{ position: "relative", zIndex: 1 }}
-                >
-                  Welcome Back
-                </Typography>
-                <Typography
-                  variant="body1"
-                  textAlign="center"
-                  sx={{
-                    maxWidth: 300,
-                    opacity: 0.9,
-                    position: "relative",
-                    zIndex: 1,
-                  }}
-                >
-                  Sign in to access your franchise dashboard and manage your
-                  business
-                </Typography>
-              </IllustrationSection>
-            </Grid>
-            <Grid item xs={12} md={7} flex={1}>
-              <FormSection
-                style={{
-                  justifyItems: "center",
-                  alignContent: "center",
-                  height: "100%",
-                }}
-              >
-                <Typography
-                  component="h1"
-                  variant="h4"
-                  align="center"
-                  mb={3}
-                  fontWeight="700"
-                >
-                  Login to Your Account
-                </Typography>
-
-                {error && (
-                  <Alert severity="error" sx={{ mb: 2, borderRadius: 2 }}>
-                    {error}
-                  </Alert>
-                )}
-
-                <Box component="form" onSubmit={handleSubmit} noValidate>
-                  <Grid container spacing={2}>
-                    <Grid item xs={12} width={"100%"}>
-                      <TextField
-                        fullWidth
-                        required
-                        id="email"
-                        label="Email Address"
-                        name="email"
-                        autoComplete="email"
-                        autoFocus
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        InputProps={{
-                          startAdornment: (
-                            <InputAdornment position="start">
-                              <EmailIcon />
-                            </InputAdornment>
-                          ),
-                        }}
-                      />
-                    </Grid>
-
-                    <Grid item xs={12} width={"100%"}>
-                      <TextField
-                        fullWidth
-                        required
-                        name="password"
-                        label="Password"
-                        type={showPassword ? "text" : "password"}
-                        id="password"
-                        autoComplete="current-password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        InputProps={{
-                          startAdornment: (
-                            <InputAdornment position="start">
-                              <LockIcon />
-                            </InputAdornment>
-                          ),
-                          endAdornment: (
-                            <InputAdornment position="end">
-                              <IconButton
-                                onClick={() => setShowPassword(!showPassword)}
-                                edge="end"
-                              >
-                                {showPassword ? (
-                                  <VisibilityOff />
-                                ) : (
-                                  <Visibility />
-                                )}
-                              </IconButton>
-                            </InputAdornment>
-                          ),
-                        }}
-                      />
-                    </Grid>
-                  </Grid>
-
-                  <Button
-                    type="submit"
-                    fullWidth
-                    variant="contained"
-                    size="large"
+        </style>
+        <Container maxWidth="lg">
+          <StyledCard>
+            <Grid container style={{ flexWrap: "nowrap", minHeight: "60vh" }}>
+              <Grid item xs={12} md={5} flex={1}>
+                <IllustrationSection>
+                  <LogoBox>
+                    <img
+                      src="/images/cred.png"
+                      alt="Logo"
+                      style={{ width: "292px" }}
+                    />
+                  </LogoBox>
+                  <Typography
+                    variant="h4"
+                    fontWeight="700"
+                    textAlign="center"
+                    mb={2}
+                    sx={{ position: "relative", zIndex: 1 }}
+                  >
+                    Welcome Back
+                  </Typography>
+                  <Typography
+                    variant="body1"
+                    textAlign="center"
                     sx={{
-                      mt: 3,
-                      mb: 2,
-                      py: 1.5,
-                      borderRadius: 3,
-                      fontWeight: 600,
-                      boxShadow: "0 4px 12px rgba(98, 0, 234, 0.3)",
+                      maxWidth: 300,
+                      opacity: 0.9,
+                      position: "relative",
+                      zIndex: 1,
                     }}
                   >
-                    Sign In
-                  </Button>
+                    Sign in to access your franchise dashboard and manage your
+                    business
+                  </Typography>
+                </IllustrationSection>
+              </Grid>
+              <Grid item xs={12} md={7} flex={1}>
+                <FormSection
+                  style={{
+                    justifyItems: "center",
+                    alignContent: "center",
+                    height: "100%",
+                  }}
+                >
+                  <Typography
+                    component="h1"
+                    variant="h4"
+                    align="center"
+                    mb={3}
+                    fontWeight="700"
+                  >
+                    Login to Your Account
+                  </Typography>
 
-                  <Box textAlign="center" sx={{ mt: 1 }}>
-                    <Button
-                      onClick={() => setOpenForgotPassword(true)}
-                      sx={{ textTransform: "none" }}
+                  {selectedPackage && (
+                    <Alert 
+                      severity="info" 
+                      sx={{ mb: 2, borderRadius: 2 }}
+                      action={
+                        <Chip 
+                          label={`${selectedPackage.creditsIncluded} Credits - ₹${selectedPackage.price}`} 
+                          color="primary" 
+                          size="small"
+                        />
+                      }
                     >
-                      <Typography
-                        variant="body2"
-                        color="primary.main"
-                        fontWeight="500"
-                      >
-                        Forgot Password?
-                      </Typography>
+                      <strong>{selectedPackage.name}</strong> package selected
+                    </Alert>
+                  )}
+
+                  {error && (
+                    <Alert severity="error" sx={{ mb: 2, borderRadius: 2 }}>
+                      {error}
+                    </Alert>
+                  )}
+
+                  <Box component="form" onSubmit={handleSubmit} noValidate>
+                    <Grid container spacing={2}>
+                      <Grid item xs={12} width={"100%"}>
+                        <TextField
+                          fullWidth
+                          required
+                          id="email"
+                          label="Email Address"
+                          name="email"
+                          autoComplete="email"
+                          autoFocus
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
+                          InputProps={{
+                            startAdornment: (
+                              <InputAdornment position="start">
+                                <EmailIcon />
+                              </InputAdornment>
+                            ),
+                          }}
+                        />
+                      </Grid>
+
+                      <Grid item xs={12} width={"100%"}>
+                        <TextField
+                          fullWidth
+                          required
+                          name="password"
+                          label="Password"
+                          type={showPassword ? "text" : "password"}
+                          id="password"
+                          autoComplete="current-password"
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
+                          InputProps={{
+                            startAdornment: (
+                              <InputAdornment position="start">
+                                <LockIcon />
+                              </InputAdornment>
+                            ),
+                            endAdornment: (
+                              <InputAdornment position="end">
+                                <IconButton
+                                  onClick={() => setShowPassword(!showPassword)}
+                                  edge="end"
+                                >
+                                  {showPassword ? (
+                                    <VisibilityOff />
+                                  ) : (
+                                    <Visibility />
+                                  )}
+                                </IconButton>
+                              </InputAdornment>
+                            ),
+                          }}
+                        />
+                      </Grid>
+                    </Grid>
+
+                    <Button
+                      type="submit"
+                      fullWidth
+                      variant="contained"
+                      size="large"
+                      sx={{
+                        mt: 3,
+                        mb: 2,
+                        py: 1.5,
+                        borderRadius: 3,
+                        fontWeight: 600,
+                        boxShadow: "0 4px 12px rgba(98, 0, 234, 0.3)",
+                      }}
+                    >
+                      Sign In
                     </Button>
-                  </Box>
 
-                  <Box textAlign="center">
-                    <Link to="/register" style={{ textDecoration: "none" }}>
-                      <Typography
-                        variant="body2"
-                        color="primary.main"
-                        fontWeight="500"
+                    <Box textAlign="center" sx={{ mt: 1 }}>
+                      <Button
+                        onClick={() => setOpenForgotPassword(true)}
+                        sx={{ textTransform: "none" }}
                       >
-                        {"Don't have an account? Register"}
-                      </Typography>
-                    </Link>
-                  </Box>
-                </Box>
-              </FormSection>
-            </Grid>
-          </Grid>
-        </StyledCard>
-      </Container>
+                        <Typography
+                          variant="body2"
+                          color="primary.main"
+                          fontWeight="500"
+                        >
+                          Forgot Password?
+                        </Typography>
+                      </Button>
+                    </Box>
 
-      {/* Forgot Password Dialog */}
-      <Dialog
-        open={openForgotPassword}
-        onClose={() => setOpenForgotPassword(false)}
-        maxWidth="sm"
-        fullWidth
-      >
-        <DialogTitle>Forgot Password</DialogTitle>
-        <DialogContent>
-          {forgotSuccess ? (
-            <Alert severity="success">{forgotSuccess}</Alert>
-          ) : (
-            <>
-              <Typography variant="body1" sx={{ mb: 2 }}>
-                Enter your email address and we'll send you a new password.
-              </Typography>
-              {forgotError && (
-                <Alert severity="error" sx={{ mb: 2 }}>
-                  {forgotError}
-                </Alert>
-              )}
-              <TextField
-                fullWidth
-                required
-                label="Email Address"
-                type="email"
-                value={forgotEmail}
-                onChange={(e) => setForgotEmail(e.target.value)}
-                sx={{ mt: 1 }}
-              />
-            </>
-          )}
-        </DialogContent>
-        <DialogActions>
-          {forgotSuccess ? (
-            <Button
-              onClick={() => {
-                setOpenForgotPassword(false);
-                setForgotEmail("");
-                setForgotSuccess("");
-              }}
-            >
-              Close
-            </Button>
-          ) : (
-            <>
-              <Button onClick={() => setOpenForgotPassword(false)}>
-                Cancel
-              </Button>
+                    <Box textAlign="center">
+                      <Link to="/register" style={{ textDecoration: "none" }}>
+                        <Typography
+                          variant="body2"
+                          color="primary.main"
+                          fontWeight="500"
+                        >
+                          {"Don't have an account? Register"}
+                        </Typography>
+                      </Link>
+                    </Box>
+                  </Box>
+                </FormSection>
+              </Grid>
+            </Grid>
+          </StyledCard>
+        </Container>
+
+        {/* Forgot Password Dialog */}
+        <Dialog
+          open={openForgotPassword}
+          onClose={() => setOpenForgotPassword(false)}
+          maxWidth="sm"
+          fullWidth
+        >
+          <DialogTitle>Forgot Password</DialogTitle>
+          <DialogContent>
+            {forgotSuccess ? (
+              <Alert severity="success">{forgotSuccess}</Alert>
+            ) : (
+              <>
+                <Typography variant="body1" sx={{ mb: 2 }}>
+                  Enter your email address and we'll send you a new password.
+                </Typography>
+                {forgotError && (
+                  <Alert severity="error" sx={{ mb: 2 }}>
+                    {forgotError}
+                  </Alert>
+                )}
+                <TextField
+                  fullWidth
+                  required
+                  label="Email Address"
+                  type="email"
+                  value={forgotEmail}
+                  onChange={(e) => setForgotEmail(e.target.value)}
+                  sx={{ mt: 1 }}
+                />
+              </>
+            )}
+          </DialogContent>
+          <DialogActions>
+            {forgotSuccess ? (
               <Button
-                onClick={handleForgotPassword}
-                variant="contained"
-                disabled={loading}
+                onClick={() => {
+                  setOpenForgotPassword(false);
+                  setForgotEmail("");
+                  setForgotSuccess("");
+                }}
               >
-                {loading ? "Sending..." : "Send Password"}
+                Close
               </Button>
-            </>
-          )}
-        </DialogActions>
-      </Dialog>
-    </GradientBackground>
+            ) : (
+              <>
+                <Button onClick={() => setOpenForgotPassword(false)}>
+                  Cancel
+                </Button>
+                <Button
+                  onClick={handleForgotPassword}
+                  variant="contained"
+                  disabled={loading}
+                >
+                  {loading ? "Sending..." : "Send Password"}
+                </Button>
+              </>
+            )}
+          </DialogActions>
+        </Dialog>
+      </GradientBackground>
+      <HomePageFooter />
+    </>
   );
 };
 

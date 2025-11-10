@@ -1,32 +1,64 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   Typography,
   Card,
   CardContent,
   TextField,
-  Button,
+  Button, 
   Alert,
   CircularProgress,
 } from '@mui/material';
+import { adminAPI } from '../../services/api';
 
 const SurepassSettings = () => {
   const [apiKey, setApiKey] = useState('');
   const [loading, setLoading] = useState(false);
+  const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
+  // Load current API key on component mount
+  useEffect(() => {
+    loadCurrentApiKey();
+  }, []);
+
+  const loadCurrentApiKey = async () => {
+    setLoading(true);
+    try {
+      const response = await adminAPI.getSurepassApiKey();
+      // We receive a masked key, but we'll show a placeholder to indicate it's configured
+      if (response.data.hasApiKey) {
+        setApiKey('••••••••••••••••••••'); // Masked placeholder
+      }
+      setLoading(false);
+    } catch (err) {
+      console.error('Error loading API key:', err);
+      // If not found, it's expected - just leave the field empty
+      if (err.response?.status !== 404) {
+        setError('Failed to load current API key');
+      }
+      setLoading(false);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
+    setSaving(true);
     setError('');
     setSuccess('');
     
-    // In a real app, this would submit to the API
-    setTimeout(() => {
-      setLoading(false);
-      setSuccess('Surepass API key updated successfully!');
-    }, 1000);
+    try {
+      const response = await adminAPI.updateSurepassApiKey(apiKey);
+      setSuccess(response.data.message);
+      // After saving, reload to show the masked version
+      await loadCurrentApiKey();
+    } catch (err) {
+      console.error('Error updating API key:', err);
+      setError(err.response?.data?.message || 'Failed to update Surepass API key');
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
@@ -61,16 +93,18 @@ const SurepassSettings = () => {
               value={apiKey}
               onChange={(e) => setApiKey(e.target.value)}
               sx={{ mb: 3 }}
+              helperText="Enter your Surepass API key to enable credit verification services"
+              disabled={loading}
             />
             
             <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
               <Button
                 type="submit"
                 variant="contained"
-                disabled={loading}
+                disabled={saving || loading}
                 sx={{ py: 1.5, px: 4 }}
               >
-                {loading ? <CircularProgress size={24} /> : 'Update API Key'}
+                {saving ? <CircularProgress size={24} /> : 'Update API Key'}
               </Button>
             </Box>
           </Box>
