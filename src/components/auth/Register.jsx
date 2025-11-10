@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useNavigate, Link, useLocation } from "react-router-dom";
 import {
   Container,
   Typography,
@@ -23,8 +23,11 @@ import {
   Grid,
   Snackbar, // Add Snackbar for toast notifications
   Alert as MuiAlert, // Rename to avoid conflict
+  CircularProgress, // Add CircularProgress for loading indicator
 } from "@mui/material";
 import { useAuth } from "../../hooks/useAuth.jsx";
+       // Import Header                              
+import Header from "../../components/homepage/Header.jsx";
 import {
   Person as PersonIcon,
   Email as EmailIcon,
@@ -32,6 +35,7 @@ import {
   LocationOn as LocationIcon,
   Language as LanguageIcon,
 } from "@mui/icons-material";
+import HomePageFooter from "../homepage/HomePageFooter.jsx";
 
 // Toast notification component
 const ToastAlert = React.forwardRef(function Alert(props, ref) {
@@ -39,12 +43,16 @@ const ToastAlert = React.forwardRef(function Alert(props, ref) {
 });
 
 const GradientBackground = styled(Box)(({ theme }) => ({
-  minHeight: "100vh",
-  background: `linear-gradient(135deg, ${theme.palette.primary.light} 0%, ${theme.palette.secondary.light} 100%)`,
+  minHeight: "90vh",
+  // background: `linear-gradient(135deg, ${theme.palette.primary.light} 0%, ${theme.palette.secondary.light} 100%)`,
   display: "flex",
+  background:"url('/images/reg.jpg')",
   alignItems: "center",
   justifyContent: "center",
   padding: theme.spacing(2),
+  backgroundSize: "cover",
+  backgroundRepeat: "no-repeat",
+  backgroundPosition: "center center",
 }));
 
 const StyledCard = styled(Card)(({ theme }) => ({
@@ -156,8 +164,20 @@ const Register = () => {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
   const [toast, setToast] = useState({ open: false, message: "", severity: "success" }); // Toast state
+  const [loading, setLoading] = useState(false); // Loading state
+  const [referralId, setReferralId] = useState(null); // Referral ID state
   const navigate = useNavigate();
+  const location = useLocation();
   const { register } = useAuth();
+
+  // Extract referral ID from URL parameters
+  useEffect(() => {
+    const searchParams = new URLSearchParams(location.search);
+    const refId = searchParams.get('ref');
+    if (refId) {
+      setReferralId(refId);
+    }
+  }, [location]);
 
   // Handle toast close
   const handleToastClose = (event, reason) => {
@@ -171,10 +191,12 @@ const Register = () => {
     e.preventDefault();
     setError("");
     setSuccess(false);
+    setLoading(true); // Set loading to true when submitting
 
     // Validation
     if (!name || !email || !phone || !state || !pincode || !language) {
       setError("Please fill in all required fields");
+      setLoading(false); // Set loading to false on validation error
       return;
     }
 
@@ -182,6 +204,7 @@ const Register = () => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       setError("Please enter a valid email address");
+      setLoading(false); // Set loading to false on validation error
       return;
     }
 
@@ -189,6 +212,7 @@ const Register = () => {
     const phoneRegex = /^[0-9]{10}$/;
     if (!phoneRegex.test(phone)) {
       setError("Please enter a valid 10-digit phone number");
+      setLoading(false); // Set loading to false on validation error
       return;
     }
 
@@ -196,6 +220,7 @@ const Register = () => {
     const pincodeRegex = /^[0-9]{6}$/;
     if (!pincodeRegex.test(pincode)) {
       setError("Please enter a valid 6-digit pincode");
+      setLoading(false); // Set loading to false on validation error
       return;
     }
 
@@ -203,12 +228,13 @@ const Register = () => {
     const selectedLanguage = language === "other" ? otherLanguage : language;
     if (language === "other" && !otherLanguage.trim()) {
       setError("Please specify your preferred language");
+      setLoading(false); // Set loading to false on validation error
       return;
     }
 
     try {
       // For registration without password, we'll send a placeholder
-      const result = await register({
+      const registrationData = {
         name,
         email,
         phone,
@@ -216,7 +242,14 @@ const Register = () => {
         pincode,
         language: selectedLanguage,
         password: "temp_password", // Placeholder password
-      });
+      };
+
+      // Add referral ID if present
+      if (referralId) {
+        registrationData.referralId = referralId;
+      }
+
+      const result = await register(registrationData);
 
       setSuccess(true);
       // Show success toast
@@ -228,7 +261,7 @@ const Register = () => {
       
       // Redirect to packages page after a short delay
       setTimeout(() => {
-        navigate("/franchise/packages"); // Redirect to packages page
+        navigate("/packages"); // Redirect to packages page
       }, 3000);
     } catch (err) {
       setError(
@@ -240,11 +273,15 @@ const Register = () => {
         message: err.response?.data?.message || "Registration failed. Please try again.",
         severity: "error"
       });
+    } finally {
+      setLoading(false); // Set loading to false after request completes
     }
   };
 
   return (
-    <GradientBackground>
+    <>
+    <Header />
+    <GradientBackground >
       <Container maxWidth="lg">
         <StyledCard>
           <Grid container style={{ flexWrap: "nowrap" }}>
@@ -272,6 +309,18 @@ const Register = () => {
                   Join our franchise network and empower businesses with credit
                   verification services
                 </Typography>
+                
+                {/* Show referral info if referral ID is present */}
+                {referralId && (
+                  <Box sx={{ mt: 3, p: 2, bgcolor: 'rgba(98, 0, 234, 0.1)', borderRadius: 2 }}>
+                    <Typography variant="body2" color="primary.main" fontWeight="bold">
+                      You've been referred to CreditDost!
+                    </Typography>
+                    <Typography variant="caption" color="text.secondary">
+                      Complete your registration to get started.
+                    </Typography>
+                  </Box>
+                )}
               </IllustrationSection>
             </Grid>
             <Grid item xs={12} md={7} style={{ flex: "1" }}>
@@ -490,8 +539,16 @@ const Register = () => {
                       fontWeight: 600,
                       boxShadow: "0 4px 12px rgba(98, 0, 234, 0.3)",
                     }}
+                    disabled={loading} // Disable button when loading
                   >
-                    Register
+                    {loading ? (
+                      <>
+                        <CircularProgress size={24} sx={{ mr: 1 }} />
+                        Registering...
+                      </>
+                    ) : (
+                      "Register"
+                    )}
                   </Button>
 
                   <Box textAlign="center">
@@ -528,6 +585,8 @@ const Register = () => {
         </ToastAlert>
       </Snackbar>
     </GradientBackground>
+    <HomePageFooter/>
+    </>
   );
 };
 

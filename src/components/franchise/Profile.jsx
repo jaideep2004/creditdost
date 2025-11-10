@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   Typography,
@@ -10,6 +10,7 @@ import {
   Alert,
   CircularProgress,
 } from '@mui/material';
+import { franchiseAPI } from '../../services/api';
 
 const Profile = () => {
   const [formData, setFormData] = useState({
@@ -25,8 +26,40 @@ const Profile = () => {
     },
   });
   const [loading, setLoading] = useState(false);
+  const [fetching, setFetching] = useState(true);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+
+  // Fetch profile data on component mount
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        setFetching(true);
+        const response = await franchiseAPI.getProfile();
+        const profileData = response.data;
+        
+        setFormData({
+          businessName: profileData.businessName || '',
+          ownerName: profileData.ownerName || '',
+          email: profileData.email || '',
+          phone: profileData.phone || '',
+          address: {
+            street: profileData.address?.street || '',
+            city: profileData.address?.city || '',
+            state: profileData.address?.state || '',
+            pincode: profileData.address?.pincode || '',
+          },
+        });
+      } catch (err) {
+        setError('Failed to load profile data');
+        console.error('Error fetching profile:', err);
+      } finally {
+        setFetching(false);
+      }
+    };
+
+    fetchProfile();
+  }, []);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -55,12 +88,39 @@ const Profile = () => {
     setError('');
     setSuccess('');
     
-    // In a real app, this would submit to the API
-    setTimeout(() => {
+    try {
+      const response = await franchiseAPI.updateProfile(formData);
+      setSuccess(response.data.message || 'Profile updated successfully!');
+      
+      // Update form data with response data
+      const updatedProfile = response.data.franchise;
+      setFormData({
+        businessName: updatedProfile.businessName || '',
+        ownerName: updatedProfile.ownerName || '',
+        email: updatedProfile.email || '',
+        phone: updatedProfile.phone || '',
+        address: {
+          street: updatedProfile.address?.street || '',
+          city: updatedProfile.address?.city || '',
+          state: updatedProfile.address?.state || '',
+          pincode: updatedProfile.address?.pincode || '',
+        },
+      });
+    } catch (err) {
+      setError(err.response?.data?.message || err.response?.data?.details || 'Failed to update profile');
+      console.error('Error updating profile:', err);
+    } finally {
       setLoading(false);
-      setSuccess('Profile updated successfully!');
-    }, 1000);
+    }
   };
+
+  if (fetching) {
+    return (
+      <Box display="flex" justifyContent="center" alignItems="center" minHeight="200px">
+        <CircularProgress />
+      </Box>
+    );
+  }
 
   return (
     <Box>

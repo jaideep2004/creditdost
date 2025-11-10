@@ -13,9 +13,16 @@ import {
   Step,
   StepLabel,
   StepContent,
+  Snackbar, // Add Snackbar for toast notifications
+  Alert as MuiAlert, // Rename to avoid conflict
 } from "@mui/material";
 import { useLocation, useNavigate } from "react-router-dom";
 import api from "../../services/api"; // Use the configured API instance instead of raw axios
+
+// Toast notification component
+const ToastAlert = React.forwardRef(function Alert(props, ref) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
 
 const Payment = () => {
   const location = useLocation();
@@ -23,7 +30,16 @@ const Payment = () => {
   const [activeStep, setActiveStep] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [toast, setToast] = useState({ open: false, message: "", severity: "success" }); // Toast state
   const pkg = location.state?.package;
+
+  // Handle toast close
+  const handleToastClose = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setToast({ ...toast, open: false });
+  };
 
   useEffect(() => {
     if (!pkg) {
@@ -78,9 +94,19 @@ const Payment = () => {
       setLoading(false);
     }
   };
-
+ 
   const handlePaymentSuccess = async (response) => {
     try {
+      // Show processing message
+      setLoading(true);  
+      
+      // Show toast notification that payment is being processed
+      setToast({
+        open: true,
+        message: "Payment successful! Processing your order...",
+        severity: "info"
+      });
+
       // Verify payment on backend
       await api.post("/payments/verify-payment", {
         razorpay_order_id: response.razorpay_order_id,
@@ -90,9 +116,25 @@ const Payment = () => {
       
       // Move to success step
       setActiveStep(2);
+      
+      // Show success toast notification
+      setToast({
+        open: true,
+        message: "Payment processed successfully! Your credits have been added to your account.",
+        severity: "success"
+      });
     } catch (err) {
       setError("Payment verification failed. Please contact support.");
       console.error("Payment verification error:", err);
+      
+      // Show error toast notification
+      setToast({
+        open: true,
+        message: "Payment verification failed. Please contact support.",
+        severity: "error"
+      });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -189,7 +231,14 @@ const Payment = () => {
                         disabled={loading}
                         sx={{ mt: 1, mr: 1 }}
                       >
-                        {loading ? <CircularProgress size={24} /> : "Pay Now"}
+                        {loading ? (
+                          <>
+                            <CircularProgress size={24} sx={{ mr: 1 }} />
+                            Processing...
+                          </>
+                        ) : (
+                          "Pay Now"
+                        )}
                       </Button>
                       <Button
                         onClick={() => setActiveStep(0)}
@@ -221,6 +270,22 @@ const Payment = () => {
           </Stepper>
         </CardContent>
       </Card>
+
+      {/* Toast Notification */}
+      <Snackbar
+        open={toast.open}
+        autoHideDuration={6000}
+        onClose={handleToastClose}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+      >
+        <ToastAlert
+          onClose={handleToastClose}
+          severity={toast.severity}
+          sx={{ width: '100%' }}
+        >
+          {toast.message}
+        </ToastAlert>
+      </Snackbar>
     </Container>
   );
 };

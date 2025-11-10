@@ -11,7 +11,7 @@ const FooterBackground = styled(Box)(({ theme }) => ({
   background: theme.palette.grey[900],
   color: theme.palette.common.white,
   padding: theme.spacing(8, 0, 4),
-  marginTop: theme.spacing(8),
+  
 }));
 
 const FooterLink = styled(Link)(({ theme }) => ({
@@ -38,10 +38,8 @@ const HomePageFooter = () => {
     <FooterBackground component="footer">
       <Container maxWidth="lg">
         <Grid container spacing={4}>
-          <Grid item xs={12} md={4}>
-            <Typography variant="h6" gutterBottom fontWeight="700">
-              CreditDost
-            </Typography>
+          <Grid item xs={12} md={4} style={{ flex: "1"}}>
+            <img src="/images/cred.png" alt="CreditDost Logo" style={{width: "180px", marginBottom: "20px"}}  />
             <Typography variant="body2" color="grey.400" mb={2}>
               Empowering franchise partners with cutting-edge credit verification and business management tools.
             </Typography>
@@ -61,7 +59,7 @@ const HomePageFooter = () => {
             </Box>
           </Grid>
           
-          <Grid item xs={6} md={2}>
+          <Grid item xs={6} md={2} style={{ flex: "1" }}>
             <Typography variant="h6" gutterBottom fontWeight="700">
               Products
             </Typography>
@@ -71,7 +69,7 @@ const HomePageFooter = () => {
             <FooterLink href="#">Demo</FooterLink>
           </Grid>
           
-          <Grid item xs={6} md={2}>
+          <Grid item xs={6} md={2} style={{ flex: "1" }}>
             <Typography variant="h6" gutterBottom fontWeight="700">
               Resources
             </Typography>
@@ -81,7 +79,7 @@ const HomePageFooter = () => {
             <FooterLink href="#">Support</FooterLink>
           </Grid>
           
-          <Grid item xs={6} md={2}>
+          <Grid item xs={6} md={2} style={{ flex: "1" }}>
             <Typography variant="h6" gutterBottom fontWeight="700">
               Company
             </Typography>
@@ -91,7 +89,7 @@ const HomePageFooter = () => {
             <FooterLink href="#">Partners</FooterLink>
           </Grid>
           
-          <Grid item xs={6} md={2}>
+          <Grid item xs={6} md={2} style={{ flex: "1" }}>
             <Typography variant="h6" gutterBottom fontWeight="700">
               Legal
             </Typography>

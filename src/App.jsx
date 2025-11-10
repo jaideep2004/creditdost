@@ -9,8 +9,13 @@ import './App.css'
 import Home from './components/homepage/HomePage';
 import Login from './components/auth/Login';
 import Register from './components/auth/Register';
-import FranchiseDashboard from './components/franchise/Dashboard';
-import AdminDashboard from './components/admin/Dashboard';
+import FranchiseRoutes from './components/franchise/Routes';
+import AdminRoutes from './components/admin/Routes';
+import PackagesPage from './components/PackagesPage';
+import AboutPage from './components/About/AboutPage';
+import BlogsPage from './components/BlogsPage';
+import BlogDetailPage from './components/BlogDetailPage';
+import ContactPage from './components/ContactPage';
 
 // Create enhanced theme
 const theme = createTheme({
@@ -132,13 +137,18 @@ function App() {
         <Router>
           <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/about" element={<AboutPage />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/packages" element={<PackagesPage />} />
+            <Route path="/blogs" element={<BlogsPage />} />
+            <Route path="/blog/:slug" element={<BlogDetailPage />} />
+            <Route path="/contact" element={<ContactPage />} />
             <Route 
               path="/franchise/*" 
               element={
                 <ProtectedRoute allowedRoles={['franchise_user', 'admin']}>
-                  <FranchiseDashboard />
+                  <FranchiseRoutes />
                 </ProtectedRoute>
               } 
             />
@@ -146,7 +156,7 @@ function App() {
               path="/admin/*" 
               element={
                 <ProtectedRoute allowedRoles={['admin']}>
-                  <AdminDashboard />
+                  <AdminRoutes />
                 </ProtectedRoute>
               } 
             />

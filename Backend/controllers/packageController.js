@@ -7,10 +7,13 @@ const packageSchema = Joi.object({
   description: Joi.string().required(),
   price: Joi.number().min(0).required(),
   creditsIncluded: Joi.number().min(0).required(),
-  validityDays: Joi.number().min(1).required(),
   features: Joi.array().items(Joi.string()),
   isActive: Joi.boolean(),
   sortOrder: Joi.number(),
+  // Business payout settings
+  businessPayoutPercentage: Joi.number().min(0).max(100),
+  businessPayoutType: Joi.string().valid('fixed', 'percentage'),
+  businessPayoutFixedAmount: Joi.number().min(0),
 });
 
 // Get all active packages

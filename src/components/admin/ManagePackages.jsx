@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   Typography,
@@ -22,39 +22,15 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  Chip,
+  Autocomplete,
+  MenuItem,
 } from '@mui/material';
 import { Add, Edit, Delete, Check, Close } from '@mui/icons-material';
+import { adminAPI } from '../../services/api';
 
 const ManagePackages = () => {
-  const [packages, setPackages] = useState([
-    {
-      id: 1,
-      name: 'Starter Package',
-      description: 'Perfect for new franchise partners to get started',
-      price: 2999,
-      creditsIncluded: 50,
-      validityDays: 30,
-      isActive: true,
-    },
-    {
-      id: 2,
-      name: 'Professional Package',
-      description: 'Ideal for growing franchise businesses',
-      price: 5999,
-      creditsIncluded: 125,
-      validityDays: 60,
-      isActive: true,
-    },
-    {
-      id: 3,
-      name: 'Enterprise Package',
-      description: 'Complete solution for established franchise partners',
-      price: 9999,
-      creditsIncluded: 250,
-      validityDays: 90,
-      isActive: true,
-    },
-  ]);
+  const [packages, setPackages] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
@@ -65,9 +41,33 @@ const ManagePackages = () => {
     description: '',
     price: '',
     creditsIncluded: '',
-    validityDays: '',
+    features: [], // Add features field
     isActive: true,
+    // Business payout settings
+    businessPayoutPercentage: 20,
+    businessPayoutType: 'percentage',
+    businessPayoutFixedAmount: 0,
   });
+  const [featureInput, setFeatureInput] = useState(''); // Add feature input state
+
+  // Fetch all packages on component mount
+  useEffect(() => {
+    fetchPackages();
+  }, []);
+
+  const fetchPackages = async () => {
+    try {
+      setLoading(true);
+      setError('');
+      const response = await adminAPI.getAllPackages();
+      setPackages(response.data);
+    } catch (err) {
+      setError('Failed to fetch packages. Please try again later.');
+      console.error('Error fetching packages:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleOpenDialog = (pkg = null) => {
     if (pkg) {
@@ -77,8 +77,12 @@ const ManagePackages = () => {
         description: pkg.description,
         price: pkg.price,
         creditsIncluded: pkg.creditsIncluded,
-        validityDays: pkg.validityDays,
+        features: pkg.features || [], // Add features
         isActive: pkg.isActive,
+        // Business payout settings
+        businessPayoutPercentage: pkg.businessPayoutPercentage || 20,
+        businessPayoutType: pkg.businessPayoutType || 'percentage',
+        businessPayoutFixedAmount: pkg.businessPayoutFixedAmount || 0,
       });
     } else {
       setEditingPackage(null);
@@ -87,8 +91,12 @@ const ManagePackages = () => {
         description: '',
         price: '',
         creditsIncluded: '',
-        validityDays: '',
+        features: [], // Add features
         isActive: true,
+        // Business payout settings
+        businessPayoutPercentage: 20,
+        businessPayoutType: 'percentage',
+        businessPayoutFixedAmount: 0,
       });
     }
     setOpenDialog(true);
@@ -97,6 +105,7 @@ const ManagePackages = () => {
   const handleCloseDialog = () => {
     setOpenDialog(false);
     setEditingPackage(null);
+    setFeatureInput(''); // Reset feature input
   };
 
   const handleInputChange = (e) => {
@@ -107,65 +116,94 @@ const ManagePackages = () => {
     });
   };
 
+  const handleAddFeature = () => {
+    if (featureInput.trim() && !formData.features.includes(featureInput.trim())) {
+      setFormData({
+        ...formData,
+        features: [...formData.features, featureInput.trim()],
+      });
+      setFeatureInput('');
+    }
+  };
+
+  const handleRemoveFeature = (featureToRemove) => {
+    setFormData({
+      ...formData,
+      features: formData.features.filter(feature => feature !== featureToRemove),
+    });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError('');
     setSuccess('');
     
-    // In a real app, this would submit to the API
-    setTimeout(() => {
+    try {
+      // Convert price and credits to numbers
+      const packageData = {
+        ...formData,
+        price: Number(formData.price),
+        creditsIncluded: Number(formData.creditsIncluded),
+      };
+      
       if (editingPackage) {
         // Update existing package
-        setPackages(packages.map(pkg => 
-          pkg.id === editingPackage.id 
-            ? { ...pkg, ...formData, price: Number(formData.price), creditsIncluded: Number(formData.creditsIncluded), validityDays: Number(formData.validityDays) }
-            : pkg
-        ));
+        const response = await adminAPI.updatePackage(editingPackage._id, packageData);
         setSuccess('Package updated successfully!');
       } else {
         // Create new package
-        const newPackage = {
-          id: packages.length + 1,
-          ...formData,
-          price: Number(formData.price),
-          creditsIncluded: Number(formData.creditsIncluded),
-          validityDays: Number(formData.validityDays),
-        };
-        setPackages([...packages, newPackage]);
+        const response = await adminAPI.createPackage(packageData);
         setSuccess('Package created successfully!');
       }
-      setLoading(false);
+      
+      // Refresh the package list
+      fetchPackages();
       handleCloseDialog();
-    }, 1000);
+    } catch (err) {
+      setError('Failed to save package. Please try again.');
+      console.error('Error saving package:', err);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleDelete = (id) => {
+  const handleDelete = async (id) => {
+    if (!window.confirm('Are you sure you want to delete this package?')) {
+      return;
+    }
+    
     setLoading(true);
     setError('');
     setSuccess('');
     
-    // In a real app, this would call the API to delete the package
-    setTimeout(() => {
-      setPackages(packages.filter(pkg => pkg.id !== id));
-      setLoading(false);
+    try {
+      await adminAPI.deletePackage(id);
       setSuccess('Package deleted successfully!');
-    }, 500);
+      fetchPackages();
+    } catch (err) {
+      setError('Failed to delete package. Please try again.');
+      console.error('Error deleting package:', err);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleToggleStatus = (id) => {
+  const handleToggleStatus = async (id, currentStatus) => {
     setLoading(true);
     setError('');
     setSuccess('');
     
-    // In a real app, this would call the API to toggle package status
-    setTimeout(() => {
-      setPackages(packages.map(pkg => 
-        pkg.id === id ? { ...pkg, isActive: !pkg.isActive } : pkg
-      ));
-      setLoading(false);
+    try {
+      await adminAPI.updatePackage(id, { isActive: !currentStatus });
       setSuccess('Package status updated successfully!');
-    }, 500);
+      fetchPackages();
+    } catch (err) {
+      setError('Failed to update package status. Please try again.');
+      console.error('Error updating package status:', err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -198,68 +236,98 @@ const ManagePackages = () => {
             </Button>
           </Box>
           
-          <TableContainer component={Paper}>
-            <Table sx={{ minWidth: 650 }} aria-label="packages table">
-              <TableHead>
-                <TableRow>
-                  <TableCell>Name</TableCell>
-                  <TableCell>Description</TableCell>
-                  <TableCell>Price</TableCell>
-                  <TableCell>Credits</TableCell>
-                  <TableCell>Validity</TableCell>
-                  <TableCell>Status</TableCell>
-                  <TableCell>Actions</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {packages.map((pkg) => (
-                  <TableRow
-                    key={pkg.id}
-                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                  >
-                    <TableCell component="th" scope="row">
-                      {pkg.name}
-                    </TableCell>
-                    <TableCell>{pkg.description}</TableCell>
-                    <TableCell>₹{pkg.price}</TableCell>
-                    <TableCell>{pkg.creditsIncluded}</TableCell>
-                    <TableCell>{pkg.validityDays} days</TableCell>
-                    <TableCell>
-                      {pkg.isActive ? (
-                        <Typography variant="body2" sx={{ color: 'success.main', fontWeight: 'bold' }}>
-                          Active
-                        </Typography>
-                      ) : (
-                        <Typography variant="body2" sx={{ color: 'error.main', fontWeight: 'bold' }}>
-                          Inactive
-                        </Typography>
-                      )}
-                    </TableCell>
-                    <TableCell>
-                      <IconButton 
-                        size="small" 
-                        onClick={() => handleOpenDialog(pkg)}
-                      >
-                        <Edit />
-                      </IconButton>
-                      <IconButton 
-                        size="small" 
-                        onClick={() => handleDelete(pkg.id)}
-                        sx={{ color: 'error.main' }}
-                      >
-                        <Delete />
-                      </IconButton>
-                      <Switch
-                        checked={pkg.isActive}
-                        onChange={() => handleToggleStatus(pkg.id)}
-                        color="primary"
-                      />
-                    </TableCell>
+          {loading && packages.length === 0 ? (
+            <Box display="flex" justifyContent="center" my={4}>
+              <CircularProgress />
+            </Box>
+          ) : (
+            <TableContainer component={Paper}>
+              <Table sx={{ minWidth: 650 }} aria-label="packages table">
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Name</TableCell>
+                    <TableCell>Description</TableCell>
+                    <TableCell>Price</TableCell>
+                    <TableCell>Credits</TableCell>
+                    <TableCell>Features</TableCell>
+                    <TableCell>Payout Settings</TableCell>
+                    <TableCell>Status</TableCell>
+                    <TableCell>Actions</TableCell>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
+                </TableHead>
+                <TableBody>
+                  {packages.map((pkg) => (
+                    <TableRow
+                      key={pkg._id}
+                      sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                    >
+                      <TableCell component="th" scope="row">
+                        {pkg.name}
+                      </TableCell>
+                      <TableCell>{pkg.description}</TableCell>
+                      <TableCell>₹{pkg.price}</TableCell>
+                      <TableCell>{pkg.creditsIncluded}</TableCell>
+                      <TableCell>
+                        {pkg.features && pkg.features.length > 0 ? (
+                          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                            {pkg.features.map((feature, index) => (
+                              <Chip key={index} label={feature} size="small" />
+                            ))}
+                          </Box>
+                        ) : (
+                          <Typography variant="body2" color="textSecondary">
+                            No features
+                          </Typography>
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        {pkg.businessPayoutType === 'percentage' ? (
+                          <Typography variant="body2">
+                            {pkg.businessPayoutPercentage}% of package price
+                          </Typography>
+                        ) : (
+                          <Typography variant="body2">
+                            ₹{pkg.businessPayoutFixedAmount} fixed
+                          </Typography>
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        {pkg.isActive ? (
+                          <Typography variant="body2" sx={{ color: 'success.main', fontWeight: 'bold' }}>
+                            Active
+                          </Typography>
+                        ) : (
+                          <Typography variant="body2" sx={{ color: 'error.main', fontWeight: 'bold' }}>
+                            Inactive
+                          </Typography>
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        <IconButton 
+                          size="small" 
+                          onClick={() => handleOpenDialog(pkg)}
+                        >
+                          <Edit />
+                        </IconButton>
+                        <IconButton 
+                          size="small" 
+                          onClick={() => handleDelete(pkg._id)}
+                          sx={{ color: 'error.main' }}
+                        >
+                          <Delete />
+                        </IconButton>
+                        <Switch
+                          checked={pkg.isActive}
+                          onChange={() => handleToggleStatus(pkg._id, pkg.isActive)}
+                          color="primary"
+                        />
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          )}
         </CardContent>
       </Card>
       
@@ -314,19 +382,82 @@ const ManagePackages = () => {
                   onChange={handleInputChange}
                 />
               </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  label="Add Feature"
+                  value={featureInput}
+                  onChange={(e) => setFeatureInput(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      e.preventDefault();
+                      handleAddFeature();
+                    }
+                  }}
+                  helperText="Press Enter to add a feature"
+                />
+                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mt: 1 }}>
+                  {formData.features.map((feature, index) => (
+                    <Chip
+                      key={index}
+                      label={feature}
+                      onDelete={() => handleRemoveFeature(feature)}
+                      color="primary"
+                      variant="outlined"
+                    />
+                  ))}
+                </Box>
+              </Grid>
+              
+              {/* Business Payout Settings */}
+              <Grid item xs={12}>
+                <Typography variant="h6" gutterBottom sx={{ mt: 2 }}>
+                  Business Payout Settings
+                </Typography>
+              </Grid>
+              
               <Grid item xs={12} sm={6}>
                 <TextField
-                  required
+                  select
                   fullWidth
-                  label="Validity (days)"
-                  name="validityDays"
-                  type="number"
-                  value={formData.validityDays}
+                  label="Payout Type"
+                  name="businessPayoutType"
+                  value={formData.businessPayoutType}
                   onChange={handleInputChange}
-                />
+                >
+                  <MenuItem value="percentage">Percentage</MenuItem>
+                  <MenuItem value="fixed">Fixed Amount</MenuItem>
+                </TextField>
               </Grid>
-              <Grid item xs={12} sm={6}>
-                <Box sx={{ display: 'flex', alignItems: 'center', height: '100%' }}>
+              
+              {formData.businessPayoutType === 'percentage' ? (
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    fullWidth
+                    label="Payout Percentage (%)"
+                    name="businessPayoutPercentage"
+                    type="number"
+                    value={formData.businessPayoutPercentage}
+                    onChange={handleInputChange}
+                    InputProps={{ inputProps: { min: 0, max: 100 } }}
+                  />
+                </Grid>
+              ) : (
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    fullWidth
+                    label="Fixed Payout Amount (₹)"
+                    name="businessPayoutFixedAmount"
+                    type="number"
+                    value={formData.businessPayoutFixedAmount}
+                    onChange={handleInputChange}
+                    InputProps={{ inputProps: { min: 0 } }}
+                  />
+                </Grid>
+              )}
+              
+              <Grid item xs={12}>
+                <Box sx={{ display: 'flex', alignItems: 'center' }}>
                   <Switch
                     checked={formData.isActive}
                     onChange={handleInputChange}

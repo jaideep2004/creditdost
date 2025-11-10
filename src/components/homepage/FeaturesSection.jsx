@@ -59,7 +59,7 @@ const FeaturesSection = () => {
       style={{
         position: "relative",
         background: "#f5f7fa",
-        padding: "80px 20px",
+        padding: "56px 20px",
         overflow: "hidden",
       }}
     >
@@ -103,7 +103,7 @@ const FeaturesSection = () => {
           transform: translateY(-8px);
           box-shadow: 0 12px 40px rgba(0,0,0,0.15);
         }
-        .nav-button {
+        .nav-buttonz {
           background: #d4e8f0;
           width: 56px;
           height: 56px;
@@ -117,11 +117,11 @@ const FeaturesSection = () => {
           font-size: 24px;
           color: #007ba7;
         }
-        .nav-button:hover:not(:disabled) {
+        .nav-buttonz:hover:not(:disabled) {
           background: #b8dae8;
           transform: scale(1.05);
         }
-        .nav-button:disabled {
+        .nav-buttonz:disabled {
           opacity: 0.5;
           cursor: not-allowed;
         }
@@ -194,11 +194,11 @@ const FeaturesSection = () => {
             </div>
             <h2
               style={{
-                fontSize: "clamp(2rem, 5vw, 3rem)",
+                fontSize: "2.5rem",
                 fontWeight: 800,
                 color: "#1a2332",
                 lineHeight: 1.2,
-                maxWidth: "500px",
+                
                 margin: 0,
               }}
             >
@@ -206,18 +206,18 @@ const FeaturesSection = () => {
             </h2>
           </div>
 
-          <div style={{ display: "flex", gap: "16px" }}>
+          <div style={{ display: "flex !important", gap: "16px" }}>
             <button
               onClick={handlePrevious}
               disabled={isAnimating}
-              className="nav-button"
+              className="nav-buttonz"
             >
               ←
             </button>
             <button
               onClick={handleNext}
               disabled={isAnimating}
-              className="nav-button"
+              className="nav-buttonz"
             >
               →
             </button>
