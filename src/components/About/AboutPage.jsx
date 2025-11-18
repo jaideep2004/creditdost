@@ -9,6 +9,9 @@ import Header from '../homepage/Header';
 import HomePageFooter from '../homepage/HomePageFooter';
 import FAQSection from '../homepage/FAQSection';
 import TestimonialSection from '../homepage/TestimonialsSection';
+import WhoWeAreSection from './WhoWeareSection';
+import WhatWeDoSection from './WhatWeDoSection';
+import WhyChooseUsSection from './WhyChooseUsSection';
 
 const AboutPage = () => {
   return (
@@ -16,10 +19,13 @@ const AboutPage = () => {
       <Header />
       <HeroSection />
       <HistorySection />
-      <FAQSection/>
+      <WhoWeAreSection />
+      <WhatWeDoSection/>
       <MissionSection />
+      <WhyChooseUsSection/>
+      <FAQSection/>
       <TestimonialSection/>
-      <TeamSection />
+      {/* <TeamSection /> */}
      
       <HomePageFooter/>
     </Box>

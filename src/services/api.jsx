@@ -94,6 +94,10 @@ export const adminAPI = {
   updateFranchise: (id, data) => api.put(`/franchises/${id}`, data),
   activateFranchise: (id) => api.put(`/franchises/${id}/activate`),
   deactivateFranchise: (id) => api.put(`/franchises/${id}/deactivate`),
+  createFranchiseUser: (data) => api.post('/admin/franchises', data),
+  approveRegistration: (id, data) => api.put(`/admin/franchises/${id}/approve-registration`, data),
+  rejectRegistration: (id, rejectionReason) => api.put(`/admin/franchises/${id}/reject-registration`, { rejectionReason }),
+  deleteFranchise: (id) => api.delete(`/admin/franchises/${id}`),
   // Credit recharge functions
   getAllFranchisesWithCredits: () => api.get('/admin/franchises/credits'),
   rechargeFranchiseCredits: (data) => api.post('/admin/franchises/recharge', data),
@@ -125,6 +129,14 @@ export const adminAPI = {
   getLeadById: (id) => api.get(`/admin/leads/${id}`),
   createLead: (leadData) => api.post('/admin/leads', leadData),
   updateLead: (id, data) => api.put(`/admin/leads/${id}`, data),
+  bulkUploadLeads: (formData) => {
+    const config = {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    };
+    return api.post('/admin/leads/bulk-upload', formData, config);
+  },
   // Business forms
   getAllBusinessForms: () => api.get('/business/all'),
   // Surepass settings
@@ -141,6 +153,23 @@ export const adminAPI = {
   createBlog: (blogData) => api.post('/blogs/admin', blogData),
   updateBlog: (id, blogData) => api.put(`/blogs/admin/${id}`, blogData),
   deleteBlog: (id) => api.delete(`/blogs/admin/${id}`),
+};
+
+// Credit API functions
+export const creditAPI = {
+  checkCreditScorePublic: (data) => api.post('/credit/check-public', data),
+  submitCreditRepairEnquiry: (data) => api.post('/credit/repair-enquiry', data),
+};
+
+// EMI API functions
+export const emiAPI = {
+  calculateEMI: (data) => api.post('/emi/calculate', data),
+  generateEmiSchedule: (data) => api.post('/emi/schedule', data),
+};
+
+// IFSC API functions
+export const ifscAPI = {
+  getBankDetails: (ifscCode) => axios.get(`https://ifsc.razorpay.com/${ifscCode}`),
 };
 
 export default api;

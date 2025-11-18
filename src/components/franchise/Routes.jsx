@@ -16,6 +16,7 @@ import AIAnalysis from './AIAnalysis';
 import Certificate from './Certificate';
 import DigitalAgreement from './DigitalAgreement';
 import Payouts from './Payouts';
+import RelationshipManagerInfo from './RelationshipManagerInfo';
 
 const FranchiseRoutes = () => {
   return (
@@ -36,6 +37,7 @@ const FranchiseRoutes = () => {
         <Route path="certificate" element={<Certificate />} />
         <Route path="agreement" element={<DigitalAgreement />} />
         <Route path="payouts" element={<Payouts />} />
+        <Route path="relationship-manager" element={<RelationshipManagerInfo />} />
       </Route>
     </Routes>
   );

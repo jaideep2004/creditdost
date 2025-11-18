@@ -27,6 +27,7 @@ import {
   InputLabel,
   Chip,
   TextareaAutosize,
+  Divider,
 } from '@mui/material';
 import { 
   Search, 
@@ -37,7 +38,8 @@ import {
   Cancel, 
   Pending, 
   AssignmentInd,
-  Add as AddIcon
+  Add as AddIcon,
+  Upload as UploadIcon
 } from '@mui/icons-material';
 import { adminAPI } from '../../services/api';
 
@@ -50,9 +52,12 @@ const ManageLeads = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [assignDialogOpen, setAssignDialogOpen] = useState(false);
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
+  const [bulkUploadDialogOpen, setBulkUploadDialogOpen] = useState(false);
   const [selectedLead, setSelectedLead] = useState(null);
   const [selectedFranchise, setSelectedFranchise] = useState('');
   const [filteredLeads, setFilteredLeads] = useState([]);
+  const [csvFile, setCsvFile] = useState(null);
+  const [uploadProgress, setUploadProgress] = useState(0);
   const [newLead, setNewLead] = useState({
     name: '',
     email: '',
@@ -272,6 +277,65 @@ const ManageLeads = () => {
     }
   };
 
+  // Bulk upload functions
+  const handleOpenBulkUploadDialog = () => {
+    setBulkUploadDialogOpen(true);
+  };
+
+  const handleCloseBulkUploadDialog = () => {
+    setBulkUploadDialogOpen(false);
+    setCsvFile(null);
+    setUploadProgress(0);
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      // Check if file is CSV
+      if (file.type !== 'text/csv' && !file.name.endsWith('.csv')) {
+        setError('Please upload a valid CSV file.');
+        return;
+      }
+      setCsvFile(file);
+      setError('');
+    }
+  };
+
+  const handleBulkUploadSubmit = async () => {
+    if (!csvFile) {
+      setError('Please select a CSV file to upload.');
+      return;
+    }
+
+    setLoading(true);
+    setError('');
+    setSuccess('');
+    setUploadProgress(0);
+
+    try {
+      const formData = new FormData();
+      formData.append('csvFile', csvFile);
+
+      const response = await adminAPI.bulkUploadLeads(formData);
+      
+      if (response.data.errors && response.data.errors.length > 0) {
+        setError(`Upload completed with ${response.data.errors.length} errors. Check console for details.`);
+        console.error('Upload errors:', response.data.errors);
+      } else {
+        setSuccess(`Successfully uploaded ${response.data.successCount} leads!`);
+      }
+      
+      // Refresh leads list
+      fetchLeads();
+      handleCloseBulkUploadDialog();
+    } catch (err) {
+      setError('Failed to upload leads. Please try again.');
+      console.error('Error uploading leads:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <Box>
       <Typography variant="h4" gutterBottom>
@@ -319,6 +383,14 @@ const ManageLeads = () => {
               </Grid>
             </Box>
             <Box>
+              <Button
+                variant="contained"
+                startIcon={<UploadIcon />}
+                onClick={handleOpenBulkUploadDialog}
+                sx={{ mr: 1 }}
+              >
+                Bulk Upload
+              </Button>
               <Button
                 variant="contained"
                 startIcon={<AddIcon />}
@@ -540,6 +612,77 @@ const ManageLeads = () => {
             disabled={!selectedFranchise || loading}
           >
             {loading ? <CircularProgress size={24} /> : 'Assign Lead'}
+          </Button>
+        </DialogActions>
+      </Dialog>
+      
+      {/* Bulk Upload Dialog */}
+      <Dialog open={bulkUploadDialogOpen} onClose={handleCloseBulkUploadDialog} maxWidth="sm" fullWidth>
+        <DialogTitle>Bulk Upload Leads</DialogTitle>
+        <DialogContent>
+          <Typography sx={{ mb: 2 }}>
+            Upload a CSV file containing lead information.
+          </Typography>
+          
+          <Divider sx={{ my: 2 }} />
+          
+          <Typography variant="h6" gutterBottom>
+            CSV Format Requirements:
+          </Typography>
+          <Typography variant="body2" sx={{ mb: 1 }}>
+            The CSV file should contain the following columns:
+          </Typography>
+          <ul>
+            <li><strong>name</strong> (required)</li>
+            <li><strong>phone</strong> (required)</li>
+            <li><strong>email</strong> (optional)</li>
+            <li><strong>address</strong> (optional)</li>
+            <li><strong>city</strong> (optional)</li>
+            <li><strong>state</strong> (optional)</li>
+            <li><strong>pincode</strong> (optional)</li>
+            <li><strong>creditScore</strong> (optional)</li>
+            <li><strong>creditReportUrl</strong> (optional)</li>
+          </ul>
+          
+          <Typography variant="body2" sx={{ mt: 2, mb: 1 }}>
+            <a 
+              href="/templates/leads-template.csv" 
+              download="leads-template.csv"
+              style={{ color: '#1976d2', textDecoration: 'none' }}
+            >
+              Download CSV Template
+            </a>
+          </Typography>
+          
+          <Divider sx={{ my: 2 }} />
+          
+          <input
+            type="file"
+            accept=".csv"
+            onChange={handleFileChange}
+            style={{ marginBottom: '16px' }}
+          />
+          
+          {csvFile && (
+            <Typography variant="body2" sx={{ mb: 2 }}>
+              Selected file: {csvFile.name}
+            </Typography>
+          )}
+          
+          {uploadProgress > 0 && (
+            <Typography variant="body2" sx={{ mb: 2 }}>
+              Upload progress: {uploadProgress}%
+            </Typography>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseBulkUploadDialog}>Cancel</Button>
+          <Button 
+            onClick={handleBulkUploadSubmit} 
+            variant="contained"
+            disabled={loading || !csvFile}
+          >
+            {loading ? <CircularProgress size={24} /> : 'Upload Leads'}
           </Button>
         </DialogActions>
       </Dialog>

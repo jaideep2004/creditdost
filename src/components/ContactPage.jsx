@@ -3,6 +3,7 @@ import { Box, Container, Grid, Typography, TextField, Button, Paper, IconButton 
 import { Phone, Email, LocationOn, Facebook, Twitter, LinkedIn, YouTube } from '@mui/icons-material';
 import Header from './homepage/Header';
 import HomePageFooter from './homepage/HomePageFooter';
+import api from '../services/api';
 
 const ContactPage = () => {
   const [formData, setFormData] = useState({
@@ -11,6 +12,7 @@ const ContactPage = () => {
     subject: '',
     message: ''
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = (e) => {
     setFormData({
@@ -19,12 +21,23 @@ const ContactPage = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle form submission
-    console.log('Form submitted:', formData);
-    // Reset form
-    setFormData({ name: '', email: '', subject: '', message: '' });
+    setIsSubmitting(true);
+    
+    try {
+      // Submit to backend API
+      await api.post('/forms/contact', formData);
+      // Reset form
+      setFormData({ name: '', email: '', subject: '', message: '' });
+      // Show success message
+      alert('Thank you for your message. We will get back to you soon!');
+    } catch (error) {
+      console.error('Form submission error:', error);
+      alert('Failed to submit your message. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const contactInfo = [
@@ -248,6 +261,7 @@ const ContactPage = () => {
                     <Button
                       type="submit"
                       variant="contained"
+                      disabled={isSubmitting}
                       sx={{
                         background: 'linear-gradient(135deg, #0891b2 0%, #06b6d4 100%)',
                         color: 'white',
@@ -262,10 +276,14 @@ const ContactPage = () => {
                           transform: 'translateY(-2px)',
                           boxShadow: '0 6px 25px rgba(8, 145, 178, 0.4)',
                           background: 'linear-gradient(135deg, #0e7490 0%, #0891b2 100%)'
+                        },
+                        '&.Mui-disabled': {
+                          background: 'linear-gradient(135deg, #94a3b8 0%, #cbd5e1 100%)',
+                          color: 'white'
                         }
                       }}
                     >
-                      Send Message
+                      {isSubmitting ? 'Sending...' : 'Send Message'}
                     </Button>
                   </Grid>
                 </Grid>

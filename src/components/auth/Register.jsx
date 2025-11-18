@@ -255,14 +255,9 @@ const Register = () => {
       // Show success toast
       setToast({
         open: true,
-        message: "Registration successful! Redirecting to packages page...",
+        message: "Registration successful! Please check your email for further instructions.",
         severity: "success"
       });
-      
-      // Redirect to packages page after a short delay
-      setTimeout(() => {
-        navigate("/packages"); // Redirect to packages page
-      }, 3000);
     } catch (err) {
       setError(
         err.response?.data?.message || "Registration failed. Please try again."
@@ -343,8 +338,7 @@ const Register = () => {
 
                 {success && (
                   <Alert severity="success" sx={{ mb: 2, borderRadius: 2 }}>
-                    Registration successful! Please check your email for further
-                    instructions. You will be redirected to the packages page shortly.
+                    Registration successful! Please check your email for further instructions.
                   </Alert>
                 )}
 

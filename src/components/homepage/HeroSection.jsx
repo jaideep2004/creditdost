@@ -50,6 +50,37 @@ const HeroBackground = styled(Box)(({ theme }) => ({
     "0%, 100%": { transform: "translateY(0px)" },
     "50%": { transform: "translateY(-30px)" },
   },
+  // Adding new unique animations
+  "@keyframes rotatePulse": {
+    "0%": { transform: "rotate(0deg) scale(1)", opacity: 0.4 },
+    "50%": { transform: "rotate(180deg) scale(1.05)", opacity: 0.8 },
+    "100%": { transform: "rotate(360deg) scale(1)", opacity: 0.4 },
+  },
+  "@keyframes slideAndGlow": {
+    "0%": { 
+      transform: "translate(0, 0)",
+      boxShadow: "0 0 0 rgba(6, 182, 212, 0.4)",
+    },
+    "50%": { 
+      transform: "translate(10px, 10px)",
+      boxShadow: "0 0 20px rgba(6, 182, 212, 0.8)",
+    },
+    "100%": { 
+      transform: "translate(0, 0)",
+      boxShadow: "0 0 0 rgba(6, 182, 212, 0.4)",
+    },
+  },
+  "@keyframes gradientShift": {
+    "0%": { 
+      backgroundPosition: "0% 50%",
+    },
+    "50%": { 
+      backgroundPosition: "100% 50%",
+    },
+    "100%": { 
+      backgroundPosition: "0% 50%",
+    },
+  },
 }));
 
 const FloatingShape = styled(Box)(({ delay = 0 }) => ({
@@ -72,6 +103,9 @@ const StyledButton = styled(Button)(({ theme }) => ({
   fontSize: "1rem",
   textTransform: "none",
   transition: "all 0.3s ease",
+  background: "linear-gradient(90deg, #0ea5e9, #06b6d4, #0ea5e9)",
+  backgroundSize: "200% 200%",
+  animation: "gradientShift 3s ease infinite", // Added gradient animation
   "&:hover": {
     transform: "translateY(-2px)",
     boxShadow: "0 8px 20px rgba(14, 165, 233, 0.4)",
@@ -304,6 +338,7 @@ const HeroSection = () => {
                     border: "2px solid rgba(6, 182, 212, 0.4)",
                     borderRadius: "50%",
                     zIndex: 0,
+                    animation: "rotatePulse 8s linear infinite", // Changed to rotatePulse animation
                   }}
                 />
 
@@ -318,6 +353,7 @@ const HeroSection = () => {
                     border: "2px solid rgba(6, 182, 212, 0.4)",
                     borderRadius: "50%",
                     zIndex: 0,
+                    animation: "slideAndGlow 4s ease-in-out infinite", // Changed to slideAndGlow animation
                   }}
                 />
 

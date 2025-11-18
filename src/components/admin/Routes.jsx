@@ -12,7 +12,9 @@ import SurepassSettings from './SurepassSettings';
 import RechargeCredits from './RechargeCredits';
 import BusinessForms from './BusinessForms';
 import ManageBlogs from './ManageBlogs';
+import ManageRelationshipManagers from './ManageRelationshipManagers';
 import AdminDashboardHome from './AdminDashboardHome'; // Import the AdminDashboardHome component
+import GoogleSheetsSettings from './GoogleSheetsSettings';
 
 const AdminRoutes = () => {
   return (
@@ -30,6 +32,8 @@ const AdminRoutes = () => {
         <Route path="recharge" element={<RechargeCredits />} />
         <Route path="business-forms" element={<BusinessForms />} />
         <Route path="blogs" element={<ManageBlogs />} />
+        <Route path="rms" element={<ManageRelationshipManagers />} />
+        <Route path="google-sheets" element={<GoogleSheetsSettings />} />
       </Route>
     </Routes>
   );

@@ -41,6 +41,7 @@ import {
   AutoGraph as AutoGraphIcon,
   BusinessCenter as BusinessCenterIcon,
   ChevronLeft as ChevronLeftIcon,
+  WhatsApp as WhatsAppIcon,
 } from "@mui/icons-material";
 import { useAuth } from "../../hooks/useAuth.jsx";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -272,6 +273,11 @@ const FranchiseDashboard = () => {
       icon: <AutoGraphIcon />,
       path: "/franchise/ai-analysis",
     },
+    {
+      text: "Contact RM",
+      icon: <PersonIcon />,
+      path: "/franchise/relationship-manager",
+    },
   ];
 
   const isActive = (path) => {
@@ -484,6 +490,32 @@ const FranchiseDashboard = () => {
         }}
       >
         <Outlet />
+        {/* Floating WhatsApp Button */}
+        <Box
+          sx={{
+            position: 'fixed',
+            bottom: 20,
+            right: 20,
+            zIndex: 1000,
+          }}
+        >
+          <Tooltip title="Join our WhatsApp group for support">
+            <IconButton
+              sx={{
+                backgroundColor: '#25D366',
+                color: 'white',
+                width: 60,
+                height: 60,
+                '&:hover': {
+                  backgroundColor: '#128C7E',
+                },
+              }}
+              onClick={() => window.open(import.meta.env.VITE_WHATSAPP_GROUP_LINK, '_blank')}
+            >
+              <WhatsAppIcon sx={{ fontSize: 30 }} />
+            </IconButton>
+          </Tooltip>
+        </Box>
       </Box>
     </Box>
   );

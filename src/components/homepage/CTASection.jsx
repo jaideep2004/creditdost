@@ -1,57 +1,41 @@
 import React, { useState, useEffect } from 'react';
-
-
-const blogs = [
-  {
-    id: 1,
-    image: 'https://images.unsplash.com/photo-1573164713714-d95e436ab8d6?w=800&h=600&fit=crop',
-    date: '28',
-    month: 'June',
-    author: 'admin',
-    comments: 13,
-    title: 'Leading the way in business transformation',
-  },
-  {
-    id: 2,
-    image: 'https://images.unsplash.com/photo-1556761175-b413da4baf72?w=800&h=600&fit=crop',
-    date: '28',
-    month: 'June',
-    author: 'admin',
-    comments: 17,
-    title: 'Innovative solutions for a better future',
-  },
-  {
-    id: 3,
-    image: 'https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&h=600&fit=crop',
-    date: '28',
-    month: 'June',
-    author: 'admin',
-    comments: 25,
-    title: 'Unleashing the power of your business',
-  },
-  {
-    id: 4,
-    image: 'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=800&h=600&fit=crop',
-    date: '25',
-    month: 'June',
-    author: 'admin',
-    comments: 18,
-    title: 'Strategic planning for success',
-  },
-  {
-    id: 5,
-    image: 'https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=800&h=600&fit=crop',
-    date: '22',
-    month: 'June',
-    author: 'admin',
-    comments: 21,
-    title: 'Building stronger partnerships',
-  },
-];
+import { useNavigate } from 'react-router-dom';
+import { blogAPI } from '../../services/api';
 
 const CTASection = () => {
+  const [blogs, setBlogs] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [cardsPerView, setCardsPerView] = useState(3);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchBlogs = async () => {
+      try {
+        setLoading(true);
+        const response = await blogAPI.getAllBlogs({ limit: 5 });
+        const formattedBlogs = response.data.blogs.map(blog => ({
+          id: blog._id,
+          slug: blog.slug,
+          image: blog.image || 'https://images.unsplash.com/photo-1573164713714-d95e436ab8d6?w=800&h=600&fit=crop',
+          date: new Date(blog.createdAt).getDate(),
+          month: new Date(blog.createdAt).toLocaleString('default', { month: 'short' }),
+          author: blog.author?.name || 'admin',
+          comments: blog.comments || 0,
+          title: blog.title,
+        }));
+        setBlogs(formattedBlogs);
+      } catch (err) {
+        setError('Failed to fetch blogs');
+        console.error('Error fetching blogs:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchBlogs();
+  }, []);
 
   useEffect(() => {
     const handleResize = () => {
@@ -77,7 +61,7 @@ const CTASection = () => {
     setCurrentIndex((prev) => Math.min(blogs.length - cardsPerView, prev + 1));
   };
 
-  const translateX = -(currentIndex * (100 / cardsPerView + 1.6));
+  const translateX = blogs.length > 0 ? -(currentIndex * (100 / cardsPerView)) : 0;
 
   return (
     <section className="blogs-section" style={{padding: '56px 0'}}>
@@ -92,75 +76,85 @@ const CTASection = () => {
           <h2 className="section-title">Building better businesses together</h2>
         </div>
 
-        <div className="slider-container" style={{maxWidth: '1400px'}}>
-          <button
-            className={`nav-button nav-prev ${currentIndex === 0 ? 'disabled' : ''}`}
-            onClick={handlePrev}
-            disabled={currentIndex === 0}
-          >
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <polyline points="15 18 9 12 15 6"></polyline>
-            </svg>
-          </button>
-
-          <div className="blog-cards-wrapper" style={{overflowX: 'hidden', overflowY: 'visible !important'}}>
-            <div
-              className="blog-cards-container"
-              style={{
-                transform: `translateX(${translateX}%)`,
-              }}
-            >
-              {blogs.map((blog) => (
-                <article key={blog.id} className="blog-card">
-                  <div className="blog-image-wrapper">
-                    <img src={blog.image} alt={blog.title} className="blog-image" />
-                    <div className="date-badge">
-                      <div className="date-number">{blog.date}</div>
-                      <div className="date-month">{blog.month}</div>
-                    </div>
-                  </div>
-                  <div className="blog-content">
-                    <div className="meta-info">
-                      <div className="meta-item">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                          <circle cx="12" cy="7" r="4"></circle>
-                        </svg>
-                        <span>By {blog.author}</span>
-                      </div>
-                      <div className="meta-item">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-                        </svg>
-                        <span>Comments ({blog.comments})</span>
-                      </div>
-                    </div>
-                    <h3 className="blog-title">{blog.title}</h3>
-                    <div className="read-more">
-                      <span>Read More</span>
-                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                        <line x1="5" y1="12" x2="19" y2="12"></line>
-                        <polyline points="12 5 19 12 12 19"></polyline>
-                      </svg>
-                    </div>
-                  </div>
-                </article>
-              ))}
-            </div>
+        {loading ? (
+          <div style={{ textAlign: 'center', padding: '40px' }}>
+            <p>Loading blogs...</p>
           </div>
+        ) : error ? (
+          <div style={{ textAlign: 'center', padding: '40px' }}>
+            <p>{error}</p>
+          </div>
+        ) : (
+          <div className="slider-container" style={{maxWidth: '1400px'}}>
+            <button
+              className={`nav-button nav-prev ${currentIndex === 0 ? 'disabled' : ''}`}
+              onClick={handlePrev}
+              disabled={currentIndex === 0 || blogs.length === 0}
+            >
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <polyline points="15 18 9 12 15 6"></polyline>
+              </svg>
+            </button>
 
-          <button
-            className={`nav-button nav-next ${
-              currentIndex >= blogs.length - cardsPerView ? 'disabled' : ''
-            }`}
-            onClick={handleNext}
-            disabled={currentIndex >= blogs.length - cardsPerView}
-          >
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <polyline points="9 18 15 12 9 6"></polyline>
-            </svg>
-          </button>
-        </div>
+            <div className="blog-cards-wrapper" style={{overflowX: 'hidden', overflowY: 'visible !important'}}>
+              <div
+                className="blog-cards-container"
+                style={{
+                  transform: `translateX(${translateX}%)`,
+                }}
+              >
+                {blogs.map((blog) => (
+                  <article key={blog.id} className="blog-card" onClick={() => navigate(`/blog/${blog.slug || blog.id}`)}>
+                    <div className="blog-image-wrapper">
+                      <img src={blog.image} alt={blog.title} className="blog-image" />
+                      <div className="date-badge">
+                        <div className="date-number">{blog.date}</div>
+                        <div className="date-month">{blog.month}</div>
+                      </div>
+                    </div>
+                    <div className="blog-content">
+                      <div className="meta-info">
+                        <div className="meta-item">
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                          </svg>
+                          <span>By {blog.author}</span>
+                        </div>
+                        <div className="meta-item">
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                          </svg>
+                          <span>Comments ({blog.comments})</span>
+                        </div>
+                      </div>
+                      <h3 className="blog-title">{blog.title}</h3>
+                      <div className="read-more">
+                        <span>Read More</span>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <line x1="5" y1="12" x2="19" y2="12"></line>
+                          <polyline points="12 5 19 12 12 19"></polyline>
+                        </svg>
+                      </div>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            </div>
+
+            <button
+              className={`nav-button nav-next ${
+                currentIndex >= blogs.length - cardsPerView ? 'disabled' : ''
+              }`}
+              onClick={handleNext}
+              disabled={currentIndex >= blogs.length - cardsPerView || blogs.length === 0}
+            >
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <polyline points="9 18 15 12 9 6"></polyline>
+              </svg>
+            </button>
+          </div>
+        )}
       </div>
 
       <style>{`
