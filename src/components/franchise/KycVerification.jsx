@@ -43,9 +43,21 @@ const KycVerification = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+    let formattedValue = value;
+    
+    // Format Aadhaar number (only digits, max 12 characters)
+    if (name === 'aadhaarNumber') {
+      formattedValue = value.replace(/\D/g, '').slice(0, 12);
+    }
+    
+    // Format PAN number (uppercase letters and digits, max 10 characters)
+    if (name === 'panNumber') {
+      formattedValue = value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 10);
+    }
+    
     setFormData({
       ...formData,
-      [name]: value,
+      [name]: formattedValue,
     });
   };
 
@@ -66,18 +78,60 @@ const KycVerification = () => {
   };
 
   const handleSubmit = async () => {
+    // Validate required fields before submission
+    if (!formData.aadhaarNumber || formData.aadhaarNumber.length !== 12) {
+      setError('Please enter a valid 12-digit Aadhaar number');
+      return;
+    }
+    
+    if (!formData.panNumber || formData.panNumber.length !== 10) {
+      setError('Please enter a valid 10-character PAN number');
+      return;
+    }
+    
+    // Additional PAN format validation (5 uppercase letters, 4 digits, 1 uppercase letter)
+    const panRegex = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/;
+    if (!panRegex.test(formData.panNumber)) {
+      setError('Please enter a valid PAN number format (e.g., ABCDE1234F)');
+      return;
+    }
+
     if (verificationMethod === 'digilocker') {
-      // For DigiLocker, we just show a success message since documents are fetched automatically
-      setSuccess('KYC documents submitted successfully via DigiLocker! Awaiting approval.');
-      setActiveStep(0);
-      setFormData({
-        aadhaarNumber: '',
-        panNumber: '',
-        aadhaarFront: null,
-        aadhaarBack: null,
-        panDocument: null,
-        businessRegistration: null,
-      });
+      // For DigiLocker, we need to create a KYC request record in the database
+      setLoading(true);
+      setError('');
+      setSuccess('');
+      
+      try {
+        // Create a minimal KYC request with just the numbers (no file uploads)
+        const kycData = {
+          aadhaarNumber: formData.aadhaarNumber,
+          panNumber: formData.panNumber
+        };
+        
+        const response = await franchiseAPI.submitKyc(kycData);
+        
+        setSuccess('KYC documents submitted successfully via DigiLocker! Awaiting approval.');
+        setActiveStep(0);
+        setFormData({
+          aadhaarNumber: '',
+          panNumber: '',
+          aadhaarFront: null,
+          aadhaarBack: null,
+          panDocument: null,
+          businessRegistration: null,
+        });
+      } catch (err) {
+        console.error('KYC submission error:', err);
+        const errorMessage = err.response?.data?.details 
+          ? Array.isArray(err.response.data.details) 
+            ? err.response.data.details.join(', ')
+            : err.response.data.details
+          : err.response?.data?.message || 'Failed to submit KYC documents. Please try again.';
+        setError(errorMessage);
+      } finally {
+        setLoading(false);
+      }
       return;
     }
 
@@ -120,7 +174,13 @@ const KycVerification = () => {
         businessRegistration: null,
       });
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to submit KYC documents. Please try again.');
+      console.error('KYC submission error:', err);
+      const errorMessage = err.response?.data?.details 
+        ? Array.isArray(err.response.data.details) 
+          ? err.response.data.details.join(', ')
+          : err.response.data.details
+        : err.response?.data?.message || 'Failed to submit KYC documents. Please try again.';
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -156,7 +216,7 @@ const KycVerification = () => {
         },
         onSuccess: function(data) {
           console.log('DigiLocker verification successful:', data);
-          setSuccess('DigiLocker verification completed successfully! Documents have been fetched.');
+          setSuccess('DigiLocker verification completed successfully! Documents have been fetched and KYC request has been submitted for approval.');
           setDigilockerLoading(false);
           // Move to the next step
           handleNext();
@@ -321,9 +381,20 @@ const KycVerification = () => {
               
               <Divider sx={{ my: 3 }} />
               
-              <Typography variant="body2" color="textSecondary">
-                Note: You'll need your DigiLocker account credentials to complete this process.
-              </Typography>
+              <Alert severity="info" sx={{ mt: 2 }}>
+                <Typography variant="subtitle2" gutterBottom>
+                  How DigiLocker Verification Works:
+                </Typography>
+                <Typography variant="body2" component="div">
+                  <ol>
+                    <li>Click the button above to initiate the DigiLocker process</li>
+                    <li>You'll be redirected to DigiLocker to log in with your credentials</li>
+                    <li>Select the required documents (Aadhaar, PAN) from your DigiLocker</li>
+                    <li>Once documents are fetched, your KYC request will be automatically submitted</li>
+                    <li>You'll see a confirmation message when the process is complete</li>
+                  </ol>
+                </Typography>
+              </Alert>
             </Box>
           );
         } else {
@@ -387,7 +458,17 @@ const KycVerification = () => {
             )}
             
             {verificationMethod === 'digilocker' && (
-              <Typography><strong>Status:</strong> DigiLocker verification completed</Typography>
+              <Box sx={{ mt: 2 }}>
+                <Alert severity="info">
+                  <Typography variant="body1">
+                    <strong>DigiLocker Verification Status:</strong> Completed
+                  </Typography>
+                  <Typography variant="body2" sx={{ mt: 1 }}>
+                    Your documents have been successfully fetched from DigiLocker. 
+                    Upon submission, your KYC request will be sent for approval.
+                  </Typography>
+                </Alert>
+              </Box>
             )}
           </Box>
         );

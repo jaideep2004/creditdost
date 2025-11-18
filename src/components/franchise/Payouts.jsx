@@ -76,7 +76,9 @@ const Payouts = () => {
                 <TableHead>
                   <TableRow>
                     <TableCell>Period</TableCell>
-                    <TableCell align="right">Amount (₹)</TableCell>
+                    <TableCell align="right">Gross Amount (₹)</TableCell>
+                    <TableCell align="right">TDS (2%)</TableCell>
+                    <TableCell align="right">Net Payout (₹)</TableCell>
                     <TableCell align="right">Credits Generated</TableCell>
                     <TableCell align="right">Referral Bonus</TableCell>
                     <TableCell>Status</TableCell>
@@ -91,7 +93,9 @@ const Payouts = () => {
                         <TableCell>
                           {new Date(payout.periodStart).toLocaleDateString()} - {new Date(payout.periodEnd).toLocaleDateString()}
                         </TableCell>
-                        <TableCell align="right">₹{payout.amount.toFixed(2)}</TableCell>
+                        <TableCell align="right">₹{payout.grossAmount?.toFixed(2) || (payout.amount + payout.referralBonus).toFixed(2)}</TableCell>
+                        <TableCell align="right">₹{payout.tdsAmount?.toFixed(2) || ((payout.amount + payout.referralBonus) * 0.02).toFixed(2)}</TableCell>
+                        <TableCell align="right">₹{payout.totalAmount.toFixed(2)}</TableCell>
                         <TableCell align="right">{payout.creditsGenerated}</TableCell>
                         <TableCell align="right">₹{payout.referralBonus.toFixed(2)}</TableCell>
                         <TableCell>
@@ -109,7 +113,7 @@ const Payouts = () => {
                     ))
                   ) : (
                     <TableRow>
-                      <TableCell colSpan={7} align="center">
+                      <TableCell colSpan={9} align="center">
                         No payouts found
                       </TableCell>
                     </TableRow>
@@ -127,7 +131,7 @@ const Payouts = () => {
             Payout Information
           </Typography>
           <Typography variant="body1" paragraph>
-            Payouts are calculated based on your package purchases and business activity during a specific period.
+            Payouts are calculated based on your customer package sales and business activity during a specific period.
           </Typography>
           <Typography variant="body1" paragraph>
             Our standard payout schedule is monthly, with payouts processed within 7 business days after the end of each month.
@@ -138,7 +142,7 @@ const Payouts = () => {
           <ul>
             <li>
               <Typography variant="body2">
-                20% commission on package purchases
+                Commission on package purchases based on package settings
               </Typography>
             </li>
             <li>
@@ -147,6 +151,9 @@ const Payouts = () => {
               </Typography>
             </li>
           </ul>
+          <Typography variant="body2" paragraph sx={{ mt: 2, fontStyle: 'italic' }}>
+            Note: Commission rates vary by package. Check each package's details for specific commission percentages.
+          </Typography>
         </CardContent>
       </Card>
     </Box>

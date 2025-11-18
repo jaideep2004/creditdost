@@ -50,6 +50,7 @@ const DashboardHome = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [purchasedPackage, setPurchasedPackage] = useState(null);
+  const [assignedPackages, setAssignedPackages] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -83,6 +84,11 @@ const DashboardHome = () => {
             credits: latestTransaction.packageId.creditsIncluded || 0,
             purchaseDate: latestTransaction.createdAt
           });
+        }
+        
+        // Set assigned packages from franchise data
+        if (dashboardResponse.data.franchise.assignedPackages && dashboardResponse.data.franchise.assignedPackages.length > 0) {
+          setAssignedPackages(dashboardResponse.data.franchise.assignedPackages);
         }
         
         setLoading(false);
@@ -199,6 +205,54 @@ const DashboardHome = () => {
                 </Typography>
                 <Typography variant="body2" sx={{ opacity: 0.9 }}>
                   Purchased on {new Date(purchasedPackage.purchaseDate).toLocaleDateString()}
+                </Typography>
+              </Box>
+              <Box>
+                <Chip 
+                  icon={<Star />} 
+                  label="Active" 
+                  color="success" 
+                  sx={{ 
+                    fontWeight: 'bold',
+                    height: 32,
+                    '& .MuiChip-icon': {
+                      color: 'white !important'
+                    }
+                  }} 
+                />
+              </Box>
+            </Box>
+          </CardContent>
+        </Card>
+      )}
+      
+      {/* Assigned Packages Section */}
+      {assignedPackages.length > 0 && !purchasedPackage && (
+        <Card sx={{ 
+          mb: 3, 
+          boxShadow: 3, 
+          borderRadius: 2,
+          background: 'linear-gradient(135deg, #03dac6 0%, #6200ea 100%)',
+          color: 'white'
+        }}>
+          <CardContent>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <Box>
+                <Typography variant="h5" component="div" fontWeight="bold" gutterBottom>
+                  Your Assigned Package{assignedPackages.length > 1 ? 's' : ''}
+                </Typography>
+                {assignedPackages.map((pkg, index) => (
+                  <Box key={pkg._id} sx={{ mb: index < assignedPackages.length - 1 ? 1 : 0 }}>
+                    <Typography variant="h4" component="div" fontWeight="bold" sx={{ mb: 1 }}>
+                      {pkg.name}
+                    </Typography>
+                    <Typography variant="body1" sx={{ mb: 1 }}>
+                      <strong>{pkg.creditsIncluded} Credits</strong> included
+                    </Typography>
+                  </Box>
+                ))}
+                <Typography variant="body2" sx={{ opacity: 0.9 }}>
+                  Assigned by admin
                 </Typography>
               </Box>
               <Box>

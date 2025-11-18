@@ -229,6 +229,16 @@ const AdminDashboard = () => {
       icon: <DescriptionIcon />,
       path: "/admin/blogs",
     },
+    {
+      text: "Manage RMs",
+      icon: <PeopleIcon />,
+      path: "/admin/rms",
+    },
+    {
+      text: "Google Sheets",
+      icon: <DescriptionIcon />,
+      path: "/admin/google-sheets",
+    },
   ];
 
   const isActive = (path) => {

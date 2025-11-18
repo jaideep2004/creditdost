@@ -45,6 +45,7 @@ const ManagePayouts = () => {
   const [selectedPayout, setSelectedPayout] = useState(null);
   const [status, setStatus] = useState('');
   const [remarks, setRemarks] = useState('');
+  const [calculatedPayout, setCalculatedPayout] = useState(null);
 
   // Fetch franchises and payouts on component mount
   useEffect(() => {
@@ -103,6 +104,8 @@ const ManagePayouts = () => {
       showNotification(response.data.message);
       // Refresh payouts list
       fetchAllPayouts();
+      // Set calculated payout data for display
+      setCalculatedPayout(response.data);
       // Reset form
       setSelectedFranchise('');
       setPeriodStart(null);
@@ -175,8 +178,18 @@ const ManagePayouts = () => {
   };
 
   const getFranchiseName = (franchiseId) => {
+    // Case 1: franchiseId is an object (populated franchise data)
+    if (franchiseId && typeof franchiseId === 'object' && franchiseId.businessName) {
+      return franchiseId.businessName;
+    }
+    
+    // Case 2: franchiseId is a string ID, try to find in franchises list
     const franchise = franchises.find(f => f._id === franchiseId);
-    return franchise ? franchise.businessName : 'Unknown Franchise';
+    if (franchise) {
+      return franchise.businessName;
+    }
+    
+    return 'Unknown Franchise';
   };
 
   return (
@@ -213,15 +226,18 @@ const ManagePayouts = () => {
               <Grid container spacing={2}>
                 <Grid item xs={12} md={4} style={{flex:"1"}}>
                   <FormControl fullWidth margin="normal">
-                    <InputLabel>Select Franchise</InputLabel>
+                    <InputLabel>Franchise</InputLabel>
                     <Select
                       value={selectedFranchise}
                       onChange={(e) => setSelectedFranchise(e.target.value)}
-                      label="Select Franchise"
+                      label="Franchise"
                     >
+                      <MenuItem value="">
+                        <em>Select Franchise</em>
+                      </MenuItem>
                       {franchises.map((franchise) => (
                         <MenuItem key={franchise._id} value={franchise._id}>
-                          {franchise.businessName}
+                          {franchise.businessName} ({franchise.ownerName})
                         </MenuItem>
                       ))}
                     </Select>
@@ -261,6 +277,34 @@ const ManagePayouts = () => {
               >
                 {calculating ? 'Calculating...' : 'Calculate Payout'}
               </Button>
+              
+              {/* TDS Information Panel */}
+              {calculatedPayout && (
+                <Card sx={{ mt: 3, boxShadow: 3, borderRadius: 2, bgcolor: '#f5f5f5' }}>
+                  <CardContent>
+                    <Typography variant="h6" gutterBottom>
+                      Payout Calculation Summary
+                    </Typography>
+                    <Grid container spacing={2}>
+                      <Grid item xs={12} md={4}>
+                        <Typography variant="body1">
+                          <strong>Gross Amount:</strong> ₹{calculatedPayout.grossAmount?.toFixed(2) || '0.00'}
+                        </Typography>
+                      </Grid>
+                      <Grid item xs={12} md={4}>
+                        <Typography variant="body1" color="error">
+                          <strong>TDS (2%):</strong> -₹{calculatedPayout.tdsDeducted?.toFixed(2) || '0.00'}
+                        </Typography>
+                      </Grid>
+                      <Grid item xs={12} md={4}>
+                        <Typography variant="body1" color="success.main">
+                          <strong>Net Payout:</strong> ₹{calculatedPayout.netAmount?.toFixed(2) || '0.00'}
+                        </Typography>
+                      </Grid>
+                    </Grid>
+                  </CardContent>
+                </Card>
+              )}
             </CardContent>
           </Card>
         </Grid>
@@ -284,7 +328,9 @@ const ManagePayouts = () => {
                       <TableRow>
                         <TableCell>Franchise</TableCell>
                         <TableCell>Period</TableCell>
-                        <TableCell align="right">Amount (₹)</TableCell>
+                        <TableCell align="right">Gross Amount (₹)</TableCell>
+                        <TableCell align="right">TDS (2%)</TableCell>
+                        <TableCell align="right">Net Payout (₹)</TableCell>
                         <TableCell align="right">Credits</TableCell>
                         <TableCell align="right">Referral Bonus</TableCell>
                         <TableCell>Status</TableCell>
@@ -299,7 +345,9 @@ const ManagePayouts = () => {
                             <TableCell>
                               {new Date(payout.periodStart).toLocaleDateString()} - {new Date(payout.periodEnd).toLocaleDateString()}
                             </TableCell>
-                            <TableCell align="right">₹{payout.amount.toFixed(2)}</TableCell>
+                            <TableCell align="right">₹{payout.grossAmount?.toFixed(2) || (payout.amount + payout.referralBonus).toFixed(2)}</TableCell>
+                            <TableCell align="right">₹{payout.tdsAmount?.toFixed(2) || ((payout.amount + payout.referralBonus) * 0.02).toFixed(2)}</TableCell>
+                            <TableCell align="right">₹{payout.totalAmount.toFixed(2)}</TableCell>
                             <TableCell align="right">{payout.creditsGenerated}</TableCell>
                             <TableCell align="right">₹{payout.referralBonus.toFixed(2)}</TableCell>
                             <TableCell>
@@ -322,7 +370,7 @@ const ManagePayouts = () => {
                         ))
                       ) : (
                         <TableRow>
-                          <TableCell colSpan={7} align="center">
+                          <TableCell colSpan={9} align="center">
                             No payouts found
                           </TableCell>
                         </TableRow>
@@ -347,10 +395,16 @@ const ManagePayouts = () => {
                   Franchise: {getFranchiseName(selectedPayout.franchiseId)}
                 </Typography>
                 <Typography variant="subtitle1">
-                  Amount: ₹{selectedPayout.amount.toFixed(2)}
+                  Period: {new Date(selectedPayout.periodStart).toLocaleDateString()} - {new Date(selectedPayout.periodEnd).toLocaleDateString()}
                 </Typography>
                 <Typography variant="subtitle1">
-                  Period: {new Date(selectedPayout.periodStart).toLocaleDateString()} - {new Date(selectedPayout.periodEnd).toLocaleDateString()}
+                  Gross Amount: ₹{selectedPayout.grossAmount?.toFixed(2) || (selectedPayout.amount + selectedPayout.referralBonus).toFixed(2)}
+                </Typography>
+                <Typography variant="subtitle1" color="error">
+                  TDS ({selectedPayout.tdsPercentage || 2}%): -₹{selectedPayout.tdsAmount?.toFixed(2) || ((selectedPayout.amount + selectedPayout.referralBonus) * 0.02).toFixed(2)}
+                </Typography>
+                <Typography variant="subtitle1" color="success.main">
+                  Net Payout: ₹{selectedPayout.totalAmount.toFixed(2)}
                 </Typography>
               </Grid>
               

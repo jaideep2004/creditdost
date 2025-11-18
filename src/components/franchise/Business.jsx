@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Typography,
@@ -26,33 +26,33 @@ import {
   Step,
   StepLabel,
   StepContent,
-} from '@mui/material';
-import { Check as CheckIcon } from '@mui/icons-material';
-import { franchiseAPI } from '../../services/api';
-import axios from 'axios';
+} from "@mui/material";
+import { Check as CheckIcon } from "@mui/icons-material";
+import { franchiseAPI } from "../../services/api";
+import axios from "axios";
 
 const Business = () => {
   const [customerPackages, setCustomerPackages] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
   const [activeStep, setActiveStep] = useState(0); // For step navigation
   const [formData, setFormData] = useState({
-    customerName: '',
-    customerEmail: '',
-    customerPhone: '',
-    panNumber: '',
-    aadharNumber: '',
-    pincode: '',
-    state: '',
-    language: '',
-    occupation: '',
-    monthlyIncome: '',
-    fullAddress: '',
+    customerName: "",
+    customerEmail: "",
+    customerPhone: "",
+    panNumber: "",
+    aadharNumber: "",
+    pincode: "",
+    state: "",
+    language: "",
+    occupation: "",
+    monthlyIncome: "",
+    fullAddress: "",
   });
   const [selectedPackage, setSelectedPackage] = useState(null);
-  const [razorpayOrderId, setRazorpayOrderId] = useState('');
-  const [businessFormId, setBusinessFormId] = useState('');
+  const [razorpayOrderId, setRazorpayOrderId] = useState("");
+  const [businessFormId, setBusinessFormId] = useState("");
 
   // Fetch customer packages
   useEffect(() => {
@@ -62,12 +62,14 @@ const Business = () => {
   const fetchCustomerPackages = async () => {
     try {
       setLoading(true);
-      setError('');
-      const response = await axios.get('http://localhost:5000/api/customer-packages');
+      setError("");
+      const response = await axios.get(
+        "http://localhost:5000/api/customer-packages"
+      );
       setCustomerPackages(response.data);
     } catch (err) {
-      setError('Failed to fetch customer packages. Please try again later.');
-      console.error('Error fetching customer packages:', err);
+      setError("Failed to fetch customer packages. Please try again later.");
+      console.error("Error fetching customer packages:", err);
     } finally {
       setLoading(false);
     }
@@ -95,29 +97,34 @@ const Business = () => {
 
   const handleSubmitForm = async () => {
     if (!selectedPackage) {
-      setError('Please select a package before proceeding.');
+      setError("Please select a package before proceeding.");
       return;
     }
 
     setLoading(true);
-    setError('');
-    setSuccess('');
-    
+    setError("");
+    setSuccess("");
+
     try {
       // Include selected package in the form data
       const formDataWithPackage = {
         ...formData,
         selectedPackage: selectedPackage._id,
       };
-      
-      const response = await franchiseAPI.submitBusinessForm(formDataWithPackage);
+
+      const response = await franchiseAPI.submitBusinessForm(
+        formDataWithPackage
+      );
       setRazorpayOrderId(response.data.orderId);
       setBusinessFormId(response.data.businessFormId);
-      setSuccess('Form submitted successfully. Please proceed with payment.');
+      setSuccess("Form submitted successfully. Please proceed with payment.");
       handleNext(); // Move to payment step
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to submit form. Please try again.');
-      console.error('Error submitting form:', err);
+      setError(
+        err.response?.data?.message ||
+          "Failed to submit form. Please try again."
+      );
+      console.error("Error submitting form:", err);
     } finally {
       setLoading(false);
     }
@@ -125,15 +132,15 @@ const Business = () => {
 
   const handlePayment = async () => {
     if (!selectedPackage) {
-      setError('Please select a package.');
+      setError("Please select a package.");
       return;
     }
-    
+
     const options = {
       key: import.meta.env.VITE_RAZORPAY_KEY_ID, // Use the correct variable
       amount: selectedPackage.price * 100,
-      currency: 'INR',
-      name: 'CreditDost',
+      currency: "INR",
+      name: "CreditDost",
       description: selectedPackage.name,
       order_id: razorpayOrderId,
       handler: async function (response) {
@@ -145,13 +152,13 @@ const Business = () => {
             razorpay_signature: response.razorpay_signature,
             businessFormId: businessFormId,
           });
-          
-          setSuccess('Payment successful! Business form has been submitted.');
+
+          setSuccess("Payment successful! Business form has been submitted.");
           resetForm();
           setActiveStep(0); // Reset to first step
         } catch (err) {
-          setError('Payment verification failed. Please contact support.');
-          console.error('Error verifying payment:', err);
+          setError("Payment verification failed. Please contact support.");
+          console.error("Error verifying payment:", err);
         }
       },
       prefill: {
@@ -160,75 +167,121 @@ const Business = () => {
         contact: formData.customerPhone,
       },
       theme: {
-        color: '#6200ea',
+        color: "#6200ea",
       },
     };
-    
+
     // Check if Razorpay key is available
     if (!options.key) {
-      setError('Razorpay key is not configured. Please contact administrator.');
+      setError("Razorpay key is not configured. Please contact administrator.");
       return;
     }
-    
+
     const rzp = new window.Razorpay(options);
     rzp.open();
   };
 
   const resetForm = () => {
     setFormData({
-      customerName: '',
-      customerEmail: '',
-      customerPhone: '',
-      panNumber: '',
-      aadharNumber: '',
-      pincode: '',
-      state: '',
-      language: '',
-      occupation: '',
-      monthlyIncome: '',
-      fullAddress: '',
+      customerName: "",
+      customerEmail: "",
+      customerPhone: "",
+      panNumber: "",
+      aadharNumber: "",
+      pincode: "",
+      state: "",
+      language: "",
+      occupation: "",
+      monthlyIncome: "",
+      fullAddress: "",
     });
     setSelectedPackage(null);
   };
 
   const states = [
-    'Andhra Pradesh', 'Arunachal Pradesh', 'Assam', 'Bihar', 'Chhattisgarh',
-    'Goa', 'Gujarat', 'Haryana', 'Himachal Pradesh', 'Jharkhand', 'Karnataka',
-    'Kerala', 'Madhya Pradesh', 'Maharashtra', 'Manipur', 'Meghalaya', 'Mizoram',
-    'Nagaland', 'Odisha', 'Punjab', 'Rajasthan', 'Sikkim', 'Tamil Nadu',
-    'Telangana', 'Tripura', 'Uttar Pradesh', 'Uttarakhand', 'West Bengal',
-    'Andaman and Nicobar Islands', 'Chandigarh', 'Dadra and Nagar Haveli',
-    'Daman and Diu', 'Lakshadweep', 'Delhi', 'Puducherry'
+    "Andhra Pradesh",
+    "Arunachal Pradesh",
+    "Assam",
+    "Bihar",
+    "Chhattisgarh",
+    "Goa",
+    "Gujarat",
+    "Haryana",
+    "Himachal Pradesh",
+    "Jharkhand",
+    "Karnataka",
+    "Kerala",
+    "Madhya Pradesh",
+    "Maharashtra",
+    "Manipur",
+    "Meghalaya",
+    "Mizoram",
+    "Nagaland",
+    "Odisha",
+    "Punjab",
+    "Rajasthan",
+    "Sikkim",
+    "Tamil Nadu",
+    "Telangana",
+    "Tripura",
+    "Uttar Pradesh",
+    "Uttarakhand",
+    "West Bengal",
+    "Andaman and Nicobar Islands",
+    "Chandigarh",
+    "Dadra and Nagar Haveli",
+    "Daman and Diu",
+    "Lakshadweep",
+    "Delhi",
+    "Puducherry",
   ];
 
-  const languages = ['English', 'Hindi', 'Bengali', 'Telugu', 'Marathi', 'Tamil', 'Urdu', 'Gujarati', 'Kannada', 'Odia', 'Punjabi', 'Malayalam', 'Assamese'];
-
-  const occupations = ['Salaried', 'Self Employed', 'Business Owner', 'Student', 'Retired', 'Homemaker', 'Others'];
-
-  const steps = [
-    'Customer Information',
-    'Package Selection',
-    'Payment'
+  const languages = [
+    "English",
+    "Hindi",
+    "Bengali",
+    "Telugu",
+    "Marathi",
+    "Tamil",
+    "Urdu",
+    "Gujarati",
+    "Kannada",
+    "Odia",
+    "Punjabi",
+    "Malayalam",
+    "Assamese",
   ];
+
+  const occupations = [
+    "Salaried",
+    "Self Employed",
+    "Business Owner",
+    "Student",
+    "Retired",
+    "Homemaker",
+    "Others",
+  ];
+
+  const steps = ["Customer Information", "Package Selection", "Payment"];
 
   return (
     <Box>
       <Typography variant="h4" gutterBottom>
         Business Form
       </Typography>
-      
+
       {error && (
         <Alert severity="error" sx={{ mb: 2 }}>
           {error}
         </Alert>
       )}
-      
+
       {success && (
         <Alert severity="success" sx={{ mb: 2 }}>
           {success}
         </Alert>
       )}
-      
+
       <Card sx={{ mt: 3, boxShadow: 3, borderRadius: 2 }}>
         <CardContent>
           <Stepper activeStep={activeStep} orientation="vertical">
@@ -241,7 +294,7 @@ const Business = () => {
                       <Typography variant="h6" gutterBottom>
                         Customer Information
                       </Typography>
-                      
+
                       <Grid container spacing={2}>
                         <Grid item xs={12} sm={6}>
                           <TextField
@@ -307,7 +360,7 @@ const Business = () => {
                           />
                         </Grid>
                         <Grid item xs={12} sm={6}>
-                          <FormControl fullWidth required>
+                          <FormControl fullWidth required style={{minWidth:"200px"}}>
                             <InputLabel>State</InputLabel>
                             <Select
                               name="state"
@@ -316,13 +369,15 @@ const Business = () => {
                               label="State"
                             >
                               {states.map((state) => (
-                                <MenuItem key={state} value={state}>{state}</MenuItem>
+                                <MenuItem key={state} value={state}>
+                                  {state}
+                                </MenuItem>
                               ))}
                             </Select>
                           </FormControl>
                         </Grid>
                         <Grid item xs={12} sm={6}>
-                          <FormControl fullWidth required>
+                          <FormControl fullWidth required style={{minWidth:"200px"}}>
                             <InputLabel>Language</InputLabel>
                             <Select
                               name="language"
@@ -331,13 +386,15 @@ const Business = () => {
                               label="Language"
                             >
                               {languages.map((language) => (
-                                <MenuItem key={language} value={language}>{language}</MenuItem>
+                                <MenuItem key={language} value={language}>
+                                  {language}
+                                </MenuItem>
                               ))}
                             </Select>
                           </FormControl>
                         </Grid>
                         <Grid item xs={12} sm={6}>
-                          <FormControl fullWidth required>
+                          <FormControl fullWidth required style={{minWidth:"200px"}}>
                             <InputLabel>Occupation</InputLabel>
                             <Select
                               name="occupation"
@@ -346,7 +403,9 @@ const Business = () => {
                               label="Occupation"
                             >
                               {occupations.map((occupation) => (
-                                <MenuItem key={occupation} value={occupation}>{occupation}</MenuItem>
+                                <MenuItem key={occupation} value={occupation}>
+                                  {occupation}
+                                </MenuItem>
                               ))}
                             </Select>
                           </FormControl>
@@ -372,114 +431,269 @@ const Business = () => {
                             onChange={handleInputChange}
                             multiline
                             rows={3}
+                            style={{minWidth:"280px"}}
                           />
                         </Grid>
                         <Grid item xs={12}>
-                          <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+                          <Box
+                            sx={{ display: "flex", justifyContent: "flex-end" }}
+                          >
                             <Button
                               variant="contained"
                               onClick={handleNext}
                               disabled={loading}
                             >
-                              {loading ? <CircularProgress size={24} /> : 'Next'}
+                              {loading ? (
+                                <CircularProgress size={24} />
+                              ) : (
+                                "Next"
+                              )}
                             </Button>
                           </Box>
                         </Grid>
                       </Grid>
                     </Box>
                   )}
-                  
+
                   {index === 1 && (
                     <Box>
-                      <Typography variant="h6" gutterBottom>
+                      <Typography
+                        variant="h6"
+                        gutterBottom
+                        sx={{
+                          pb: 1,
+                          borderBottom: "2px solid #6200ea",
+                          display: "inline-block",
+                          mb: 2,
+                        }}
+                      >
                         Select Package for Customer
                       </Typography>
-                      
+
+                      <Typography
+                        variant="body2"
+                        color="text.secondary"
+                        sx={{ mb: 3 }}
+                      >
+                        Choose the best package for your customer's credit needs
+                      </Typography>
+
                       {customerPackages.length === 0 ? (
-                        <Alert severity="info">No packages available at the moment.</Alert>
+                        <Alert severity="info">
+                          No packages available at the moment.
+                        </Alert>
                       ) : (
                         <Grid container spacing={3}>
                           {customerPackages.map((pkg) => (
-                            <Grid item xs={12} sm={6} md={4} key={pkg._id}>
+                            <Grid
+                              item
+                              xs={12}
+                              sm={6}
+                              md={4}
+                              key={pkg._id}
+                              style={{ minWidth: "230px" }}
+                            >
                               <Card
                                 sx={{
-                                  height: '100%',
-                                  display: 'flex',
-                                  flexDirection: 'column',
-                                  cursor: 'pointer',
-                                  border: selectedPackage?._id === pkg._id ? '2px solid #6200ea' : '1px solid #e0e0e0',
-                                  '&:hover': {
-                                    boxShadow: 6,
+                                  height: "100%",
+                                  display: "flex",
+                                  flexDirection: "column",
+                                  cursor: "pointer",
+                                  border:
+                                    selectedPackage?._id === pkg._id
+                                      ? "2px solid #6200ea"
+                                      : "1px solid #e0e0e0",
+                                  borderRadius: "12px",
+                                  boxShadow:
+                                    selectedPackage?._id === pkg._id
+                                      ? "0 8px 16px rgba(98, 0, 234, 0.2)"
+                                      : "0 2px 8px rgba(0, 0, 0, 0.1)",
+                                  transition: "all 0.3s ease",
+                                  "&:hover": {
+                                    boxShadow: "0 8px 16px rgba(0, 0, 0, 0.15)",
+                                    transform: "translateY(-4px)",
                                   },
                                 }}
                                 onClick={() => handlePackageSelect(pkg)}
                               >
-                                <CardContent sx={{ flexGrow: 1 }}>
-                                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-                                    <Typography variant="h6" component="h3" fontWeight="bold">
-                                      {pkg.name}
-                                    </Typography>
+                                <CardContent sx={{ flexGrow: 1, p: 3 }}>
+                                  <Box
+                                    sx={{
+                                      display: "flex",
+                                      justifyContent: "space-between",
+                                      alignItems: "flex-start",
+                                      mb: 2,
+                                    }}
+                                  >
+                                    <Box>
+                                      <Typography
+                                        variant="h6"
+                                        component="h3"
+                                        fontWeight="bold"
+                                        sx={{
+                                          color:
+                                            selectedPackage?._id === pkg._id
+                                              ? "#6200ea"
+                                              : "text.primary",
+                                          mb: 0.5,
+                                        }}
+                                      >
+                                        {pkg.name}
+                                      </Typography>
+                                    </Box>
                                     {selectedPackage?._id === pkg._id && (
-                                      <Chip label="Selected" color="primary" size="small" />
+                                      <Chip
+                                        label="Selected"
+                                        color="primary"
+                                        size="small"
+                                        sx={{
+                                          fontWeight: "bold",
+                                          height: "24px",
+                                        }}
+                                      />
                                     )}
                                   </Box>
-                                  
-                                  <Typography variant="body2" color="text.secondary" sx={{ mb: 3, minHeight: 60 }}>
+
+                                  <Typography
+                                    variant="body2"
+                                    color="text.secondary"
+                                    sx={{
+                                      mb: 3,
+                                      minHeight: 30,
+                                      lineHeight: 1.5,
+                                    }}
+                                  >
                                     {pkg.description}
                                   </Typography>
-                                  
-                                  <Box sx={{ mb: 3 }}>
-                                    <Typography variant="h4" component="div" color="primary.main" fontWeight="bold">
+
+                                  <Box
+                                    sx={{
+                                      mb: 3,
+                                      textAlign: "center",
+                                      py: 2,
+                                      backgroundColor:
+                                        selectedPackage?._id === pkg._id
+                                          ? "rgba(98, 0, 234, 0.05)"
+                                          : "rgba(0, 0, 0, 0.02)",
+                                      borderRadius: "8px",
+                                      border:
+                                        selectedPackage?._id === pkg._id
+                                          ? "1px solid rgba(98, 0, 234, 0.2)"
+                                          : "1px solid rgba(0, 0, 0, 0.05)",
+                                    }}
+                                  >
+                                    <Typography
+                                      variant="h3"
+                                      component="div"
+                                      color="primary.main"
+                                      fontWeight="bold"
+                                      sx={{
+                                        mb: 0.5,
+                                        fontSize: "2rem",
+                                      }}
+                                    >
                                       ₹{pkg.price}
                                     </Typography>
-                                    <Typography variant="body2" color="text.secondary">
+                                    <Typography
+                                      variant="body2"
+                                      color="text.secondary"
+                                      sx={{
+                                        fontWeight: 500,
+                                      }}
+                                    >
                                       for {pkg.creditsIncluded} credits
                                     </Typography>
                                   </Box>
-                                  
-                                  <List dense>
-                                    {pkg.features && pkg.features.map((feature, index) => (
-                                      <ListItem key={index} sx={{ py: 0.5 }}>
-                                        <ListItemIcon sx={{ minWidth: 30 }}>
-                                          <CheckIcon color="primary" fontSize="small" />
-                                        </ListItemIcon>
-                                        <ListItemText primary={feature} primaryTypographyProps={{ variant: 'body2' }} />
-                                      </ListItem>
-                                    ))}
-                                  </List>
+
+                                  <Box sx={{ mb: 2 }}>
+                                    <Typography
+                                      variant="subtitle2"
+                                      fontWeight="bold"
+                                      sx={{
+                                        mb: 1,
+                                        color: "text.secondary",
+                                        display: "flex",
+                                        alignItems: "center",
+                                        gap: 1,
+                                      }}
+                                    >
+                                      What's Included:
+                                    </Typography>
+                                    <List dense sx={{ py: 0 }}>
+                                      {pkg.features &&
+                                        pkg.features.map((feature, index) => (
+                                          <ListItem
+                                            key={index}
+                                            sx={{ py: 0.5, px: 0 }}
+                                          >
+                                            <ListItemIcon sx={{ minWidth: 24 }}>
+                                              <CheckIcon
+                                                color="primary"
+                                                fontSize="small"
+                                                sx={{
+                                                  width: "18px",
+                                                  height: "18px",
+                                                }}
+                                              />
+                                            </ListItemIcon>
+                                            <ListItemText
+                                              primary={feature}
+                                              primaryTypographyProps={{
+                                                variant: "body2",
+                                                fontSize: "0.875rem",
+                                              }}
+                                            />
+                                          </ListItem>
+                                        ))}
+                                    </List>
+                                  </Box>
                                 </CardContent>
                               </Card>
                             </Grid>
                           ))}
                         </Grid>
                       )}
-                      
-                      <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 3 }}>
+
+                      <Box
+                        sx={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          mt: 3,
+                        }}
+                      >
                         <Button onClick={handleBack}>Back</Button>
-                        <Button 
-                          variant="contained" 
+                        <Button
+                          variant="contained"
                           onClick={handleSubmitForm}
                           disabled={loading}
                         >
-                          {loading ? <CircularProgress size={24} /> : 'Proceed to Payment'}
+                          {loading ? (
+                            <CircularProgress size={24} />
+                          ) : (
+                            "Proceed to Payment"
+                          )}
                         </Button>
                       </Box>
                     </Box>
                   )}
-                  
+
                   {index === 2 && (
                     <Box>
                       <Typography variant="h6" gutterBottom>
                         Payment Confirmation
                       </Typography>
-                      
+
                       {selectedPackage && (
                         <Card sx={{ mb: 3 }}>
                           <CardContent>
                             <Typography variant="h5" gutterBottom>
                               {selectedPackage.name}
                             </Typography>
-                            <Typography variant="body1" color="text.secondary" sx={{ mb: 2 }}>
+                            <Typography
+                              variant="body1"
+                              color="text.secondary"
+                              sx={{ mb: 2 }}
+                            >
                               {selectedPackage.description}
                             </Typography>
                             <Typography variant="h4" color="primary.main">
@@ -488,15 +702,20 @@ const Business = () => {
                           </CardContent>
                         </Card>
                       )}
-                      
-                      <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+
+                      <Box
+                        sx={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                        }}
+                      >
                         <Button onClick={handleBack}>Back</Button>
-                        <Button 
-                          variant="contained" 
+                        <Button
+                          variant="contained"
                           onClick={handlePayment}
                           disabled={loading}
                         >
-                          {loading ? <CircularProgress size={24} /> : 'Pay Now'}
+                          {loading ? <CircularProgress size={24} /> : "Pay Now"}
                         </Button>
                       </Box>
                     </Box>

@@ -16,6 +16,16 @@ import AboutPage from './components/About/AboutPage';
 import BlogsPage from './components/BlogsPage';
 import BlogDetailPage from './components/BlogDetailPage';
 import ContactPage from './components/ContactPage';
+import CreditCheckPage from './components/CreditCheckPage';
+import EmiCalculatorPage from './components/EmiCalculatorPage';
+import IfscFinder from './components/homepage/IfscFinder';
+import CreditScoreRepairPage from './components/CreditScoreRepairPage';
+import FranchiseOpportunityPage from './components/FranchiseOpportunityPage';
+import TermsAndConditionsPage from './components/TermsAndConditionsPage';
+import PrivacyPolicyPage from './components/PrivacyPolicyPage';
+import DisclaimerPage from './components/DisclaimerPage';
+import RefundPolicyPage from './components/RefundPolicyPage';
+import ApplyForLoanPage from './components/ApplyForLoanPage';
 
 // Create enhanced theme
 const theme = createTheme({
@@ -144,6 +154,16 @@ function App() {
             <Route path="/blogs" element={<BlogsPage />} />
             <Route path="/blog/:slug" element={<BlogDetailPage />} />
             <Route path="/contact" element={<ContactPage />} />
+            <Route path="/credit-check" element={<CreditCheckPage />} />
+            <Route path="/emi-calculator" element={<EmiCalculatorPage />} />
+            <Route path="/ifsc-finder" element={<IfscFinder />} />
+            <Route path="/credit-score-repair" element={<CreditScoreRepairPage />} />
+            <Route path="/franchise-opportunity" element={<FranchiseOpportunityPage />} />
+            <Route path="/apply-for-loan" element={<ApplyForLoanPage />} />
+            <Route path="/terms-and-conditions" element={<TermsAndConditionsPage />} />
+            <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
+            <Route path="/disclaimer" element={<DisclaimerPage />} />
+            <Route path="/refund-policy" element={<RefundPolicyPage />} />
             <Route 
               path="/franchise/*" 
               element={

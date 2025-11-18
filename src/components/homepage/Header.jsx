@@ -121,6 +121,78 @@ const NavButton = styled(Button)(({ theme }) => ({
   },
 }));
 
+const ServicesDropdown = styled(Box)(({ theme }) => ({
+  position: "relative",
+  display: "inline-block",
+}));
+
+const ServicesButton = styled(Button)(({ theme }) => ({
+  color: "#1a2744",
+  fontWeight: 600,
+  textTransform: "none",
+  margin: theme.spacing(0, 0.5),
+  padding: theme.spacing(1, 2),
+  borderRadius: "8px",
+  fontSize: "0.95rem",
+  position: "relative",
+  backgroundColor: "transparent",
+  transition: "all 0.3s ease",
+  "&:hover": {
+    backgroundColor: "rgba(8, 145, 178, 0.08)",
+    "&::after": {
+      width: "100%",
+    },
+  },
+  "&::after": {
+    content: '""',
+    position: "absolute",
+    bottom: 0,
+    left: "50%",
+    transform: "translateX(-50%)",
+    width: 0,
+    height: "2px",
+    background: "linear-gradient(90deg, #0891b2, #06b6d4)",
+    transition: "width 0.3s ease",
+  },
+}));
+
+const DropdownMenu = styled(Box)(({ theme, open }) => ({
+  position: "absolute",
+  top: "100%",
+  left: "50%",
+  transform: "translateX(-50%)",
+  width: "220px",
+  backgroundColor: "white",
+  borderRadius: "12px",
+  boxShadow: "0 10px 30px rgba(0, 0, 0, 0.15)",
+  padding: theme.spacing(1.5),
+  zIndex: 1300,
+  opacity: open ? 1 : 0,
+  visibility: open ? "visible" : "hidden",
+  transition: "all 0.3s ease",
+  marginTop: open ? theme.spacing(1) : 0,
+}));
+
+const DropdownItem = styled(Button)(({ theme }) => ({
+  justifyContent: "flex-start",
+  textTransform: "none",
+  fontWeight: 500,
+  color: "#1a2744",
+  padding: theme.spacing(1.2, 2),
+  borderRadius: "8px",
+  width: "100%",
+  margin: theme.spacing(0.2, 0),
+  transition: "all 0.2s ease",
+  "&:hover": {
+    backgroundColor: "rgba(8, 145, 178, 0.1)",
+    color: "#0891b2",
+    transform: "translateX(5px)",
+  },
+  "& .MuiButton-startIcon": {
+    marginRight: theme.spacing(1.5),
+  },
+}));
+
 const AuthButton = styled(Button)(({ theme }) => ({
   background: "linear-gradient(135deg, #0891b2 0%, #06b6d4 100%)",
   color: "white",
@@ -269,8 +341,9 @@ const Header = () => {
   const navItems = [
     { text: "Home", path: "/" },
     { text: "About Us", path: "/about" },
-    { text: "Service", path: "/service", hasDropdown: true },
+    { text: "Services", path: "#", hasDropdown: true },
     { text: "Blog", path: "/blogs" },
+
     { text: "Contact", path: "/contact" },
   ];
 
@@ -296,8 +369,8 @@ const Header = () => {
       <Divider />
       <List>
         {navItems.map((item) => (
-          <ListItem 
-            button 
+          <ListItem
+            button
             key={item.text}
             onClick={() => {
               navigate(item.path);
@@ -307,6 +380,42 @@ const Header = () => {
             <ListItemText primary={item.text} />
           </ListItem>
         ))}
+        <ListItem
+          button
+          onClick={() => {
+            navigate("/credit-check");
+            handleDrawerToggle();
+          }}
+        >
+          <ListItemText primary="Credit Check" />
+        </ListItem>
+        <ListItem
+          button
+          onClick={() => {
+            navigate("/emi-calculator");
+            handleDrawerToggle();
+          }}
+        >
+          <ListItemText primary="EMI Calculator" />
+        </ListItem>
+        <ListItem
+          button
+          onClick={() => {
+            navigate("/ifsc-finder");
+            handleDrawerToggle();
+          }}
+        >
+          <ListItemText primary="IFSC Finder" />
+        </ListItem>
+        <ListItem
+          button
+          onClick={() => {
+            navigate("/credit-score-repair");
+            handleDrawerToggle();
+          }}
+        >
+          <ListItemText primary="Credit Score Repair" />
+        </ListItem>
       </List>
       <Divider />
       <Box sx={{ p: 2 }}>
@@ -341,7 +450,7 @@ const Header = () => {
               Login
             </Button>
             <Button fullWidth variant="outlined" onClick={handleRegister}>
-              Register
+              Register as Franchise Partner
             </Button>
           </Box>
         )}
@@ -422,52 +531,74 @@ const Header = () => {
                   {navItems.map((item) => (
                     <Box key={item.text}>
                       {item.hasDropdown ? (
-                        <>
-                          <NavButton
-                            endIcon={<KeyboardArrowDown />}
-                            onClick={(e) => handleMenuClick(e, item.text)}
-                          >
+                        <ServicesDropdown
+                          onMouseEnter={(e) => handleMenuClick(e, "services")}
+                          onMouseLeave={() => handleMenuClose("services")}
+                        >
+                          <ServicesButton endIcon={<KeyboardArrowDown />}>
                             {item.text}
-                          </NavButton>
-                          <Menu
-                            anchorEl={anchorEl[item.text]}
-                            open={Boolean(anchorEl[item.text])}
-                            onClose={() => handleMenuClose(item.text)}
-                            sx={{ mt: 1 }}
-                          >
-                            <MenuItem onClick={() => handleMenuClose(item.text)}>
-                              Option 1
-                            </MenuItem>
-                            <MenuItem onClick={() => handleMenuClose(item.text)}>
-                              Option 2
-                            </MenuItem>
-                            <MenuItem onClick={() => handleMenuClose(item.text)}>
-                              Option 3
-                            </MenuItem>
-                          </Menu>
-                        </>
+                          </ServicesButton>
+                          <DropdownMenu open={Boolean(anchorEl["services"])}>
+                            <DropdownItem
+                              onClick={() => {
+                                navigate("/credit-score-repair");
+                                handleMenuClose("services");
+                              }}
+                              startIcon={
+                                <Box
+                                  sx={{
+                                    width: 16,
+                                    height: 16,
+                                    borderRadius: "50%",
+                                    backgroundColor: "#8b5cf6",
+                                  }}
+                                />
+                              }
+                            >
+                              Credit Score Repair
+                            </DropdownItem>
+                            <DropdownItem
+                              onClick={() => {
+                                navigate("/apply-for-loan");
+                                handleMenuClose("services");
+                              }}
+                              startIcon={
+                                <Box
+                                  sx={{
+                                    width: 16,
+                                    height: 16,
+                                    borderRadius: "50%",
+                                    backgroundColor: "#0ea5e9",
+                                  }}
+                                />
+                              }
+                            >
+                              Apply for Loan
+                            </DropdownItem>
+                            <DropdownItem
+                              onClick={() => {
+                                navigate("/franchise-opportunity");
+                                handleMenuClose("services");
+                              }}
+                              startIcon={
+                                <Box
+                                  sx={{
+                                    width: 16,
+                                    height: 16,
+                                    borderRadius: "50%",
+                                    backgroundColor: "#ef4444",
+                                  }}
+                                />
+                              }
+                            >
+                              Franchise Opportunity
+                            </DropdownItem>
+                          </DropdownMenu>
+                        </ServicesDropdown>
                       ) : (
                         <NavButton onClick={() => navigate(item.path)}>
                           {item.text}
                         </NavButton>
-                      )}
-                      {item.hasDropdown && (
-                        <Menu
-                          anchorEl={anchorEl[item.text]}
-                          open={Boolean(anchorEl[item.text])}
-                          onClose={() => handleMenuClose(item.text)}
-                          sx={{ mt: 1 }}
-                        >
-                          <MenuItem onClick={() => handleMenuClose(item.text)}>
-                            Option 1
-                          </MenuItem>
-                          <MenuItem onClick={() => handleMenuClose(item.text)}>
-                            Option 2
-                          </MenuItem>
-                          <MenuItem onClick={() => handleMenuClose(item.text)}>
-                            Option 3
-                          </MenuItem>
-                        </Menu>
                       )}
                     </Box>
                   ))}
@@ -501,7 +632,7 @@ const Header = () => {
                           fontSize: "1rem",
                         }}
                       >
-                        (629) 555-0129
+                        +91 1234567890
                       </Typography>
                     </Box>
                   </ContactBox>
@@ -541,7 +672,10 @@ const Header = () => {
                                 <Typography variant="body2" fontWeight="bold">
                                   {user.name || "User"}
                                 </Typography>
-                                <Typography variant="caption" color="textSecondary">
+                                <Typography
+                                  variant="caption"
+                                  color="textSecondary"
+                                >
                                   {user.email}
                                 </Typography>
                               </Box>
@@ -582,7 +716,7 @@ const Header = () => {
                           }}
                           onClick={handleRegister}
                         >
-                          Register
+                          Register as Franchise Partner
                         </AuthButton>
                       </Box>
                     </Zoom>

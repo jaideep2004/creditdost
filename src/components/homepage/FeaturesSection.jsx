@@ -2,7 +2,7 @@ import React, { useState } from "react";
 
 const services = [
   {
-    title: "Revive Business",
+    title: "Free Credit Score Check",
     description:
       "Don't just take our word for it hear what our customers have to say about us! we have helped thousand people",
     icon: "👥",
@@ -10,7 +10,7 @@ const services = [
       "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=600&h=400&fit=crop",
   },
   {
-    title: "Propel Consulting",
+    title: "Apply For Loan",
     description:
       "Don't just take our word for it hear what our customers have to say about us! we have helped thousand people",
     icon: "🧠",
@@ -18,7 +18,7 @@ const services = [
       "https://images.unsplash.com/photo-1553877522-43269d4ea984?w=600&h=400&fit=crop",
   },
   {
-    title: "Velocity Solutions",
+    title: "EMI Calculator",
     description:
       "Don't just take our word for it hear what our customers have to say about us! we have helped thousand people",
     icon: "📈",
@@ -206,7 +206,7 @@ const FeaturesSection = () => {
             </h2>
           </div>
 
-          <div style={{ display: "flex !important", gap: "16px" }}>
+          <div style={{ display: "flex", gap: "16px" }}>
             <button
               onClick={handlePrevious}
               disabled={isAnimating}
