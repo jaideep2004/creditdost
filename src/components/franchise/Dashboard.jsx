@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   CssBaseline,
@@ -19,9 +19,10 @@ import {
   useTheme,
   useMediaQuery,
   Tooltip,
+  Alert,
 } from "@mui/material";
 import { alpha } from "@mui/material/styles";
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import {
   Menu as MenuIcon,
   Dashboard as DashboardIcon,
@@ -42,11 +43,11 @@ import {
   BusinessCenter as BusinessCenterIcon,
   ChevronLeft as ChevronLeftIcon,
   WhatsApp as WhatsAppIcon,
+  Logout as LogoutIcon,
 } from "@mui/icons-material";
 import { useAuth } from "../../hooks/useAuth.jsx";
-import { useNavigate, useLocation } from "react-router-dom";
-import { useEffect } from "react";
-import LogoutIcon from "@mui/icons-material/Logout";
+import { franchiseAPI } from "../../services/api";
+
 // Styled components for enhanced UI
 const drawerWidth = 260;
 
@@ -158,6 +159,9 @@ const FranchiseDashboard = () => {
   const [open, setOpen] = useState(!isMobile);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
+  const [kycStatus, setKycStatus] = useState(null);
+  const [kycRejectedReason, setKycRejectedReason] = useState(null);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const location = useLocation();
   const { user, logout } = useAuth();
@@ -168,6 +172,27 @@ const FranchiseDashboard = () => {
       navigate("/admin");
     }
   }, [user, navigate]);
+
+  // Fetch KYC status when component mounts
+  useEffect(() => {
+    const fetchKycStatus = async () => {
+      try {
+        const response = await franchiseAPI.getKycStatus();
+        setKycStatus(response.data.kycStatus);
+        if (response.data.kycRequest && response.data.kycRequest.rejectionReason) {
+          setKycRejectedReason(response.data.kycRequest.rejectionReason);
+        }
+      } catch (error) {
+        console.error("Failed to fetch KYC status:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (user && user.role === "franchise_user") {
+      fetchKycStatus();
+    }
+  }, [user]);
 
   // Redirect from base route to default child route only on initial load
   useEffect(() => {
@@ -223,13 +248,19 @@ const FranchiseDashboard = () => {
     handleMenuClose();
   };
 
-  const menuItems = [
+  // Define all menu items
+  const allMenuItems = [
     { text: "Dashboard", icon: <DashboardIcon />, path: "/franchise" },
     { text: "My Profile", icon: <PersonIcon />, path: "/franchise/profile" },
     {
       text: "KYC Verification",
       icon: <VerifiedUserIcon />,
       path: "/franchise/kyc",
+    },
+    {
+      text: "WhatsApp Groups",
+      icon: <WhatsAppIcon />,
+      path: "/franchise/whatsapp-groups",
     },
     {
       text: "Credit Check",
@@ -280,6 +311,29 @@ const FranchiseDashboard = () => {
     },
   ];
 
+  // Filter menu items based on KYC status
+  const getMenuItems = () => {
+    // If KYC is approved, show all items
+    if (kycStatus === "approved") {
+      return allMenuItems;
+    }
+    
+    // If KYC is rejected, show only Dashboard and KYC Verification
+    if (kycStatus === "rejected") {
+      return allMenuItems.slice(0, 3); // Dashboard, My Profile, KYC Verification
+    }
+    
+    // If KYC is pending or submitted, show only Dashboard and KYC Verification
+    if (kycStatus === "pending" || kycStatus === "submitted") {
+      return allMenuItems.slice(0, 3); // Dashboard, My Profile, KYC Verification
+    }
+    
+    // Default: show only Dashboard and KYC Verification
+    return allMenuItems.slice(0, 3);
+  };
+
+  const menuItems = getMenuItems();
+
   const isActive = (path) => {
     // Special handling for the Dashboard item (first tab)
     if (path === "/franchise") {
@@ -321,11 +375,24 @@ const FranchiseDashboard = () => {
         )}
       </DrawerHeader>
       <Divider />
+      
+      {/* Show rejection reason if KYC is rejected */}
+      {kycStatus === "rejected" && open && (
+        <Box sx={{ p: 2 }}>
+          <Alert severity="error" sx={{ mb: 2 }}>
+            <Typography variant="subtitle2">KYC Rejected</Typography>
+            <Typography variant="body2">
+              {kycRejectedReason || "Your KYC verification was rejected. Please check the details and try again."}
+            </Typography>
+          </Alert>
+        </Box>
+      )}
+      
       <List sx={{ flexGrow: 1, pt: 2 }}>
         {menuItems.map((item) => (
           <NavItem
             key={item.text}
-            active={isActive(item.path) ? true : undefined} // Fix the warning
+            active={isActive(item.path) ? true : undefined}
             onClick={() => {
               if (item.path === "/franchise") {
                 // For the Dashboard tab, navigate to the base route without redirect

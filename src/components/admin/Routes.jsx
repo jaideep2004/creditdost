@@ -13,14 +13,15 @@ import RechargeCredits from './RechargeCredits';
 import BusinessForms from './BusinessForms';
 import ManageBlogs from './ManageBlogs';
 import ManageRelationshipManagers from './ManageRelationshipManagers';
-import AdminDashboardHome from './AdminDashboardHome'; // Import the AdminDashboardHome component
+import AdminDashboardHome from './AdminDashboardHome';
 import GoogleSheetsSettings from './GoogleSheetsSettings';
+import ManageDigitalAgreements from './ManageDigitalAgreements';
 
 const AdminRoutes = () => {
-  return (
+  return ( 
     <Routes>
       <Route path="/" element={<Dashboard />}>
-        <Route index element={<AdminDashboardHome />} /> {/* Use AdminDashboardHome as the default route */}
+        <Route index element={<AdminDashboardHome />} />
         <Route path="franchises" element={<ManageFranchises />} />
         <Route path="packages" element={<ManagePackages />} />
         <Route path="customer-packages" element={<ManageCustomerPackages />} />
@@ -34,6 +35,7 @@ const AdminRoutes = () => {
         <Route path="blogs" element={<ManageBlogs />} />
         <Route path="rms" element={<ManageRelationshipManagers />} />
         <Route path="google-sheets" element={<GoogleSheetsSettings />} />
+        <Route path="digital-agreements" element={<ManageDigitalAgreements />} />
       </Route>
     </Routes>
   );

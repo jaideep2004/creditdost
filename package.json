@@ -19,7 +19,9 @@
     "date-fns": "^4.1.0",
     "express-rate-limit": "^8.1.0",
     "googleapis": "^166.0.0",
+    "html2canvas": "^1.4.1",
     "lucide-react": "^0.548.0",
+    "pdf-lib": "^1.17.1",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "react-router-dom": "^7.9.4"

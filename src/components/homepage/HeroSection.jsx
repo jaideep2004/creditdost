@@ -18,6 +18,13 @@ const HeroBackground = styled(Box)(({ theme }) => ({
   display: "flex",
   alignItems: "center",
   padding: theme.spacing(8, 0),
+  [theme.breakpoints.down('md')]: {
+    padding: theme.spacing(4, 0),
+    minHeight: "auto",
+  },
+  [theme.breakpoints.down('sm')]: {
+    padding: theme.spacing(3, 0),
+  },
   "&::before": {
     content: '""',
     position: "absolute",
@@ -29,6 +36,16 @@ const HeroBackground = styled(Box)(({ theme }) => ({
       "radial-gradient(circle, rgba(14, 165, 233, 0.15) 0%, transparent 70%)",
     borderRadius: "50%",
     animation: "pulse 8s ease-in-out infinite",
+    [theme.breakpoints.down('md')]: {
+      width: "300px",
+      height: "300px",
+      left: "-5%",
+    },
+    [theme.breakpoints.down('sm')]: {
+      width: "200px",
+      height: "200px",
+      bottom: "5%",
+    },
   },
   "&::after": {
     content: '""',
@@ -41,6 +58,17 @@ const HeroBackground = styled(Box)(({ theme }) => ({
       "radial-gradient(circle, rgba(6, 182, 212, 0.1) 0%, transparent 70%)",
     borderRadius: "50%",
     animation: "float 6s ease-in-out infinite",
+    [theme.breakpoints.down('md')]: {
+      width: "250px",
+      height: "250px",
+      top: "15%",
+      right: "-3%",
+    },
+    [theme.breakpoints.down('sm')]: {
+      width: "150px",
+      height: "150px",
+      top: "10%",
+    },
   },
   "@keyframes pulse": {
     "0%, 100%": { transform: "scale(1)", opacity: 1 },
@@ -83,17 +111,31 @@ const HeroBackground = styled(Box)(({ theme }) => ({
   },
 }));
 
-const FloatingShape = styled(Box)(({ delay = 0 }) => ({
+const FloatingShape = styled(Box)(({ delay = 0, theme }) => ({
   position: "absolute",
   borderRadius: "50%",
   background: "rgba(14, 165, 233, 0.1)",
   animation: `float 6s ease-in-out ${delay}s infinite`,
+  [theme.breakpoints.down('md')]: {
+    width: "40px !important",
+    height: "40px !important",
+  },
+  [theme.breakpoints.down('sm')]: {
+    width: "30px !important",
+    height: "30px !important",
+  },
 }));
 
-const ContentWrapper = styled(Box)(({ isVisible }) => ({
+const ContentWrapper = styled(Box)(({ isVisible, theme }) => ({
   opacity: isVisible ? 1 : 0,
   transform: isVisible ? "translateY(0)" : "translateY(30px)",
   transition: "all 0.8s ease-out",
+  [theme.breakpoints.down('md')]: {
+    textAlign: "center",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+  },
 }));
 
 const StyledButton = styled(Button)(({ theme }) => ({
@@ -110,13 +152,29 @@ const StyledButton = styled(Button)(({ theme }) => ({
     transform: "translateY(-2px)",
     boxShadow: "0 8px 20px rgba(14, 165, 233, 0.4)",
   },
+  [theme.breakpoints.down('md')]: {
+    padding: theme.spacing(1.2, 3),
+    fontSize: "0.9rem",
+  },
+  [theme.breakpoints.down('sm')]: {
+    width: "100%",
+    maxWidth: "250px",
+    margin: "0 auto",
+  },
 }));
 
-const ImageWrapper = styled(Box)(({ isVisible }) => ({
+const ImageWrapper = styled(Box)(({ isVisible, theme }) => ({
   position: "relative",
   opacity: isVisible ? 1 : 0,
   transform: isVisible ? "translateX(0)" : "translateX(50px)",
   transition: "all 1s ease-out 0.3s",
+  [theme.breakpoints.down('md')]: {
+    transform: isVisible ? "translateX(0)" : "translateX(30px)",
+    marginTop: theme.spacing(4),
+  },
+  [theme.breakpoints.down('sm')]: {
+    marginTop: theme.spacing(3),
+  },
   "& img": {
     width: "100%",
     height: "auto",
@@ -125,7 +183,7 @@ const ImageWrapper = styled(Box)(({ isVisible }) => ({
   },
 }));
 
-const AccentCircle = styled(Box)(({ top, right, size }) => ({
+const AccentCircle = styled(Box)(({ top, right, size, theme }) => ({
   position: "absolute",
   top: top || "auto",
   right: right || "auto",
@@ -134,6 +192,14 @@ const AccentCircle = styled(Box)(({ top, right, size }) => ({
   borderRadius: "50%",
   border: "2px solid rgba(14, 165, 233, 0.3)",
   zIndex: 0,
+  [theme.breakpoints.down('md')]: {
+    width: size ? `${parseInt(size) * 0.7}px` : "100px",
+    height: size ? `${parseInt(size) * 0.7}px` : "100px",
+  },
+  [theme.breakpoints.down('sm')]: {
+    width: size ? `${parseInt(size) * 0.5}px` : "70px",
+    height: size ? `${parseInt(size) * 0.5}px` : "70px",
+  },
 }));
 
 const HeroSection = () => {
@@ -188,7 +254,7 @@ const HeroSection = () => {
                 variant="h1"
                 component="h1"
                 sx={{
-                  fontSize: { xs: "2.5rem", md: "3.5rem", lg: "3.7rem" },
+                  fontSize: { xs: "2rem", sm: "2.5rem", md: "3.5rem", lg: "3.7rem" },
                   fontWeight: 700,
                   color: "white",
                   lineHeight: 1.2,
@@ -206,10 +272,14 @@ const HeroSection = () => {
               <Typography
                 sx={{
                   color: "rgba(255, 255, 255, 0.8)",
-                  fontSize: "1rem",
+                  fontSize: { xs: "0.9rem", sm: "1rem" },
                   lineHeight: 1.6,
                   mb: 1.5,
                   maxWidth: "600px",
+                  [theme => theme.breakpoints.down('md')]: {
+                    marginLeft: "auto",
+                    marginRight: "auto",
+                  },
                 }}
               >
                 And In Order To Make A Business, Brand Advertising And Marketing
@@ -219,10 +289,14 @@ const HeroSection = () => {
               <Typography
                 sx={{
                   color: "rgba(255, 255, 255, 0.8)",
-                  fontSize: "1rem",
+                  fontSize: { xs: "0.9rem", sm: "1rem" },
                   lineHeight: 1.6,
                   mb: 5,
                   maxWidth: "600px",
+                  [theme => theme.breakpoints.down('md')]: {
+                    marginLeft: "auto",
+                    marginRight: "auto",
+                  },
                 }}
               >
                 Similarly, In Making Cultivation Business A Brand, Good Slogans
@@ -235,6 +309,13 @@ const HeroSection = () => {
                   alignItems: "center",
                   gap: 3,
                   flexWrap: "wrap",
+                  [theme => theme.breakpoints.down('md')]: {
+                    justifyContent: "center",
+                  },
+                  [theme => theme.breakpoints.down('sm')]: {
+                    flexDirection: "column",
+                    gap: 2,
+                  },
                 }}
               >
                 <StyledButton
@@ -247,12 +328,24 @@ const HeroSection = () => {
                     "&:hover": {
                       backgroundColor: "#0284c7",
                     },
+                    [theme => theme.breakpoints.down('sm')]: {
+                      marginBottom: 2,
+                    },
                   }}
                 >
                   Get Started
                 </StyledButton>
 
-                <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
+                <Box 
+                  sx={{ 
+                    display: "flex", 
+                    alignItems: "center", 
+                    gap: 1.5,
+                    [theme => theme.breakpoints.down('sm')]: {
+                      justifyContent: "center",
+                    },
+                  }}
+                >
                   <Box
                     sx={{
                       width: 48,
@@ -263,6 +356,10 @@ const HeroSection = () => {
                       alignItems: "center",
                       justifyContent: "center",
                       border: "1px solid rgba(14, 165, 233, 0.3)",
+                      [theme => theme.breakpoints.down('sm')]: {
+                        width: 40,
+                        height: 40,
+                      },
                     }}
                   >
                     <Phone sx={{ color: "#0ea5e9", fontSize: 20 }} />
@@ -272,6 +369,9 @@ const HeroSection = () => {
                       sx={{
                         color: "rgba(255, 255, 255, 0.6)",
                         fontSize: "0.875rem",
+                        [theme => theme.breakpoints.down('sm')]: {
+                          fontSize: "0.8rem",
+                        },
                       }}
                     >
                       Need help?
@@ -281,6 +381,9 @@ const HeroSection = () => {
                         color: "white",
                         fontSize: "1.125rem",
                         fontWeight: 600,
+                        [theme => theme.breakpoints.down('sm')]: {
+                          fontSize: "1rem",
+                        },
                       }}
                     >
                       +91 9876543210
@@ -310,6 +413,18 @@ const HeroSection = () => {
                     background: "#06b6d4",
                     borderRadius: "0 0 0 100%",
                     zIndex: 2,
+                    [theme => theme.breakpoints.down('md')]: {
+                      width: "180px",
+                      height: "180px",
+                      top: "-20px",
+                      right: "-20px",
+                    },
+                    [theme => theme.breakpoints.down('sm')]: {
+                      width: "120px",
+                      height: "120px",
+                      top: "-15px",
+                      right: "-15px",
+                    },
                   }}
                 />
 
@@ -324,6 +439,18 @@ const HeroSection = () => {
                     background: "#06b6d4",
                     clipPath: "polygon(0 0, 0 100%, 100% 100%)",
                     zIndex: 2,
+                    [theme => theme.breakpoints.down('md')]: {
+                      width: "120px",
+                      height: "120px",
+                      bottom: "-20px",
+                      left: "-20px",
+                    },
+                    [theme => theme.breakpoints.down('sm')]: {
+                      width: "80px",
+                      height: "80px",
+                      bottom: "-15px",
+                      left: "-15px",
+                    },
                   }}
                 />
 
@@ -339,6 +466,16 @@ const HeroSection = () => {
                     borderRadius: "50%",
                     zIndex: 0,
                     animation: "rotatePulse 8s linear infinite", // Changed to rotatePulse animation
+                    [theme => theme.breakpoints.down('md')]: {
+                      width: "140px",
+                      height: "140px",
+                      top: "-30px",
+                    },
+                    [theme => theme.breakpoints.down('sm')]: {
+                      width: "90px",
+                      height: "90px",
+                      top: "-20px",
+                    },
                   }}
                 />
 
@@ -354,6 +491,17 @@ const HeroSection = () => {
                     borderRadius: "50%",
                     zIndex: 0,
                     animation: "slideAndGlow 4s ease-in-out infinite", // Changed to slideAndGlow animation
+                    [theme => theme.breakpoints.down('md')]: {
+                      width: "180px",
+                      height: "180px",
+                      right: "-40px",
+                    },
+                    [theme => theme.breakpoints.down('sm')]: {
+                      width: "120px",
+                      height: "120px",
+                      right: "-25px",
+                      bottom: "5%",
+                    },
                   }}
                 />
 
@@ -362,7 +510,7 @@ const HeroSection = () => {
                   sx={{
                     position: "relative",
                     zIndex: 1,
-                    borderRadius: "200px 200px 20px",
+                    borderRadius: { xs: "120px 120px 15px", sm: "160px 160px 15px", md: "200px 200px 20px" },
                     overflow: "hidden",
                     boxShadow: "0 30px 60px rgba(0, 0, 0, 0.4)",
                     "&::before": {
@@ -376,6 +524,18 @@ const HeroSection = () => {
                       borderRadius: "50%",
                       filter: "blur(60px)",
                       zIndex: -1,
+                      [theme => theme.breakpoints.down('md')]: {
+                        width: "150px",
+                        height: "150px",
+                        top: "-20px",
+                        right: "-20px",
+                      },
+                      [theme => theme.breakpoints.down('sm')]: {
+                        width: "100px",
+                        height: "100px",
+                        top: "-15px",
+                        right: "-15px",
+                      },
                     },
                   }}
                 >
@@ -401,6 +561,14 @@ const HeroSection = () => {
                     background: "#06b6d4",
                     borderRadius: "50%",
                     zIndex: 3,
+                    [theme => theme.breakpoints.down('md')]: {
+                      width: "8px",
+                      height: "8px",
+                    },
+                    [theme => theme.breakpoints.down('sm')]: {
+                      width: "6px",
+                      height: "6px",
+                    },
                   }}
                 />
                 <Box
@@ -413,6 +581,14 @@ const HeroSection = () => {
                     background: "#06b6d4",
                     borderRadius: "50%",
                     zIndex: 3,
+                    [theme => theme.breakpoints.down('md')]: {
+                      width: "6px",
+                      height: "6px",
+                    },
+                    [theme => theme.breakpoints.down('sm')]: {
+                      width: "4px",
+                      height: "4px",
+                    },
                   }}
                 />
               </Box>
