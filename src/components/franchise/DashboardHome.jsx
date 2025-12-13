@@ -21,6 +21,7 @@ import {
   ListItemIcon,
   ListItemText,
   Divider,
+  Alert,
 } from '@mui/material';
 import { 
   People, 
@@ -51,10 +52,15 @@ const DashboardHome = () => {
   const [error, setError] = useState('');
   const [purchasedPackage, setPurchasedPackage] = useState(null);
   const [assignedPackages, setAssignedPackages] = useState([]);
+  const [kycStatus, setKycStatus] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
+        // Fetch KYC status
+        const kycResponse = await franchiseAPI.getKycStatus();
+        setKycStatus(kycResponse.data.kycStatus);
+        
         // Fetch dashboard stats
         const dashboardResponse = await franchiseAPI.getDashboardStats();
         
@@ -360,68 +366,71 @@ const DashboardHome = () => {
             </CardContent>
           </Card>
         </Grid>
-        <Grid item xs={12} md={4} style={{flex: "1"}}>
-          <Card sx={{ height: '100%', boxShadow: 3, borderRadius: 2 }}>
-            <CardContent>
-              <Typography variant="h6" gutterBottom>
-                Quick Actions
-              </Typography>
-              <Box sx={{ 
-                display: 'grid', 
-                gridTemplateColumns: 'repeat(2, 1fr)', 
-                gap: 2,
-                mt: 2
-              }}>
-                {quickActions.map((action, index) => (
-                  <Tooltip key={index} title={action.description} placement="top">
-                    <Card 
-                      sx={{ 
-                        height: '100%', 
-                        display: 'flex', 
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        p: 2,
-                        cursor: 'pointer',
-                        transition: 'all 0.3s ease',
-                        '&:hover': {
-                          transform: 'translateY(-5px)',
-                          boxShadow: 3,
-                          bgcolor: 'background.default'
-                        }
-                      }}
-                      onClick={() => navigate(action.path)}
-                    >
-                      <Box sx={{ 
-                        color: action.color, 
-                        mb: 1,
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        width: 56,
-                        height: 56,
-                        borderRadius: '50%',
-                        bgcolor: `${action.color}15`,
-                      }}>
-                        {action.icon}
-                      </Box>
-                      <Typography 
-                        variant="body2" 
-                        align="center"
+        {/* Quick Actions Section - Only visible when KYC is approved */}
+        {kycStatus === 'approved' && (
+          <Grid item xs={12} md={4} style={{flex: "1"}}>
+            <Card sx={{ height: '100%', boxShadow: 3, borderRadius: 2 }}>
+              <CardContent>
+                <Typography variant="h6" gutterBottom>
+                  Quick Actions
+                </Typography>
+                <Box sx={{ 
+                  display: 'grid', 
+                  gridTemplateColumns: 'repeat(2, 1fr)', 
+                  gap: 2,
+                  mt: 2
+                }}>
+                  {quickActions.map((action, index) => (
+                    <Tooltip key={index} title={action.description} placement="top">
+                      <Card 
                         sx={{ 
-                          fontWeight: 'medium',
-                          fontSize: '0.8rem'
+                          height: '100%', 
+                          display: 'flex', 
+                          flexDirection: 'column',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          p: 2,
+                          cursor: 'pointer',
+                          transition: 'all 0.3s ease',
+                          '&:hover': {
+                            transform: 'translateY(-5px)',
+                            boxShadow: 3,
+                            bgcolor: 'background.default'
+                          }
                         }}
+                        onClick={() => navigate(action.path)}
                       >
-                        {action.title}
-                      </Typography>
-                    </Card>
-                  </Tooltip>
-                ))}
-              </Box>
-            </CardContent>
-          </Card>
-        </Grid>
+                        <Box sx={{ 
+                          color: action.color, 
+                          mb: 1,
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          width: 56,
+                          height: 56,
+                          borderRadius: '50%',
+                          bgcolor: `${action.color}15`,
+                        }}>
+                          {action.icon}
+                        </Box>
+                        <Typography 
+                          variant="body2" 
+                          align="center"
+                          sx={{ 
+                            fontWeight: 'medium',
+                            fontSize: '0.8rem'
+                          }}
+                        >
+                          {action.title}
+                        </Typography>
+                      </Card>
+                    </Tooltip>
+                  ))}
+                </Box>
+              </CardContent>
+            </Card>
+          </Grid>
+        )}
       </Grid>
     </Box>
   );

@@ -34,6 +34,7 @@ import {
   Divider,
   Checkbox,
   ListItemText,
+  Snackbar,
 } from "@mui/material";
 import {
   Search,
@@ -80,6 +81,13 @@ const ManageFranchises = () => {
     ownerName: "",
   });
   const [tabValue, setTabValue] = useState(0);
+  
+  // Certificate name update state
+  const [certificateDialogOpen, setCertificateDialogOpen] = useState(false);
+  const [certificateFranchise, setCertificateFranchise] = useState(null);
+  const [certificateName, setCertificateName] = useState("");
+  const [certificateSuccess, setCertificateSuccess] = useState("");
+  const [certificateSnackbarOpen, setCertificateSnackbarOpen] = useState(false);
 
   // New state variables for edit and registration details dialogs
   const [editDialogOpen, setEditDialogOpen] = useState(false);
@@ -170,6 +178,47 @@ const ManageFranchises = () => {
   const handleRejectKycClick = (franchise) => {
     setFranchiseToReject(franchise);
     setRejectDialogOpen(true);
+  };
+  
+  // Certificate name update functions
+  const handleCertificateNameClick = (franchise) => {
+    setCertificateFranchise(franchise);
+    setCertificateName(franchise.certificateName || franchise.businessName || "");
+    setCertificateDialogOpen(true);
+  };
+  
+  const handleCertificateNameChange = (e) => {
+    setCertificateName(e.target.value);
+  };
+  
+  const handleCertificateNameSubmit = async () => {
+    try {
+      await adminAPI.updateFranchiseCertificateName({
+        franchiseId: certificateFranchise._id,
+        certificateName: certificateName,
+      });
+      
+      setCertificateSuccess("Certificate name updated successfully!");
+      setCertificateSnackbarOpen(true);
+      setCertificateDialogOpen(false);
+      
+      // Refresh the franchise list
+      fetchFranchises();
+    } catch (err) {
+      setError("Failed to update certificate name. Please try again.");
+      console.error("Error updating certificate name:", err);
+    }
+  };
+  
+  const handleCertificateDialogClose = () => {
+    setCertificateDialogOpen(false);
+    setCertificateFranchise(null);
+    setCertificateName("");
+  };
+  
+  const handleCertificateSnackbarClose = () => {
+    setCertificateSnackbarOpen(false);
+    setCertificateSuccess("");
   };
 
   const handleRejectKyc = async () => {
@@ -274,6 +323,15 @@ const ManageFranchises = () => {
       "address.city": franchise.address?.city || "",
       "address.state": franchise.address?.state || "",
       "address.pincode": franchise.address?.pincode || "",
+      "address.country": franchise.address?.country || "India",
+      panNumber: franchise.panNumber || "",
+      bankAccountNumber: franchise.bankAccountNumber || "",
+      bankIfscCode: franchise.bankIfscCode || "",
+      certificateName: franchise.certificateName || "",
+      credits: franchise.credits || 0,
+      totalCreditsPurchased: franchise.totalCreditsPurchased || 0,
+      kycStatus: franchise.kycStatus || "pending",
+      isActive: franchise.isActive !== undefined ? franchise.isActive : true,
     });
     setEditDialogOpen(true);
   };
@@ -314,13 +372,27 @@ const ManageFranchises = () => {
       setError("");
       setSuccess("");
 
-      // Prepare data for update (exclude fields that shouldn't be updated)
+      // Prepare data for update (exclude fields that shouldn't be updated by admin)
       const updateData = {
         businessName: editFranchiseData.businessName,
         ownerName: editFranchiseData.ownerName,
         email: editFranchiseData.email,
         phone: editFranchiseData.phone,
-        address: editFranchiseData.address,
+        address: {
+          street: editFranchiseData.address?.street || "",
+          city: editFranchiseData.address?.city || "",
+          state: editFranchiseData.address?.state || "",
+          pincode: editFranchiseData.address?.pincode || "",
+          country: editFranchiseData.address?.country || "India",
+        },
+        panNumber: editFranchiseData.panNumber,
+        bankAccountNumber: editFranchiseData.bankAccountNumber,
+        bankIfscCode: editFranchiseData.bankIfscCode,
+        certificateName: editFranchiseData.certificateName,
+        kycStatus: editFranchiseData.kycStatus,
+        isActive: editFranchiseData.isActive,
+        credits: parseInt(editFranchiseData.credits) || 0,
+        totalCreditsPurchased: parseInt(editFranchiseData.totalCreditsPurchased) || 0,
       };
 
       await adminAPI.updateFranchise(editFranchiseData._id, updateData);
@@ -483,13 +555,7 @@ const ManageFranchises = () => {
       setSuccess("");
 
       // Validate required fields
-      if (
-        !newFranchise.name ||
-        !newFranchise.email ||
-        !newFranchise.phone ||
-        !newFranchise.state ||
-        !newFranchise.pincode
-      ) {
+      if (!newFranchise.name || !newFranchise.email) {
         setError("Please fill in all required fields.");
         return;
       }
@@ -501,23 +567,10 @@ const ManageFranchises = () => {
         return;
       }
 
-      // Phone validation (10 digits)
-      const phoneRegex = /^[0-9]{10}$/;
-      if (!phoneRegex.test(newFranchise.phone)) {
-        setError("Please enter a valid 10-digit phone number.");
-        return;
-      }
-
-      // Pincode validation (6 digits)
-      const pincodeRegex = /^[0-9]{6}$/;
-      if (!pincodeRegex.test(newFranchise.pincode)) {
-        setError("Please enter a valid 6-digit pincode.");
-        return;
-      }
-
       // Include assigned packages in the request
       const franchiseData = {
-        ...newFranchise,
+        name: newFranchise.name,
+        email: newFranchise.email,
         assignedPackages: selectedPackages,
       };
 
@@ -908,6 +961,17 @@ const ManageFranchises = () => {
                                 </IconButton>
                               </>
                             )}
+                            {/* Certificate Name Button - Show for all franchises */}
+                            <IconButton
+                              size="small"
+                              onClick={() =>
+                                handleCertificateNameClick(franchise)
+                              }
+                              sx={{ color: "primary.main" }}
+                              title="Update Certificate Name"
+                            >
+                              <PictureAsPdfIcon />
+                            </IconButton>
                             {/* Delete Button - Show for all franchises */}
                             <IconButton
                               size="small"
@@ -977,76 +1041,9 @@ const ManageFranchises = () => {
                   />
                 </Grid>
 
-                <Grid item xs={12} md={6}>
-                  <TextField
-                    fullWidth
-                    required
-                    label="Phone Number"
-                    name="phone"
-                    value={newFranchise.phone}
-                    onChange={handleCreateFranchiseChange}
-                    margin="normal"
-                  />
-                </Grid>
-
-                <Grid item xs={12} md={6}>
-                  <TextField
-                    fullWidth
-                    required
-                    label="Pincode"
-                    name="pincode"
-                    value={newFranchise.pincode}
-                    onChange={handleCreateFranchiseChange}
-                    margin="normal"
-                  />
-                </Grid>
-
-                <Grid item xs={12} md={6}>
-                  <FormControl fullWidth required margin="normal" style={{minWidth:"200px"}}>
-                    <InputLabel>State</InputLabel>
-                    <Select
-                      name="state"
-                      value={newFranchise.state}
-                      onChange={handleCreateFranchiseChange}
-                      label="State"
-                    >
-                      <MenuItem value="">
-                        <em>Select State</em>
-                      </MenuItem>
-                      {indianStates.map((state) => (
-                        <MenuItem key={state} value={state}>
-                          {state}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                </Grid>
-
-                <Grid item xs={12} md={6}>
-                  <TextField
-                    fullWidth
-                    label="Business Name"
-                    name="businessName"
-                    value={newFranchise.businessName}
-                    onChange={handleCreateFranchiseChange}
-                    margin="normal"
-                  />
-                </Grid>
-
-                <Grid item xs={12} md={6}>
-                  <TextField
-                    fullWidth
-                    label="Owner Name"
-                    name="ownerName"
-                    value={newFranchise.ownerName}
-                    onChange={handleCreateFranchiseChange}
-                    margin="normal"
-                  />
-                </Grid>
-
                 {/* Package Selection */}
                 <Grid item xs={12}>
-                  <FormControl fullWidth margin="normal" style={{minWidth:"200px"}}>
+                  <FormControl fullWidth margin="normal" style={{ minWidth: "200px" }}>
                     <InputLabel>Assign Packages (Optional)</InputLabel>
                     <Select
                       multiple
@@ -1058,7 +1055,7 @@ const ManageFranchises = () => {
                           .map((id) => {
                             const pkg = packages.find((p) => p._id === id);
                             return pkg ? pkg.name : "";
-                          })
+                          })   
                           .join(", ")
                       }
                     >
@@ -1141,7 +1138,7 @@ const ManageFranchises = () => {
                   >
                     <CardContent>
                       <Grid container spacing={2}>
-                        <Grid item xs={12} sm={6}>
+                        <Grid item xs={12} sm={6} style={{ minWidth: "200px" }}>
                           <Typography variant="body2" color="textSecondary">
                             <strong>Aadhaar Number:</strong>
                           </Typography>
@@ -1149,7 +1146,7 @@ const ManageFranchises = () => {
                             {kycData.aadhaarNumber || "N/A"}
                           </Typography>
                         </Grid>
-                        <Grid item xs={12} sm={6}>
+                        <Grid item xs={12} sm={6} style={{ minWidth: "200px" }}>
                           <Typography variant="body2" color="textSecondary">
                             <strong>PAN Number:</strong>
                           </Typography>
@@ -1157,7 +1154,7 @@ const ManageFranchises = () => {
                             {kycData.panNumber || "N/A"}
                           </Typography>
                         </Grid>
-                        <Grid item xs={12} sm={6}>
+                        <Grid item xs={12} sm={6} style={{ minWidth: "200px" }}>
                           <Typography variant="body2" color="textSecondary">
                             <strong>Submitted At:</strong>
                           </Typography>
@@ -1173,11 +1170,18 @@ const ManageFranchises = () => {
                             {getStatusChip(kycData.status)}
                           </Box>
                         </Grid>
-                        {kycData.isDigiLockerSubmission && (
+                        {kycData.isDigiLockerSubmission ? (
                           <Grid item xs={12}>
                             <Alert severity="info" sx={{ mt: 1 }}>
                               <strong>DigiLocker Submission:</strong> Documents were fetched directly from DigiLocker.
                               No file uploads were provided as part of this submission.
+                            </Alert>
+                          </Grid>
+                        ) : (
+                          <Grid item xs={12}>
+                            <Alert severity="info" sx={{ mt: 1 }}>
+                              <strong>Manual Submission:</strong> Documents were provided as Google Drive links.
+                              Please verify the links are accessible.
                             </Alert>
                           </Grid>
                         )}
@@ -1186,9 +1190,9 @@ const ManageFranchises = () => {
                   </Card>
                 </Grid>
 
-                <Grid item xs={12}>
+                <Grid item xs={12} style={{width:"100%"}}>
                   <Typography
-                    variant="h6"
+                    variant="h6" 
                     gutterBottom
                     sx={{ mt: 2, color: "primary.main", fontWeight: "bold" }}
                   >
@@ -1216,7 +1220,7 @@ const ManageFranchises = () => {
                       </Box>
                     </Card>
                   ) : (
-                    // For manual uploads, show document previews as before
+                    // For manual uploads with Google Drive links, show the links
                     <Grid container spacing={2}>
                       <Grid item xs={12} sm={6} md={3} style={{ flex: "1" }}>
                         <Card
@@ -1243,26 +1247,28 @@ const ManageFranchises = () => {
                             >
                               Aadhaar Front
                             </Typography>
-                            {renderDocumentPreview(
-                              kycData.aadhaarFrontDocument,
-                              "Aadhaar Front"
-                            )}
                             {kycData.aadhaarFrontDocument ? (
-                              <Button
-                                startIcon={<Visibility />}
-                                onClick={() =>
-                                  handleViewDocument(
-                                    kycData.aadhaarFrontDocument,
-                                    "Aadhaar Front"
-                                  )
-                                }
-                                fullWidth
-                                sx={{ mt: 1.5 }}
-                                variant="outlined"
-                                size="small"
-                              >
-                                View Full
-                              </Button>
+                              <>
+                                <Typography
+                                  color="textSecondary"
+                                  variant="body2"
+                                  align="center"
+                                  sx={{ mt: 1.5 }}
+                                >
+                                  Google Drive Link
+                                </Typography>
+                                <Button
+                                  startIcon={<Visibility />}
+                                  href={kycData.aadhaarFrontDocument}
+                                  target="_blank"
+                                  fullWidth
+                                  sx={{ mt: 1.5 }}
+                                  variant="outlined"
+                                  size="small"
+                                >
+                                  View Document
+                                </Button>
+                              </>
                             ) : (
                               <Typography
                                 color="textSecondary"
@@ -1302,26 +1308,28 @@ const ManageFranchises = () => {
                             >
                               Aadhaar Back
                             </Typography>
-                            {renderDocumentPreview(
-                              kycData.aadhaarBackDocument,
-                              "Aadhaar Back"
-                            )}
                             {kycData.aadhaarBackDocument ? (
-                              <Button
-                                startIcon={<Visibility />}
-                                onClick={() =>
-                                  handleViewDocument(
-                                    kycData.aadhaarBackDocument,
-                                    "Aadhaar Back"
-                                  )
-                                }
-                                fullWidth
-                                sx={{ mt: 1.5 }}
-                                variant="outlined"
-                                size="small"
-                              >
-                                View Full
-                              </Button>
+                              <>
+                                <Typography
+                                  color="textSecondary"
+                                  variant="body2"
+                                  align="center"
+                                  sx={{ mt: 1.5 }}
+                                >
+                                  Google Drive Link
+                                </Typography>
+                                <Button
+                                  startIcon={<Visibility />}
+                                  href={kycData.aadhaarBackDocument}
+                                  target="_blank"
+                                  fullWidth
+                                  sx={{ mt: 1.5 }}
+                                  variant="outlined"
+                                  size="small"
+                                >
+                                  View Document
+                                </Button>
+                              </>
                             ) : (
                               <Typography
                                 color="textSecondary"
@@ -1361,26 +1369,28 @@ const ManageFranchises = () => {
                             >
                               PAN Card
                             </Typography>
-                            {renderDocumentPreview(
-                              kycData.panDocument,
-                              "PAN Card"
-                            )}
                             {kycData.panDocument ? (
-                              <Button
-                                startIcon={<Visibility />}
-                                onClick={() =>
-                                  handleViewDocument(
-                                    kycData.panDocument,
-                                    "PAN Card"
-                                  )
-                                }
-                                fullWidth
-                                sx={{ mt: 1.5 }}
-                                variant="outlined"
-                                size="small"
-                              >
-                                View Full
-                              </Button>
+                              <>
+                                <Typography
+                                  color="textSecondary"
+                                  variant="body2"
+                                  align="center"
+                                  sx={{ mt: 1.5 }}
+                                >
+                                  Google Drive Link
+                                </Typography>
+                                <Button
+                                  startIcon={<Visibility />}
+                                  href={kycData.panDocument}
+                                  target="_blank"
+                                  fullWidth
+                                  sx={{ mt: 1.5 }}
+                                  variant="outlined"
+                                  size="small"
+                                >
+                                  View Document
+                                </Button>
+                              </>
                             ) : (
                               <Typography
                                 color="textSecondary"
@@ -1420,26 +1430,28 @@ const ManageFranchises = () => {
                             >
                               Business Registration
                             </Typography>
-                            {renderDocumentPreview(
-                              kycData.businessRegistrationDocument,
-                              "Business Registration"
-                            )}
                             {kycData.businessRegistrationDocument ? (
-                              <Button
-                                startIcon={<Visibility />}
-                                onClick={() =>
-                                  handleViewDocument(
-                                    kycData.businessRegistrationDocument,
-                                    "Business Registration"
-                                  )
-                                }
-                                fullWidth
-                                sx={{ mt: 1.5 }}
-                                variant="outlined"
-                                size="small"
-                              >
-                                View Full
-                              </Button>
+                              <>
+                                <Typography
+                                  color="textSecondary"
+                                  variant="body2"
+                                  align="center"
+                                  sx={{ mt: 1.5 }}
+                                >
+                                  Google Drive Link
+                                </Typography>
+                                <Button
+                                  startIcon={<Visibility />}
+                                  href={kycData.businessRegistrationDocument}
+                                  target="_blank"
+                                  fullWidth
+                                  sx={{ mt: 1.5 }}
+                                  variant="outlined"
+                                  size="small"
+                                >
+                                  View Document
+                                </Button>
+                              </>
                             ) : (
                               <Typography
                                 color="textSecondary"
@@ -1598,72 +1610,37 @@ const ManageFranchises = () => {
                 />
               </Grid>
 
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
-                  required
-                  label="Phone Number"
-                  name="phone"
-                  value={newFranchise.phone}
-                  onChange={handleCreateFranchiseChange}
-                  margin="normal"
-                />
-              </Grid>
-
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
-                  required
-                  label="Pincode"
-                  name="pincode"
-                  value={newFranchise.pincode}
-                  onChange={handleCreateFranchiseChange}
-                  margin="normal"
-                />
-              </Grid>
-
-              <Grid item xs={12} sm={6}>
-                <FormControl fullWidth required margin="normal">
-                  <InputLabel>State</InputLabel>
+              {/* Package Selection */}
+              <Grid item xs={12}>
+                <FormControl fullWidth margin="normal">
+                  <InputLabel>Assign Packages (Optional)</InputLabel>
                   <Select
-                    name="state"
-                    value={newFranchise.state}
-                    onChange={handleCreateFranchiseChange}
-                    label="State"
-                    style={{ minWidth: "200px" }}
+                    multiple
+                    value={selectedPackages}
+                    onChange={(e) => setSelectedPackages(e.target.value)}
+                    label="Assign Packages (Optional)"
+                    renderValue={(selected) =>
+                      selected
+                        .map((id) => {
+                          const pkg = packages.find((p) => p._id === id);
+                          return pkg ? pkg.name : "";
+                        })
+                        .join(", ")
+                    }
                   >
-                    <MenuItem value="">
-                      <em>Select State</em>
-                    </MenuItem>
-                    {indianStates.map((state) => (
-                      <MenuItem key={state} value={state}>
-                        {state}
+                    {packages.map((pkg) => (
+                      <MenuItem key={pkg._id} value={pkg._id}>
+                        <Checkbox
+                          checked={selectedPackages.indexOf(pkg._id) > -1}
+                        />
+                        <ListItemText
+                          primary={pkg.name}
+                          secondary={`₹${pkg.price} - ${pkg.creditsIncluded} credits`}
+                        />
                       </MenuItem>
                     ))}
                   </Select>
                 </FormControl>
-              </Grid>
-
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
-                  label="Business Name"
-                  name="businessName"
-                  value={newFranchise.businessName}
-                  onChange={handleCreateFranchiseChange}
-                  margin="normal"
-                />
-              </Grid>
-
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
-                  label="Owner Name"
-                  name="ownerName"
-                  value={newFranchise.ownerName}
-                  onChange={handleCreateFranchiseChange}
-                  margin="normal"
-                />
               </Grid>
             </Grid>
           </Box>
@@ -1692,7 +1669,17 @@ const ManageFranchises = () => {
         <DialogTitle>Edit Franchise Details</DialogTitle>
         <DialogContent>
           <Box component="form" onSubmit={handleUpdateFranchise}>
-            <Grid container spacing={2}>
+            {/* Basic Information Section */}
+            <Grid container spacing={3} sx={{ mt: 1 }}>
+              <Grid item xs={12}>
+                <Typography variant="h6" gutterBottom sx={{ fontWeight: 'bold', color: 'primary.main', textAlign: 'left' }}>
+                  Basic Information
+                </Typography>
+                <Divider sx={{ mb: 2 }} />
+              </Grid>
+            </Grid>
+            
+            <Grid container spacing={3}>
               <Grid item xs={12} sm={6}>
                 <TextField
                   fullWidth
@@ -1704,7 +1691,7 @@ const ManageFranchises = () => {
                   margin="normal"
                 />
               </Grid>
-
+              
               <Grid item xs={12} sm={6}>
                 <TextField
                   fullWidth
@@ -1716,7 +1703,7 @@ const ManageFranchises = () => {
                   margin="normal"
                 />
               </Grid>
-
+              
               <Grid item xs={12} sm={6}>
                 <TextField
                   fullWidth
@@ -1729,7 +1716,7 @@ const ManageFranchises = () => {
                   margin="normal"
                 />
               </Grid>
-
+              
               <Grid item xs={12} sm={6}>
                 <TextField
                   fullWidth
@@ -1741,13 +1728,19 @@ const ManageFranchises = () => {
                   margin="normal"
                 />
               </Grid>
-
+            </Grid>
+            
+            {/* Address Information Section */}
+            <Grid container spacing={3} sx={{ mt: 3 }}>
               <Grid item xs={12}>
-                <Typography variant="h6" gutterBottom sx={{ mt: 2 }}>
+                <Typography variant="h6" gutterBottom sx={{ fontWeight: 'bold', color: 'primary.main', textAlign: 'left' }}>
                   Address Information
                 </Typography>
+                <Divider sx={{ mb: 2 }} />
               </Grid>
-
+            </Grid>
+            
+            <Grid container spacing={3}>
               <Grid item xs={12} sm={6}>
                 <TextField
                   fullWidth
@@ -1758,7 +1751,7 @@ const ManageFranchises = () => {
                   margin="normal"
                 />
               </Grid>
-
+              
               <Grid item xs={12} sm={6}>
                 <TextField
                   fullWidth
@@ -1769,7 +1762,7 @@ const ManageFranchises = () => {
                   margin="normal"
                 />
               </Grid>
-
+              
               <Grid item xs={12} sm={6}>
                 <TextField
                   fullWidth
@@ -1780,7 +1773,7 @@ const ManageFranchises = () => {
                   margin="normal"
                 />
               </Grid>
-
+              
               <Grid item xs={12} sm={6}>
                 <TextField
                   fullWidth
@@ -1789,6 +1782,156 @@ const ManageFranchises = () => {
                   value={editFranchiseData.address?.pincode || ""}
                   onChange={handleEditFranchiseChange}
                   margin="normal"
+                />
+              </Grid>
+              
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  fullWidth
+                  label="Country"
+                  name="address.country"
+                  value={editFranchiseData.address?.country || "India"}
+                  onChange={handleEditFranchiseChange}
+                  margin="normal"
+                />
+              </Grid>
+            </Grid>
+            
+            {/* Financial Information Section */}
+            <Grid container spacing={3} sx={{ mt: 3 }}>
+              <Grid item xs={12}>
+                <Typography variant="h6" gutterBottom sx={{ fontWeight: 'bold', color: 'primary.main', textAlign: 'left' }}>
+                  Financial Information
+                </Typography>
+                <Divider sx={{ mb: 2 }} />
+              </Grid>
+            </Grid>
+            
+            <Grid container spacing={3}>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  fullWidth
+                  label="PAN Number"
+                  name="panNumber"
+                  value={editFranchiseData.panNumber || ""}
+                  onChange={handleEditFranchiseChange}
+                  margin="normal"
+                  inputProps={{ maxLength: 10 }}
+                />
+              </Grid>
+              
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  fullWidth
+                  label="Bank Account Number"
+                  name="bankAccountNumber"
+                  value={editFranchiseData.bankAccountNumber || ""}
+                  onChange={handleEditFranchiseChange}
+                  margin="normal"
+                />
+              </Grid>
+              
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  fullWidth
+                  label="Bank IFSC Code"
+                  name="bankIfscCode"
+                  value={editFranchiseData.bankIfscCode || ""}
+                  onChange={handleEditFranchiseChange}
+                  margin="normal"
+                  inputProps={{ maxLength: 11 }}
+                />
+              </Grid>
+              
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  fullWidth
+                  label="Certificate Name"
+                  name="certificateName"
+                  value={editFranchiseData.certificateName || ""}
+                  onChange={handleEditFranchiseChange}
+                  margin="normal"
+                  helperText="Custom name to appear on certificates"
+                />
+              </Grid>
+            </Grid>
+            
+            {/* Credits Section */}
+            <Grid container spacing={3} sx={{ mt: 3 }}>
+              <Grid item xs={12}>
+                <Typography variant="h6" gutterBottom sx={{ fontWeight: 'bold', color: 'primary.main', textAlign: 'left' }}>
+                  Credits Information
+                </Typography>
+                <Divider sx={{ mb: 2 }} />
+              </Grid>
+            </Grid>
+            
+            <Grid container spacing={3}>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  fullWidth
+                  label="Current Credits"
+                  name="credits"
+                  type="number"
+                  value={editFranchiseData.credits || 0}
+                  onChange={handleEditFranchiseChange}
+                  margin="normal"
+                />
+              </Grid>
+              
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  fullWidth
+                  label="Total Credits Purchased"
+                  name="totalCreditsPurchased"
+                  type="number"
+                  value={editFranchiseData.totalCreditsPurchased || 0}
+                  onChange={handleEditFranchiseChange}
+                  margin="normal"
+                />
+              </Grid>
+            </Grid>
+            
+            {/* Status Section */}
+            <Grid container spacing={3} sx={{ mt: 3 }}>
+              <Grid item xs={12}>
+                <Typography variant="h6" gutterBottom sx={{ fontWeight: 'bold', color: 'primary.main', textAlign: 'left' }}>
+                  Status Information
+                </Typography>
+                <Divider sx={{ mb: 2 }} />
+              </Grid>
+            </Grid>
+            
+            <Grid container spacing={3}>
+              <Grid item xs={12} sm={6}>
+                <FormControl fullWidth margin="normal">
+                  <InputLabel>KYC Status</InputLabel>
+                  <Select
+                    name="kycStatus"
+                    value={editFranchiseData.kycStatus || "pending"}
+                    onChange={handleEditFranchiseChange}
+                    label="KYC Status"
+                  >
+                    <MenuItem value="pending">Pending</MenuItem>
+                    <MenuItem value="submitted">Submitted</MenuItem>
+                    <MenuItem value="approved">Approved</MenuItem>
+                    <MenuItem value="rejected">Rejected</MenuItem>
+                  </Select>
+                </FormControl>
+              </Grid>
+              
+              <Grid item xs={12} sm={6}>
+                <FormControlLabel
+                  control={
+                    <Switch
+                      checked={editFranchiseData.isActive !== undefined ? editFranchiseData.isActive : true}
+                      onChange={(e) => setEditFranchiseData(prev => ({ ...prev, isActive: e.target.checked }))}
+                      name="isActive"
+                      color="primary"
+                    />
+                  }
+                  label={editFranchiseData.isActive ? "Active" : "Inactive"}
+                  sx={{ mt: 3 }}
                 />
               </Grid>
             </Grid>
@@ -1947,7 +2090,226 @@ const ManageFranchises = () => {
                     {formatDate(selectedFranchise.createdAt)}
                   </Typography>
                 </Grid>
-
+                
+                {/* PAN Details */}
+                <Grid item xs={12}>
+                  <Typography
+                    variant="subtitle1"
+                    fontWeight="bold"
+                    sx={{ mt: 2 }}
+                  >
+                    PAN Details
+                  </Typography>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <Typography variant="body2" color="textSecondary">
+                    PAN Number
+                  </Typography>
+                  <Typography variant="body1">
+                    {selectedFranchise.panNumber || "N/A"}
+                  </Typography>
+                </Grid>
+                {selectedFranchise.panDetails && selectedFranchise.panDetails.data && (
+                  <>
+                    <Grid item xs={12} sm={6}>
+                      <Typography variant="body2" color="textSecondary">
+                        Full Name
+                      </Typography>
+                      <Typography variant="body1">
+                        {selectedFranchise.panDetails.data.full_name || "N/A"}
+                      </Typography>
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                      <Typography variant="body2" color="textSecondary">
+                        Masked Aadhaar
+                      </Typography>
+                      <Typography variant="body1">
+                        {selectedFranchise.panDetails.data.masked_aadhaar || "N/A"}
+                      </Typography>
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                      <Typography variant="body2" color="textSecondary">
+                        Gender
+                      </Typography>
+                      <Typography variant="body1">
+                        {selectedFranchise.panDetails.data.gender || "N/A"}
+                      </Typography>
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                      <Typography variant="body2" color="textSecondary">
+                        Date of Birth
+                      </Typography>
+                      <Typography variant="body1">
+                        {selectedFranchise.panDetails.data.dob || "N/A"}
+                      </Typography>
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                      <Typography variant="body2" color="textSecondary">
+                        Category
+                      </Typography>
+                      <Typography variant="body1">
+                        {selectedFranchise.panDetails.data.category || "N/A"}
+                      </Typography>
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                      <Typography variant="body2" color="textSecondary">
+                        Status
+                      </Typography>
+                      <Typography variant="body1">
+                        {selectedFranchise.panDetails.data.status || "N/A"}
+                      </Typography>
+                    </Grid>
+                    
+                    {/* Address Information from PAN */}
+                    {selectedFranchise.panDetails.data.address && (
+                      <>
+                        <Grid item xs={12}>
+                          <Typography
+                            variant="subtitle1"
+                            fontWeight="bold"
+                            sx={{ mt: 2 }}
+                          >
+                            Address from PAN
+                          </Typography>
+                        </Grid>
+                        <Grid item xs={12} sm={6}>
+                          <Typography variant="body2" color="textSecondary">
+                            Address Line 1
+                          </Typography>
+                          <Typography variant="body1">
+                            {selectedFranchise.panDetails.data.address.line_1 || "N/A"}
+                          </Typography>
+                        </Grid>
+                        <Grid item xs={12} sm={6}>
+                          <Typography variant="body2" color="textSecondary">
+                            City
+                          </Typography>
+                          <Typography variant="body1">
+                            {selectedFranchise.panDetails.data.address.city || "N/A"}
+                          </Typography>
+                        </Grid>
+                        <Grid item xs={12} sm={6}>
+                          <Typography variant="body2" color="textSecondary">
+                            State
+                          </Typography>
+                          <Typography variant="body1">
+                            {selectedFranchise.panDetails.data.address.state || "N/A"}
+                          </Typography>
+                        </Grid>
+                        <Grid item xs={12} sm={6}>
+                          <Typography variant="body2" color="textSecondary">
+                            Zip Code
+                          </Typography>
+                          <Typography variant="body1">
+                            {selectedFranchise.panDetails.data.address.zip || "N/A"}
+                          </Typography>
+                        </Grid>
+                        <Grid item xs={12}>
+                          <Typography variant="body2" color="textSecondary">
+                            Full Address
+                          </Typography>
+                          <Typography variant="body1">
+                            {selectedFranchise.panDetails.data.address.full || "N/A"}
+                          </Typography>
+                        </Grid>
+                      </>
+                    )}
+                  </>
+                )}                
+                {/* Bank Details */}
+                <Grid item xs={12}>
+                  <Typography
+                    variant="subtitle1"
+                    fontWeight="bold"
+                    sx={{ mt: 2 }}
+                  >
+                    Bank Details
+                  </Typography>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <Typography variant="body2" color="textSecondary">
+                    Bank Account Number
+                  </Typography>
+                  <Typography variant="body1">
+                    {selectedFranchise.bankAccountNumber ? `XXXXXX${selectedFranchise.bankAccountNumber.slice(-4)}` : "N/A"}
+                  </Typography>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <Typography variant="body2" color="textSecondary">
+                    IFSC Code
+                  </Typography>
+                  <Typography variant="body1">
+                    {selectedFranchise.bankIfscCode || "N/A"}
+                  </Typography>
+                </Grid>
+                {selectedFranchise.bankDetails && selectedFranchise.bankDetails.data && (
+                  <>
+                    <Grid item xs={12} sm={6}>
+                      <Typography variant="body2" color="textSecondary">
+                        Account Holder Name
+                      </Typography>
+                      <Typography variant="body1">
+                        {selectedFranchise.bankDetails.data.full_name || "N/A"}
+                      </Typography>
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                      <Typography variant="body2" color="textSecondary">
+                        Account Exists
+                      </Typography>
+                      <Typography variant="body1">
+                        {selectedFranchise.bankDetails.data.account_exists ? "Yes" : "No"}
+                      </Typography>
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                      <Typography variant="body2" color="textSecondary">
+                        Bank Name
+                      </Typography>
+                      <Typography variant="body1">
+                        {selectedFranchise.bankDetails.data.ifsc_details?.bank_name || "N/A"}
+                      </Typography>
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                      <Typography variant="body2" color="textSecondary">
+                        Branch
+                      </Typography>
+                      <Typography variant="body1">
+                        {selectedFranchise.bankDetails.data.ifsc_details?.branch || "N/A"}
+                      </Typography>
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                      <Typography variant="body2" color="textSecondary">
+                        RTGS Enabled
+                      </Typography>
+                      <Typography variant="body1">
+                        {selectedFranchise.bankDetails.data.ifsc_details?.rtgs ? "Yes" : "No"}
+                      </Typography>
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                      <Typography variant="body2" color="textSecondary">
+                        NEFT Enabled
+                      </Typography>
+                      <Typography variant="body1">
+                        {selectedFranchise.bankDetails.data.ifsc_details?.neft ? "Yes" : "No"}
+                      </Typography>
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                      <Typography variant="body2" color="textSecondary">
+                        MICR Check
+                      </Typography>
+                      <Typography variant="body1">
+                        {selectedFranchise.bankDetails.data.ifsc_details?.micr_check ? "Yes" : "No"}
+                      </Typography>
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                      <Typography variant="body2" color="textSecondary">
+                        Status
+                      </Typography>
+                      <Typography variant="body1">
+                        {selectedFranchise.bankDetails.data.status || "N/A"}
+                      </Typography>
+                    </Grid>
+                  </>
+                )}
                 {/* Package Assignment for Approval */}
                 <Grid item xs={12}>
                   <FormControl fullWidth margin="normal" style={{minWidth:"200px"}}>
@@ -2020,6 +2382,64 @@ const ManageFranchises = () => {
           <Button onClick={handleCloseRegistrationDialog}>Close</Button>
         </DialogActions>
       </Dialog>
+      
+      {/* Certificate Name Update Dialog */}
+      <Dialog
+        open={certificateDialogOpen}
+        onClose={handleCertificateDialogClose}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle
+          sx={{
+            bgcolor: "primary.main",
+            color: "white",
+            fontWeight: "bold",
+          }}
+        >
+          Update Certificate Name
+        </DialogTitle>
+        <DialogContent>
+          <Box sx={{ mt: 2 }}>
+            <Typography variant="body1" paragraph>
+              Update the certificate name for {certificateFranchise?.businessName}
+            </Typography>
+            <TextField
+              fullWidth
+              label="Certificate Name"
+              value={certificateName}
+              onChange={handleCertificateNameChange}
+              variant="outlined"
+              sx={{ mt: 2 }}
+              helperText="This name will appear on the franchise's certificate"
+            />
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={handleCertificateDialogClose}
+            color="primary"
+          >
+            Cancel
+          </Button>
+          <Button
+            onClick={handleCertificateNameSubmit}
+            variant="contained"
+            color="primary"
+            disabled={loading || !certificateName.trim()}
+          >
+            {loading ? <CircularProgress size={24} /> : "Update Name"}
+          </Button>
+        </DialogActions>
+      </Dialog>
+      
+      {/* Certificate Success Snackbar */}
+      <Snackbar
+        open={certificateSnackbarOpen}
+        autoHideDuration={6000}
+        onClose={handleCertificateSnackbarClose}
+        message={certificateSuccess}
+      />
     </Box>
   );
 };

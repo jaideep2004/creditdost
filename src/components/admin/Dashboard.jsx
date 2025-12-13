@@ -181,7 +181,7 @@ const AdminDashboard = () => {
   };
 
   const menuItems = [
-    { text: "Dashboard", icon: <DashboardIcon />, path: "/admin" }, // Reverted to original
+    { text: "Dashboard", icon: <DashboardIcon />, path: "/admin" },
     {
       text: "Manage Franchises",
       icon: <PeopleIcon />,
@@ -238,6 +238,11 @@ const AdminDashboard = () => {
       text: "Google Sheets",
       icon: <DescriptionIcon />,
       path: "/admin/google-sheets",
+    },
+    {
+      text: "Digital Agreements",
+      icon: <DescriptionIcon />,
+      path: "/admin/digital-agreements",
     },
   ];
 

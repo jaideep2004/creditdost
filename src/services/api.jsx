@@ -47,13 +47,22 @@ export const franchiseAPI = {
   getProfile: () => api.get('/franchises/profile'),
   updateProfile: (data) => api.put('/franchises/profile', data),
   getKycStatus: () => api.get('/kyc/status'),
-  submitKyc: (formData) => {
-    const config = {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    };
-    return api.post('/kyc/submit', formData, config);
+  submitKyc: (data) => {
+    // Check if data contains file uploads or just links
+    const isFormData = data instanceof FormData;
+    
+    if (isFormData) {
+      // For file uploads
+      const config = {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      };
+      return api.post('/kyc/submit', data, config);
+    } else {
+      // For Google Drive links
+      return api.post('/kyc/submit', data);
+    }
   },
   // Add the new function for DigiLocker initialization
   initDigiLocker: () => api.post('/kyc/digilocker/init'),
@@ -75,6 +84,22 @@ export const franchiseAPI = {
   createReferral: (data) => api.post('/dashboard/referrals', data),
   // Payouts
   getFranchisePayouts: () => api.get('/dashboard/payouts'),
+  // Certificate
+  getCertificateData: () => api.get('/franchises/certificate'),
+  requestCertificateNameUpdate: (data) => api.put('/franchises/certificate/name', data),
+  // PAN Details
+  getPanDetails: () => api.get('/franchises/pan'),
+  updatePanDetails: (data) => api.put('/franchises/pan', data),
+  fetchPanComprehensive: (data) => api.post('/franchises/pan/fetch', data),
+  // Bank Details
+  getBankDetails: () => api.get('/franchises/bank'),
+  updateBankDetails: (data) => api.put('/franchises/bank', data),
+  verifyBankDetails: (data) => api.post('/franchises/bank/verify', data),
+  // Digital Agreement endpoints
+  getDigitalAgreement: () => api.get('/digital-agreements'),
+  downloadDigitalAgreement: () => api.get('/digital-agreements/download', { responseType: 'blob' }),
+  submitSignedDigitalAgreement: (data) => api.post('/digital-agreements/submit', data),
+  initiateEsign: (data) => api.post('/digital-agreements/esign/initiate', data),
 };
 
 // Blog API functions
@@ -148,11 +173,19 @@ export const adminAPI = {
   getAllReferrals: () => api.get('/admin/referrals'),
   getReferralSettings: () => api.get('/admin/referral-settings'),
   updateReferralSettings: (data) => api.put('/admin/referral-settings', data),
+  // Certificate name update
+  updateFranchiseCertificateName: (data) => api.put('/admin/franchises/certificate-name', data),
   // Blogs
   getAllBlogs: (params) => api.get('/blogs/admin', { params }),
   createBlog: (blogData) => api.post('/blogs/admin', blogData),
   updateBlog: (id, blogData) => api.put(`/blogs/admin/${id}`, blogData),
   deleteBlog: (id) => api.delete(`/blogs/admin/${id}`),
+  // Digital Agreement endpoints (Admin)
+  getAllDigitalAgreements: () => api.get('/digital-agreements/admin'),
+  getDigitalAgreementById: (id) => api.get(`/digital-agreements/admin/${id}`),
+  approveDigitalAgreement: (id) => api.put(`/digital-agreements/admin/${id}/approve`),
+  rejectDigitalAgreement: (id, data) => api.put(`/digital-agreements/admin/${id}/reject`, data),
+  downloadSignedDigitalAgreement: (id) => api.get(`/digital-agreements/admin/${id}/download`, { responseType: 'blob' }),
 };
 
 // Credit API functions

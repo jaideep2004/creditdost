@@ -161,7 +161,7 @@ const DropdownMenu = styled(Box)(({ theme, open }) => ({
   top: "100%",
   left: "50%",
   transform: "translateX(-50%)",
-  width: "220px",
+  width: "260px",
   backgroundColor: "white",
   borderRadius: "12px",
   boxShadow: "0 10px 30px rgba(0, 0, 0, 0.15)",

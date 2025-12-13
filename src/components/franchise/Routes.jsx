@@ -17,6 +17,7 @@ import Certificate from './Certificate';
 import DigitalAgreement from './DigitalAgreement';
 import Payouts from './Payouts';
 import RelationshipManagerInfo from './RelationshipManagerInfo';
+import WhatsAppGroups from './WhatsAppGroups';
 
 const FranchiseRoutes = () => {
   return (
@@ -25,6 +26,7 @@ const FranchiseRoutes = () => {
         <Route index element={<DashboardHome />} />
         <Route path="profile" element={<Profile />} />
         <Route path="kyc" element={<KycVerification />} />
+        <Route path="whatsapp-groups" element={<WhatsAppGroups />} />
         <Route path="packages" element={<Packages />} />
         <Route path="payment" element={<Payment />} />
         <Route path="credit-check" element={<CreditCheck />} />
