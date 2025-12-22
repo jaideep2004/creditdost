@@ -2,9 +2,9 @@ import React, { useState } from "react";
 
 const services = [
   {
-    title: "Free Credit Score Check",
+    title: "Credit Score Repair",
     description:
-      "Don't just take our word for it hear what our customers have to say about us! we have helped thousand people",
+      "Expert credit repair services that fix errors, improve your score, and restore your financial credibility",
     icon: "👥",
     image:
       "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=600&h=400&fit=crop",
@@ -12,15 +12,15 @@ const services = [
   {
     title: "Apply For Loan",
     description:
-      "Don't just take our word for it hear what our customers have to say about us! we have helped thousand people",
+      "Rebuild your creditworthiness and secure financing even with a poor CIBIL score. Contact today",
     icon: "🧠",
     image:
       "https://images.unsplash.com/photo-1553877522-43269d4ea984?w=600&h=400&fit=crop",
   },
   {
-    title: "EMI Calculator",
+    title: "Franchise Opportunity",
     description:
-      "Don't just take our word for it hear what our customers have to say about us! we have helped thousand people",
+      "Partner with Credit Dost and build a rewarding business helping people improve their credit scores and financial confidence.",
     icon: "📈",
     image:
       "https://images.unsplash.com/photo-1556761175-b413da4baf72?w=600&h=400&fit=crop",
@@ -198,7 +198,7 @@ const FeaturesSection = () => {
                 fontWeight: 800,
                 color: "#1a2332",
                 lineHeight: 1.2,
-                
+
                 margin: 0,
               }}
             >

@@ -16,6 +16,7 @@ import ManageRelationshipManagers from './ManageRelationshipManagers';
 import AdminDashboardHome from './AdminDashboardHome';
 import GoogleSheetsSettings from './GoogleSheetsSettings';
 import ManageDigitalAgreements from './ManageDigitalAgreements';
+import ManageAIAnalysis from './ManageAIAnalysis';
 
 const AdminRoutes = () => {
   return ( 
@@ -36,6 +37,7 @@ const AdminRoutes = () => {
         <Route path="rms" element={<ManageRelationshipManagers />} />
         <Route path="google-sheets" element={<GoogleSheetsSettings />} />
         <Route path="digital-agreements" element={<ManageDigitalAgreements />} />
+        <Route path="ai-analysis" element={<ManageAIAnalysis />} />
       </Route>
     </Routes>
   );

@@ -12,7 +12,7 @@ import AddIcon from "@mui/icons-material/Add";
 
 const AboutSection = styled(Box)(({ theme }) => ({
   position: "relative",
- 
+
   overflow: "hidden",
   backgroundColor: "#fff",
 }));
@@ -172,7 +172,12 @@ const StatsSection = () => {
       </FloatingCircles>
 
       <Container style={{ maxWidth: "1400px" }}>
-        <Grid container spacing={6} alignItems="center" style={{ flexWrap: "nowrap" }}>
+        <Grid
+          container
+          spacing={6}
+          alignItems="center"
+          style={{ flexWrap: "nowrap" }}
+        >
           <Grid item xs={12} md={6} style={{ flex: "1" }}>
             <ImageContainer>
               <Badge>
@@ -232,12 +237,14 @@ const StatsSection = () => {
                 fontSize: "0.95rem",
               }}
             >
-              Payment stions enable businesses to accept payments from ctly
-              customers ctly securely. stions enable businesses to accept
-              payments from ctly customers ctly securely.
+              At <b>Credit Dost</b>, we believe everyone deserves a second chance to
+              rebuild their credit and financial confidence. We are India's
+              dedicated Credit Score Improvement and Dispute Resolution Company,
+              helping individuals repair, rebuild, and manage their credit
+              health with transparency, accuracy, and trust.
             </Typography>
 
-            <Grid container spacing={3}>
+            {/* <Grid container spacing={3}>
               <Grid item xs={12} sm={6}>
                 <ListItem>
                   <CircleIcon sx={{ fontSize: 10, color: "#0077B6" }} />
@@ -258,7 +265,7 @@ const StatsSection = () => {
                   <Typography>Our Startup industry Here</Typography>
                 </ListItem>
               </Grid>
-            </Grid>
+            </Grid> */}
 
             <AboutButton endIcon={<AddIcon />}>About Us</AboutButton>
           </Grid>

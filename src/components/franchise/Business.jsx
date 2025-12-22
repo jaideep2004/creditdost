@@ -28,8 +28,7 @@ import {
   StepContent,
 } from "@mui/material";
 import { Check as CheckIcon } from "@mui/icons-material";
-import { franchiseAPI } from "../../services/api";
-import axios from "axios";
+import api, { franchiseAPI } from "../../services/api";
 
 const Business = () => {
   const [customerPackages, setCustomerPackages] = useState([]);
@@ -63,9 +62,8 @@ const Business = () => {
     try {
       setLoading(true);
       setError("");
-      const response = await axios.get(
-        "http://localhost:5000/api/customer-packages"
-      );
+      // Using the existing api instance which includes authentication headers
+      const response = await api.get("/customer-packages");
       setCustomerPackages(response.data);
     } catch (err) {
       setError("Failed to fetch customer packages. Please try again later.");

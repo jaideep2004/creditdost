@@ -4,9 +4,9 @@ This document outlines the implementation of the digital agreement feature with 
 
 ## Features Implemented
 
-### 1. PDF Generation and Editing
-- Dynamic generation of franchise agreement PDFs with user-specific information
-- Automatic insertion of user names into PDF templates at predefined coordinates
+### 1. PDF Generation and Copying
+- Simple copying of a master franchise agreement template for each user
+- User-specific PDF copies stored in the uploads directory
 - PDF download functionality for franchise users
 
 ### 2. Surepass eSign Integration
@@ -34,7 +34,7 @@ This document outlines the implementation of the digital agreement feature with 
 #### Controllers
 - `digitalAgreementController.js` with endpoints for:
   - Creating and retrieving digital agreements
-  - PDF generation and download
+  - PDF copying and download
   - Surepass eSign initiation and webhook handling
   - Admin approval/rejection workflows
 
@@ -58,8 +58,9 @@ This document outlines the implementation of the digital agreement feature with 
 
 ### API Integrations
 
-#### PDF Library
-- `pdf-lib` for dynamic PDF generation and editing
+#### PDF Handling
+- Simple file copying instead of dynamic PDF modification
+- Reduced complexity and improved reliability
 
 #### Surepass eSign
 - Integration with Surepass eSign API for electronic signatures
@@ -77,7 +78,7 @@ Backend/
 │   └── digitalAgreements.js
 ├── uploads/
 │   ├── franchise_agreement_template.pdf (master template - to be added manually)
-│   ├── agreements/ (user-specific copies with inserted names)
+│   ├── agreements/ (user-specific copies)
 │   └── signed-agreements/ (signed documents)
 └── server.js (updated with new routes)
 
@@ -103,7 +104,7 @@ src/
 
 ### 2. Directory Setup
 The system automatically creates the required directories:
-- `Backend/uploads/agreements/` - For user-specific PDF copies with inserted names
+- `Backend/uploads/agreements/` - For user-specific PDF copies
 - `Backend/uploads/signed-agreements/` - For signed documents
 
 ### 3. Surepass Configuration
@@ -113,9 +114,9 @@ The system automatically creates the required directories:
 
 ## Workflow
 
-1. **Agreement Creation**: When a franchise user accesses the Digital Agreement tab, a personalized PDF is automatically generated with their name inserted at predefined coordinates.
+1. **Agreement Creation**: When a franchise user accesses the Digital Agreement tab, a copy of the master template is created with their name.
 
-2. **PDF Download**: Users can download the generated PDF for offline signing or electronic signing.
+2. **PDF Download**: Users can download their personalized PDF copy.
 
 3. **eSign Process**: Users initiate the Surepass eSign process, which redirects them to the Surepass signing portal.
 
@@ -134,31 +135,18 @@ The implementation uses the following environment variables:
 - `FRONTEND_URL`: For redirect URLs after eSign process
 - `BACKEND_URL`: For webhook endpoints
 
-## Customization
-
-### PDF Text Positioning
-The user's name is inserted at coordinates (50, 700) on the first page of the PDF. To adjust these coordinates:
-1. Modify the `x` and `y` values in the `generatePdfWithUserData` function in `digitalAgreementController.js`
-2. The coordinates are measured from the bottom-left corner of the page (standard PDF coordinate system)
-3. Experiment with different values to position the text correctly on your template
-
-### Adding More Dynamic Content
-To add more dynamic content to the PDF:
-1. Extend the `generatePdfWithUserData` function
-2. Add additional `drawText` calls with appropriate coordinates
-3. Pass additional data through the function parameters
-
 ## Next Steps
 
-1. Replace the placeholder template (`franchise_agreement_template.pdf`) with an actual PDF template
-2. Adjust the text positioning coordinates in the `generatePdfWithUserData` function
-3. Configure Surepass API credentials in the admin settings
-4. Test the complete workflow with actual PDF documents and eSign transactions
+1. Place your franchise agreement template in the uploads directory
+2. Configure Surepass API credentials in the admin settings
+3. Test the complete workflow with actual PDF documents and eSign transactions
+4. Adjust eSign signature positions based on your template layout
+5. Implement additional security measures for document storage and access
 
 ## Dependencies
 
-- `pdf-lib`: For PDF generation and editing
+- Built-in Node.js file system operations (no external PDF libraries needed)
 - `axios`: For API requests to Surepass
 - Existing project dependencies (Express, Mongoose, etc.)
 
-This implementation provides a complete digital agreement workflow that integrates seamlessly with the existing CreditDost platform architecture.
+This simplified implementation provides a reliable digital agreement workflow that integrates seamlessly with the existing CreditDost platform architecture.

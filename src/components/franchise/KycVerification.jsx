@@ -291,48 +291,61 @@ const KycVerification = () => {
         </Alert>
       )}
       
-      <Card sx={{ mt: 3, boxShadow: 3, borderRadius: 2 }}>
-        <CardContent>
-          <Stepper activeStep={activeStep} alternativeLabel>
-            {steps.map((label) => (
-              <Step key={label}>
-                <StepLabel>{label}</StepLabel>
-              </Step>
-            ))}
-          </Stepper>
-          
-          <Box sx={{ mt: 4 }}>
-            {getStepContent(activeStep)}
-          </Box>
-          
-          <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 4 }}>
-            {activeStep !== 0 && (
-              <Button onClick={handleBack} sx={{ mr: 1 }}>
-                Back
-              </Button>
-            )}
-            <Box sx={{ flex: '1 1 auto' }} />
-            {activeStep === steps.length - 1 ? (
-              <Button
-                variant="contained"
-                onClick={handleSubmit}
-                disabled={loading}
-                sx={{ py: 1.5, px: 4 }}
-              >
-                {loading ? <CircularProgress size={24} /> : 'Submit KYC'}
-              </Button>
-            ) : (
-              <Button
-                variant="contained"
-                onClick={handleNext}
-                sx={{ py: 1.5, px: 4 }}
-              >
-                Next
-              </Button>
-            )}
-          </Box>
-        </CardContent>
-      </Card>
+      {kycStatus === 'approved' ? (
+        <Card sx={{ mt: 3, boxShadow: 3, borderRadius: 2 }}>
+          <CardContent>
+            <Typography variant="h6" gutterBottom>
+              KYC Already Approved
+            </Typography>
+            <Typography variant="body1">
+              Your KYC verification has been approved. You can now access all features of the platform.
+            </Typography>
+          </CardContent>
+        </Card>
+      ) : (
+        <Card sx={{ mt: 3, boxShadow: 3, borderRadius: 2 }}>
+          <CardContent>
+            <Stepper activeStep={activeStep} alternativeLabel>
+              {steps.map((label) => (
+                <Step key={label}>
+                  <StepLabel>{label}</StepLabel>
+                </Step>
+              ))}
+            </Stepper>
+            
+            <Box sx={{ mt: 4 }}>
+              {getStepContent(activeStep)}
+            </Box>
+            
+            <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 4 }}>
+              {activeStep !== 0 && (
+                <Button onClick={handleBack} sx={{ mr: 1 }}>
+                  Back
+                </Button>
+              )}
+              <Box sx={{ flex: '1 1 auto' }} />
+              {activeStep === steps.length - 1 ? (
+                <Button
+                  variant="contained"
+                  onClick={handleSubmit}
+                  disabled={loading}
+                  sx={{ py: 1.5, px: 4 }}
+                >
+                  {loading ? <CircularProgress size={24} /> : 'Submit KYC'}
+                </Button>
+              ) : (
+                <Button
+                  variant="contained"
+                  onClick={handleNext}
+                  sx={{ py: 1.5, px: 4 }}
+                >
+                  Next
+                </Button>
+              )}
+            </Box>
+          </CardContent>
+        </Card>
+      )}
     </Box>
   );
 };
