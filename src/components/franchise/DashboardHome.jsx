@@ -22,6 +22,13 @@ import {
   ListItemText,
   Divider,
   Alert,
+  Button,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  DialogContentText,
+  CardActions,
 } from '@mui/material';
 import { 
   People, 
@@ -34,6 +41,8 @@ import {
   PersonSearch,
   CheckCircle,
   Star,
+  ArrowUpward,
+  Close as CloseIcon,
 } from '@mui/icons-material';
 import { franchiseAPI } from '../../services/api';
 import { useNavigate } from 'react-router-dom';
@@ -53,6 +62,11 @@ const DashboardHome = () => {
   const [purchasedPackage, setPurchasedPackage] = useState(null);
   const [assignedPackages, setAssignedPackages] = useState([]);
   const [kycStatus, setKycStatus] = useState(null);
+  const [upgradeDialogOpen, setUpgradeDialogOpen] = useState(false);
+  const [availablePackages, setAvailablePackages] = useState([]);
+  const [selectedPackage, setSelectedPackage] = useState(null);
+  const [upgradeLoading, setUpgradeLoading] = useState(false);
+  const [upgradeError, setUpgradeError] = useState('');
 
   useEffect(() => {
     const fetchData = async () => {
@@ -85,10 +99,13 @@ const DashboardHome = () => {
         
         // Set purchased package from latest transaction
         if (latestTransaction && latestTransaction.packageId) {
+          console.log('Latest transaction package data:', latestTransaction.packageId);
           setPurchasedPackage({
             name: latestTransaction.packageId.name,
             credits: latestTransaction.packageId.creditsIncluded || 0,
-            purchaseDate: latestTransaction.createdAt
+            price: latestTransaction.packageId.price || 0,
+            purchaseDate: latestTransaction.createdAt,
+            sortOrder: latestTransaction.packageId.sortOrder || 0
           });
         }
         
@@ -107,6 +124,162 @@ const DashboardHome = () => {
     
     fetchData();
   }, []);
+
+  // Load Razorpay script
+  useEffect(() => {
+    const loadRazorpayScript = () => {
+      if (window.Razorpay) return Promise.resolve(true);
+      
+      return new Promise((resolve) => {
+        const script = document.createElement('script');
+        script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+        script.onload = () => resolve(true);
+        script.onerror = () => resolve(false);
+        document.body.appendChild(script);
+      });
+    };
+    
+    loadRazorpayScript();
+  }, []);
+
+  // Function to fetch packages with higher tiers
+  const fetchUpgradePackages = async () => {
+    try {
+      setUpgradeLoading(true);
+      setUpgradeError('');
+      
+      // Get all packages
+      const response = await franchiseAPI.getCreditPackages();
+      
+      console.log('All packages:', response.data);
+      console.log('Purchased package:', purchasedPackage);
+      console.log('Assigned packages:', assignedPackages);
+      
+      // Filter packages with higher price (higher tier) than current package
+      let filteredPackages = [];
+      if (purchasedPackage) {
+        console.log('Filtering by purchased package price:', purchasedPackage.price || purchasedPackage.credits);
+        filteredPackages = response.data.filter(pkg => {
+          const result = pkg.price > (purchasedPackage.price || 0);
+          console.log(`Package ${pkg.name} (price: ${pkg.price}) > ${purchasedPackage.price || 0}: ${result}`);
+          return result;
+        });
+      } else if (assignedPackages.length > 0) {
+        // If no purchased package, check assigned packages
+        // Use credits as a proxy for tier level since price isn't available in assigned packages
+        const highestCredits = Math.max(...assignedPackages.map(pkg => pkg.creditsIncluded || 0));
+        console.log('Filtering by assigned packages highest credits:', highestCredits);
+        filteredPackages = response.data.filter(pkg => {
+          const result = pkg.creditsIncluded > highestCredits;
+          console.log(`Package ${pkg.name} (credits: ${pkg.creditsIncluded}) > ${highestCredits}: ${result}`);
+          return result;
+        });
+      }
+      
+      console.log('Filtered packages:', filteredPackages);
+      
+      setAvailablePackages(filteredPackages);
+      
+      // Show error if no packages available for upgrade
+      if (filteredPackages.length === 0) {
+        setUpgradeError('No upgrade packages available at this time.');
+      }
+      
+      setUpgradeDialogOpen(true);
+    } catch (err) {
+      console.error('Error fetching upgrade packages:', err);
+      setUpgradeError(err.response?.data?.message || 'Failed to load upgrade packages. Please try again.');
+    } finally {
+      setUpgradeLoading(false);
+    }
+  };
+
+  // Function to handle package selection and initiate payment
+  const handlePackageSelection = async (pkg) => {
+    try {
+      setUpgradeLoading(true);
+      setUpgradeError('');
+      
+      // Check if Razorpay is loaded
+      if (!window.Razorpay) {
+        throw new Error('Payment gateway not loaded. Please try again.');
+      }
+      
+      // Create order on backend
+      const response = await franchiseAPI.initiatePayment(pkg._id);
+      
+      const { orderId } = response.data;
+      
+      // Initialize Razorpay
+      const options = {
+        key: import.meta.env.VITE_RAZORPAY_KEY_ID,
+        amount: pkg.price * 100,
+        currency: "INR",
+        name: "CreditDost",
+        description: `Upgrade to ${pkg.name} package`,
+        order_id: orderId,
+        handler: function (response) {
+          // Payment successful - verify payment with backend
+          verifyPayment(response);
+        },
+        prefill: {
+          // You can add user details here if available
+        },
+        notes: {
+          packageId: pkg._id,
+          packageName: pkg.name,
+        },
+        theme: {
+          color: "#6200ea",
+        },
+        modal: {
+          ondismiss: function() {
+            setUpgradeLoading(false);
+            setUpgradeError('Payment cancelled by user.');
+          }
+        }
+      };
+      
+      const rzp = new window.Razorpay(options);
+      rzp.on('payment.failed', function (response) {
+        console.error('Payment failed:', response.error);
+        setUpgradeLoading(false);
+        setUpgradeError(`Payment failed: ${response.error.description}`);
+      });
+      
+      rzp.open();
+    } catch (err) {
+      console.error('Error initiating payment:', err);
+      setUpgradeError(err.message || 'Failed to initiate payment. Please try again.');
+    } finally {
+      setUpgradeLoading(false);
+    }
+  };
+
+  // Function to verify payment with backend
+  const verifyPayment = async (response) => {
+    try {
+      setUpgradeLoading(true);
+      
+      // Verify payment with backend
+      await franchiseAPI.verifyPayment({
+        razorpay_order_id: response.razorpay_order_id,
+        razorpay_payment_id: response.razorpay_payment_id,
+        razorpay_signature: response.razorpay_signature,
+      });
+      
+      // Payment verified successfully
+      setUpgradeDialogOpen(false);
+      alert('Payment successful! Your package has been upgraded.');
+      
+      // Refresh the page to show updated package information
+      window.location.reload();
+    } catch (err) {
+      console.error('Error verifying payment:', err);
+      setUpgradeError('Payment verification failed. Please contact support.');
+      setUpgradeLoading(false);
+    }
+  };
 
   const statCards = [
     {
@@ -213,7 +386,7 @@ const DashboardHome = () => {
                   Purchased on {new Date(purchasedPackage.purchaseDate).toLocaleDateString()}
                 </Typography>
               </Box>
-              <Box>
+              <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 1 }}>
                 <Chip 
                   icon={<Star />} 
                   label="Active" 
@@ -226,6 +399,23 @@ const DashboardHome = () => {
                     }
                   }} 
                 />
+                <Button 
+                  variant="contained" 
+                  color="secondary"
+                  startIcon={<ArrowUpward />}
+                  onClick={fetchUpgradePackages}
+                  sx={{ 
+                    mt: 1,
+                    backgroundColor: 'white',
+                    color: '#6200ea',
+                    fontWeight: 'bold',
+                    '&:hover': {
+                      backgroundColor: '#f5f5f5',
+                    }
+                  }}
+                >
+                  Upgrade Package
+                </Button>
               </Box>
             </Box>
           </CardContent>
@@ -261,7 +451,7 @@ const DashboardHome = () => {
                   Assigned by admin
                 </Typography>
               </Box>
-              <Box>
+              <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 1 }}>
                 <Chip 
                   icon={<Star />} 
                   label="Active" 
@@ -274,6 +464,23 @@ const DashboardHome = () => {
                     }
                   }} 
                 />
+                <Button 
+                  variant="contained" 
+                  color="secondary"
+                  startIcon={<ArrowUpward />}
+                  onClick={fetchUpgradePackages}
+                  sx={{ 
+                    mt: 1,
+                    backgroundColor: 'white',
+                    color: '#6200ea',
+                    fontWeight: 'bold',
+                    '&:hover': {
+                      backgroundColor: '#f5f5f5',
+                    }
+                  }}
+                >
+                  Upgrade Package
+                </Button>
               </Box>
             </Box>
           </CardContent>
@@ -432,6 +639,121 @@ const DashboardHome = () => {
           </Grid>
         )}
       </Grid>
+      
+      {/* Upgrade Package Dialog */}
+      <Dialog 
+        open={upgradeDialogOpen} 
+        onClose={() => setUpgradeDialogOpen(false)}
+        maxWidth="md"
+        fullWidth
+      >
+        <DialogTitle>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <Typography variant="h6">Upgrade Your Package</Typography>
+            <IconButton onClick={() => setUpgradeDialogOpen(false)}>
+              <CloseIcon />
+            </IconButton>
+          </Box>
+        </DialogTitle>
+        <DialogContent>
+          {upgradeError && (
+            <Alert severity="error" sx={{ mb: 2 }}>
+              {upgradeError}
+            </Alert>
+          )}
+          
+          {upgradeLoading ? (
+            <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
+              <CircularProgress />
+              <Typography sx={{ ml: 2 }}>Loading packages...</Typography>
+            </Box>
+          ) : (
+            <>
+              {availablePackages.length === 0 ? (
+                <DialogContentText>
+                  No upgrade packages available at this time.
+                </DialogContentText>
+              ) : (
+                <Grid container spacing={3}>
+                  {availablePackages.map((pkg) => (
+                    <Grid item xs={12} sm={6} md={4} key={pkg._id}>
+                      <Card 
+                        sx={{ 
+                          height: '100%', 
+                          display: 'flex', 
+                          flexDirection: 'column',
+                          cursor: 'pointer',
+                          border: selectedPackage?._id === pkg._id ? 2 : 1,
+                          borderColor: selectedPackage?._id === pkg._id ? 'primary.main' : 'divider',
+                          '&:hover': {
+                            boxShadow: 3,
+                          }
+                        }}
+                        onClick={() => setSelectedPackage(pkg)}
+                      >
+                        <CardContent sx={{ flexGrow: 1 }}>
+                          <Typography variant="h6" component="div" fontWeight="bold" gutterBottom>
+                            {pkg.name}
+                          </Typography>
+                          <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                            {pkg.description}
+                          </Typography>
+                          <Box sx={{ mb: 2 }}>
+                            <Typography variant="h4" component="div" color="primary.main" fontWeight="bold">
+                              ₹{pkg.price}
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary">
+                              {pkg.creditsIncluded} credits included
+                            </Typography>
+                          </Box>
+                          <List dense>
+                            {pkg.features?.map((feature, index) => (
+                              <ListItem key={index} sx={{ py: 0.5 }}>
+                                <ListItemIcon sx={{ minWidth: 24 }}>
+                                  <CheckCircle sx={{ fontSize: 16 }} color="success" />
+                                </ListItemIcon>
+                                <ListItemText 
+                                  primary={feature} 
+                                  primaryTypographyProps={{ variant: 'body2' }} 
+                                />
+                              </ListItem>
+                            ))}
+                          </List>
+                        </CardContent>
+                        <CardActions sx={{ justifyContent: 'center', p: 2, pt: 0 }}>
+                          <Button 
+                            variant="contained" 
+                            fullWidth
+                            disabled={upgradeLoading}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handlePackageSelection(pkg);
+                            }}
+                          >
+                            {upgradeLoading && selectedPackage?._id === pkg._id ? (
+                              <>
+                                <CircularProgress size={20} sx={{ mr: 1 }} />
+                                Processing...
+                              </>
+                            ) : (
+                              'Select Package'
+                            )}
+                          </Button>
+                        </CardActions>
+                      </Card>
+                    </Grid>
+                  ))}
+                </Grid>
+              )}
+            </>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setUpgradeDialogOpen(false)} disabled={upgradeLoading}>
+            Cancel
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };

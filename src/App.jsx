@@ -10,6 +10,7 @@ import './App.css'
 import Home from './components/homepage/HomePage';
 import Login from './components/auth/Login';
 import Register from './components/auth/Register';
+import ResetPassword from './components/auth/ResetPassword';
 import FranchiseRoutes from './components/franchise/Routes';
 import AdminRoutes from './components/admin/Routes';
 import PackagesPage from './components/PackagesPage';
@@ -27,6 +28,8 @@ import PrivacyPolicyPage from './components/PrivacyPolicyPage';
 import DisclaimerPage from './components/DisclaimerPage';
 import RefundPolicyPage from './components/RefundPolicyPage';
 import ApplyForLoanPage from './components/ApplyForLoanPage';
+import SuvidhaCentrePage from './components/SuvidhaCentrePage';
+import CareersPage from './components/CareersPage';
 
 // Create enhanced theme
 const theme = createTheme({
@@ -152,6 +155,7 @@ function App() {
             <Route path="/about" element={<AboutPage />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/reset-password/:token" element={<ResetPassword />} />
             <Route path="/packages" element={<PackagesPage />} />
             <Route path="/blogs" element={<BlogsPage />} />
             <Route path="/blog/:slug" element={<BlogDetailPage />} />
@@ -166,6 +170,8 @@ function App() {
             <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
             <Route path="/disclaimer" element={<DisclaimerPage />} />
             <Route path="/refund-policy" element={<RefundPolicyPage />} />
+            <Route path="/suvidha-centre" element={<SuvidhaCentrePage />} />
+            <Route path="/careers" element={<CareersPage />} />
             <Route 
               path="/franchise/*" 
               element={

@@ -21,46 +21,59 @@ const DigitalAgreement = () => {
   const [agreement, setAgreement] = useState(null);
   const [loading, setLoading] = useState(true);
   const [downloading, setDownloading] = useState(false);
-  const [initiatingEsign, setInitiatingEsign] = useState(false);
-  const [signing, setSigning] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [openEsignDialog, setOpenEsignDialog] = useState(false);
   const [openSignDialog, setOpenSignDialog] = useState(false);
+  const [initiatingEsign, setInitiatingEsign] = useState(false);
+  const [signing, setSigning] = useState(false);
+  const [transactionId, setTransactionId] = useState("");
+  const [agreeToTerms, setAgreeToTerms] = useState(false);
+  const [requireProfileUpdate, setRequireProfileUpdate] = useState(false);
+  const [missingFields, setMissingFields] = useState([]);
+  
   const [esignData, setEsignData] = useState({
     signerName: "",
     signerEmail: "",
     signerPhone: "",
   });
-  const [agreeToTerms, setAgreeToTerms] = useState(false);
-  const [transactionId, setTransactionId] = useState("");
+
+  // Fetch digital agreement on component mount
+  useEffect(() => {
+    fetchDigitalAgreement();
+  }, []);
 
   const fetchDigitalAgreement = async () => {
     try {
       setLoading(true);
       setError("");
+      setSuccess("");
+      
       const response = await franchiseAPI.getDigitalAgreement();
       setAgreement(response.data);
+      setRequireProfileUpdate(false);
+      setMissingFields([]);
       
-      // Pre-fill eSign data with user info
-      if (response.data.userId) {
-        setEsignData({
-          signerName: response.data.userId.name || "",
-          signerEmail: response.data.userId.email || "",
-          signerPhone: "",
-        });
-      }
+      // Pre-fill eSign data
+      setEsignData({
+        signerName: response.data.userId?.name || "",
+        signerEmail: response.data.userId?.email || "",
+        signerPhone: "",
+      });
     } catch (err) {
-      setError("Failed to fetch digital agreement");
-      console.error("Error fetching digital agreement:", err);
+      // Check if profile update is required
+      if (err.response?.data?.requireProfileUpdate) {
+        setRequireProfileUpdate(true);
+        setMissingFields(err.response.data.missingFields || []);
+        setError(err.response.data.message);
+      } else {
+        setError("Failed to fetch digital agreement");
+        console.error("Error fetching digital agreement:", err);
+      }
     } finally {
       setLoading(false);
     }
   };
-
-  useEffect(() => {
-    fetchDigitalAgreement();
-  }, []);
 
   const handleDownloadPdf = async () => {
     try {
@@ -139,24 +152,24 @@ const DigitalAgreement = () => {
         return;
       }
 
-      // Provide the document URL for eSign
-      // In a real implementation, this would be the actual URL where the PDF can be accessed
-      const documentUrl = `${window.location.origin}/api/digital-agreements/download`;
-      
+      // Prepare the request data according to Surepass API specification
       const requestData = {
         ...esignData,
-        documentUrl: documentUrl,
       };
 
       const response = await franchiseAPI.initiateEsign(requestData);
+      
+      // Log the response for debugging
+      console.log('eSign initiation response:', response);
 
       setSuccess("eSign process initiated successfully!");
       
       // Redirect user to Surepass eSign portal
       if (response.data.redirectUrl) {
-        // Instead of opening in a new window, we'll provide instructions to the user
-        // This avoids CORS issues that can occur with cross-origin redirects
-        window.open(response.data.redirectUrl, "_blank", "noopener,noreferrer");
+        // Open in the same window/tab instead of a new one
+        window.location.href = response.data.redirectUrl;
+      } else {
+        setError("Failed to get redirect URL from Surepass");
       }
       
       handleCloseEsignDialog();
@@ -260,6 +273,33 @@ const DigitalAgreement = () => {
         </Alert>
       )}
 
+      {requireProfileUpdate && (
+        <Alert severity="warning" sx={{ mb: 2 }}>
+          <Typography variant="subtitle1" gutterBottom>
+            Profile Update Required
+          </Typography>
+          <Typography variant="body2" paragraph>
+            Please complete your profile with verified data from SurePass PAN and Bank APIs before generating the digital agreement.
+          </Typography>
+          {missingFields.length > 0 && (
+            <Typography variant="body2" paragraph>
+              <strong>Missing Fields:</strong> {missingFields.join(', ')}
+            </Typography>
+          )}
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => {
+              // Navigate to profile update page
+              window.location.href = "/franchise/profile";
+            }}
+            sx={{ mt: 1 }}
+          >
+            Update Profile
+          </Button>
+        </Alert>
+      )}
+
       <Card sx={{ mt: 3, boxShadow: 3, borderRadius: 2 }}>
         <CardContent>
           {agreement ? (
@@ -335,7 +375,7 @@ const DigitalAgreement = () => {
                 )}
               </Box>
             </>
-          ) : (
+          ) : !requireProfileUpdate && (
             <>
               <Typography variant="h6" gutterBottom>
                 No Agreement Found
@@ -349,81 +389,104 @@ const DigitalAgreement = () => {
       </Card>
 
       {/* eSign Agreement Dialog */}
-      <Dialog open={openEsignDialog} onClose={handleCloseEsignDialog} maxWidth="sm" fullWidth>
-        <DialogTitle>eSign Agreement</DialogTitle>
+      <Dialog
+        open={openEsignDialog}
+        onClose={handleCloseEsignDialog}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle>Electronic Signature (eSign)</DialogTitle>
         <DialogContent>
-          <Box sx={{ pt: 1 }}>
-            <TextField
-              fullWidth
-              label="Full Name"
-              value={esignData.signerName}
-              onChange={(e) => handleEsignDataChange("signerName", e.target.value)}
-              margin="normal"
-              required
-            />
-            <TextField
-              fullWidth
-              label="Email Address"
-              type="email"
-              value={esignData.signerEmail}
-              onChange={(e) => handleEsignDataChange("signerEmail", e.target.value)}
-              margin="normal"
-              required
-            />
-            <TextField
-              fullWidth
-              label="Phone Number"
-              value={esignData.signerPhone}
-              onChange={(e) => handleEsignDataChange("signerPhone", e.target.value)}
-              margin="normal"
-              required
-            />
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={agreeToTerms}
-                  onChange={(e) => setAgreeToTerms(e.target.checked)}
-                />
-              }
-              label="I agree to the terms and conditions for electronic signing"
-            />
-          </Box>
+          <Typography variant="body1" paragraph>
+            Please provide your details to initiate the electronic signing
+            process with Surepass:
+          </Typography>
+          
+          <TextField
+            autoFocus
+            margin="dense"
+            label="Full Name"
+            fullWidth
+            variant="outlined"
+            value={esignData.signerName}
+            onChange={(e) => handleEsignDataChange("signerName", e.target.value)}
+            required
+          />
+          
+          <TextField
+            margin="dense"
+            label="Email Address"
+            fullWidth
+            variant="outlined"
+            value={esignData.signerEmail}
+            onChange={(e) => handleEsignDataChange("signerEmail", e.target.value)}
+            required
+          />
+          
+          <TextField
+            margin="dense"
+            label="Phone Number"
+            fullWidth
+            variant="outlined"
+            value={esignData.signerPhone}
+            onChange={(e) => handleEsignDataChange("signerPhone", e.target.value)}
+            required
+          />
+          
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={agreeToTerms}
+                onChange={(e) => setAgreeToTerms(e.target.checked)}
+                color="primary"
+              />
+            }
+            label="I agree to the terms and conditions for electronic signing"
+          />
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseEsignDialog}>Cancel</Button>
           <Button
             onClick={handleInitiateEsign}
             variant="contained"
-            disabled={initiatingEsign}
+            disabled={initiatingEsign || !agreeToTerms}
             startIcon={initiatingEsign ? <CircularProgress size={20} /> : null}
           >
-            {initiatingEsign ? "Initiating..." : "Initiate eSign"}
+            {initiatingEsign ? "Initiating..." : "Start eSign Process"}
           </Button>
         </DialogActions>
       </Dialog>
 
       {/* Submit Signed Agreement Dialog */}
-      <Dialog open={openSignDialog} onClose={handleCloseSignDialog} maxWidth="sm" fullWidth>
+      <Dialog
+        open={openSignDialog}
+        onClose={handleCloseSignDialog}
+        maxWidth="sm"
+        fullWidth
+      >
         <DialogTitle>Submit Signed Agreement</DialogTitle>
         <DialogContent>
-          <Box sx={{ pt: 1 }}>
-            <TextField
-              fullWidth
-              label="Transaction ID"
-              value={transactionId}
-              onChange={(e) => setTransactionId(e.target.value)}
-              margin="normal"
-              helperText="Enter the transaction ID from the eSign process"
-              required
-            />
-          </Box>
+          <Typography variant="body1" paragraph>
+            After signing the agreement with Surepass eSign, please enter the
+            transaction ID below:
+          </Typography>
+          <TextField
+            autoFocus
+            margin="dense"
+            label="Transaction ID"
+            fullWidth
+            variant="outlined"
+            value={transactionId}
+            onChange={(e) => setTransactionId(e.target.value)}
+            helperText="Enter the transaction ID from Surepass eSign"
+          />
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseSignDialog}>Cancel</Button>
           <Button
             onClick={handleSubmitSignedPdf}
             variant="contained"
-            disabled={signing}
+            disabled={signing || !transactionId.trim()}
             startIcon={signing ? <CircularProgress size={20} /> : null}
           >
             {signing ? "Submitting..." : "Submit"}

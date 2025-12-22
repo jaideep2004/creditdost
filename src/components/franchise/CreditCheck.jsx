@@ -258,7 +258,11 @@ const CreditCheck = () => {
   const getReportUrl = (report) => {
     // Use local path if available, otherwise use the original report URL
     if (report.localPath) {
-      return `${"http://localhost:5000"}${report.localPath}`;
+      // For local paths, use the base server URL without /api prefix
+      const baseUrl = import.meta.env.VITE_REACT_APP_API_URL 
+        ? import.meta.env.VITE_REACT_APP_API_URL.replace('/api', '') 
+        : 'https://creditdost-backend.onrender.com';
+      return `${baseUrl}${report.localPath}`;
     }
     return report.reportUrl;
   };

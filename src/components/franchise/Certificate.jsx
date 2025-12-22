@@ -20,6 +20,7 @@ import html2canvas from "html2canvas";
 
 const Certificate = () => {
   const [certificateData, setCertificateData] = useState(null);
+  const [userData, setUserData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -32,9 +33,14 @@ const Certificate = () => {
     const fetchCertificateData = async () => {
       try {
         setLoading(true);
-        const response = await franchiseAPI.getCertificateData();
-        setCertificateData(response.data);
-        setNewName(response.data.franchiseName);
+        const [certificateResponse, profileResponse] = await Promise.all([
+          franchiseAPI.getCertificateData(),
+          franchiseAPI.getProfile()
+        ]);
+        
+        setCertificateData(certificateResponse.data);
+        setUserData(profileResponse.data);
+        setNewName(certificateResponse.data.franchiseName);
       } catch (err) {
         setError("Failed to load certificate data");
         console.error("Error fetching certificate data:", err);
@@ -51,12 +57,12 @@ const Certificate = () => {
 
     try {
       const canvas = await html2canvas(certificateRef.current, {
-        scale: 3, // Higher quality
+        scale: 15, // Higher quality
         useCORS: true,
         logging: false,
         backgroundColor: null,
         quality: 1,
-        pixelRatio: 2,
+        pixelRatio: 5,
         width: certificateRef.current.offsetWidth,
         height: certificateRef.current.offsetHeight,
       });
@@ -105,6 +111,16 @@ const Certificate = () => {
 
   const handleSnackbarClose = () => {
     setSnackbarOpen(false);
+  };
+
+  // Function to format date as dd/mm/yyyy
+  const formatDate = (dateString) => {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Month is zero-indexed
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
   };
 
   if (loading) {
@@ -201,10 +217,26 @@ const Certificate = () => {
                 fontWeight: "bold",
                 color: "#000",
                 textShadow: "1px 1px 2px rgba(255,255,255,0.8)",
+                maxWidth: "500px",
+                fontSize: "1.4rem",
               }}
               style={{ marginTop: "22px" }}
             >
               {certificateData?.franchiseName}
+            </Typography>
+
+            {/* Issued Date in bottom left corner */}
+            <Typography
+              variant="body2"
+              sx={{
+                position: "absolute",
+                bottom: "90px",
+                left: "210px",
+                color: "#000",
+                fontWeight: "bold",
+              }}
+            >
+              {userData?.createdAt ? formatDate(userData.createdAt) : "N/A"}
             </Typography>
           </Box>
 

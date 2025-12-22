@@ -14,7 +14,7 @@ import {
   AccordionDetails,
 } from '@mui/material';
 import { ExpandMore as ExpandMoreIcon } from '@mui/icons-material';
-import { franchiseAPI } from '../../services/api';
+import { franchiseAPI, authAPI } from '../../services/api';
 
 const Profile = () => {
   const [formData, setFormData] = useState({
@@ -52,6 +52,9 @@ const Profile = () => {
   const [bankError, setBankError] = useState('');
   const [panSuccess, setPanSuccess] = useState('');
   const [bankSuccess, setBankSuccess] = useState('');
+  const [resetPasswordLoading, setResetPasswordLoading] = useState(false);
+  const [resetPasswordSuccess, setResetPasswordSuccess] = useState('');
+  const [resetPasswordError, setResetPasswordError] = useState('');
 
   // Fetch profile data on component mount
   useEffect(() => {
@@ -199,6 +202,46 @@ const Profile = () => {
     }
   };
   
+  // Unified save function for all sections
+  const handleSaveAll = async () => {
+    setLoading(true);
+    setError('');
+    setSuccess('');
+    
+    try {
+      // Save business and address information
+      const profileResponse = await franchiseAPI.updateProfile(formData);
+      
+      // Save PAN information
+      const panResponse = await franchiseAPI.updatePanDetails(panData);
+      
+      // Save bank information
+      const bankResponse = await franchiseAPI.updateBankDetails(bankData);
+      
+      setSuccess('All profile information saved successfully!');
+      
+      // Update form data with response data
+      const updatedProfile = profileResponse.data.franchise;
+      setFormData({
+        businessName: updatedProfile.businessName || '',
+        ownerName: updatedProfile.ownerName || '',
+        email: updatedProfile.email || '',
+        phone: updatedProfile.phone || '',
+        address: {
+          street: updatedProfile.address?.street || '',
+          city: updatedProfile.address?.city || '',
+          state: updatedProfile.address?.state || '',
+          pincode: updatedProfile.address?.pincode || '',
+        },
+      });
+    } catch (err) {
+      setError(err.response?.data?.message || err.response?.data?.details || 'Failed to save profile information');
+      console.error('Error saving profile:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+  
   const handlePanSubmit = async (e) => {
     e.preventDefault();
     setPanLoading(true);
@@ -328,6 +371,24 @@ const Profile = () => {
     }
   };
 
+  // Reset password function
+  const handleResetPassword = async () => {
+    setResetPasswordLoading(true);
+    setResetPasswordError('');
+    setResetPasswordSuccess('');
+    
+    try {
+      // Using the new requestPasswordReset endpoint
+      const response = await authAPI.requestPasswordReset({ email: formData.email });
+      setResetPasswordSuccess(response.data.message || 'Password reset link sent to your email!');
+    } catch (err) {
+      setResetPasswordError(err.response?.data?.message || 'Failed to reset password');
+      console.error('Error resetting password:', err);
+    } finally {
+      setResetPasswordLoading(false);
+    }
+  };
+
   if (fetching) {
     return (
       <Box display="flex" justifyContent="center" alignItems="center" minHeight="200px">
@@ -338,9 +399,20 @@ const Profile = () => {
 
   return (
     <Box>
-      <Typography variant="h4" gutterBottom>
-        Profile
-      </Typography>
+      <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+        <Typography variant="h4" gutterBottom>
+          Profile
+        </Typography>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleSaveAll}
+          disabled={loading}
+          sx={{ py: 1.5, px: 4 }}
+        >
+          {loading ? <CircularProgress size={24} /> : 'Save Profile'}
+        </Button>
+      </Box>
       
       {error && (
         <Alert severity="error" sx={{ mb: 2 }}>
@@ -360,7 +432,7 @@ const Profile = () => {
           <Typography variant="h6" gutterBottom>
             Business Information
           </Typography>
-          <Box component="form" onSubmit={handleSubmit}>
+          <Box>
             <Grid container spacing={3}>
               <Grid item xs={12} sm={6}>
                 <TextField
@@ -406,18 +478,7 @@ const Profile = () => {
                   onChange={handleInputChange}
                 />
               </Grid>
-              <Grid item xs={12}>
-                <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
-                  <Button
-                    type="submit"
-                    variant="contained"
-                    disabled={loading}
-                    sx={{ py: 1.5, px: 4 }}
-                  >
-                    {loading ? <CircularProgress size={24} /> : 'Update Profile'}
-                  </Button>
-                </Box>
-              </Grid>
+
             </Grid>
           </Box>
         </CardContent>
@@ -429,7 +490,7 @@ const Profile = () => {
           <Typography variant="h6" gutterBottom>
             Address Details
           </Typography>
-          <Box component="form" onSubmit={handleSubmit}>
+          <Box>
             <Grid container spacing={3}>
               <Grid item xs={12}>
                 <TextField
@@ -471,18 +532,7 @@ const Profile = () => {
                   onChange={handleInputChange}
                 />
               </Grid>
-              <Grid item xs={12}>
-                <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
-                  <Button
-                    type="submit"
-                    variant="contained"
-                    disabled={loading}
-                    sx={{ py: 1.5, px: 4 }}
-                  >
-                    {loading ? <CircularProgress size={24} /> : 'Update Address'}
-                  </Button>
-                </Box>
-              </Grid>
+
             </Grid>
           </Box>
         </CardContent>
@@ -508,7 +558,7 @@ const Profile = () => {
                 </Alert>
               )}
               
-              <Box component="form" onSubmit={handlePanSubmit}>
+              <Box>
                 <Grid container spacing={3}>
                   <Grid item xs={12} sm={6}>
                     <TextField
@@ -527,14 +577,6 @@ const Profile = () => {
                   </Grid>
                   <Grid item xs={12}>
                     <Box sx={{ display: 'flex', gap: 2 }}>
-                      <Button
-                        type="submit"
-                        variant="contained"
-                        disabled={panLoading}
-                        sx={{ py: 1.5, px: 4 }}
-                      >
-                        {panLoading ? <CircularProgress size={24} /> : 'Save PAN'}
-                      </Button>
                       <Button
                         variant="outlined"
                         onClick={handleFetchPanDetails}
@@ -592,26 +634,7 @@ const Profile = () => {
                             }}
                           />
                         </Grid>
-                        <Grid item xs={12} sm={6}>
-                          <TextField
-                            fullWidth
-                            label="Category"
-                            value={panDetails.data.category || ''}
-                            InputProps={{
-                              readOnly: true,
-                            }}
-                          />
-                        </Grid>
-                        <Grid item xs={12} sm={6}>
-                          <TextField
-                            fullWidth
-                            label="Status"
-                            value={panDetails.data.status || ''}
-                            InputProps={{
-                              readOnly: true,
-                            }}
-                          />
-                        </Grid>
+
                       </Grid>
                       
                       {/* Address Information from PAN */}
@@ -703,7 +726,7 @@ const Profile = () => {
                 </Alert>
               )}
               
-              <Box component="form" onSubmit={handleBankSubmit}>
+              <Box>
                 <Grid container spacing={3}>
                   <Grid item xs={12} sm={6}>
                     <TextField
@@ -737,14 +760,6 @@ const Profile = () => {
                   <Grid item xs={12}>
                     <Box sx={{ display: 'flex', gap: 2 }}>
                       <Button
-                        type="submit"
-                        variant="contained"
-                        disabled={bankLoading}
-                        sx={{ py: 1.5, px: 4 }}
-                      >
-                        {bankLoading ? <CircularProgress size={24} /> : 'Save Bank Details'}
-                      </Button>
-                      <Button
                         variant="outlined"
                         onClick={handleVerifyBankDetails}
                         disabled={bankLoading}
@@ -766,16 +781,6 @@ const Profile = () => {
                             fullWidth
                             label="Account Holder Name"
                             value={bankDetails.data.full_name || ''}
-                            InputProps={{
-                              readOnly: true,
-                            }}
-                          />
-                        </Grid>
-                        <Grid item xs={12} sm={6}>
-                          <TextField
-                            fullWidth
-                            label="Account Exists"
-                            value={bankDetails.data.account_exists ? 'Yes' : 'No'}
                             InputProps={{
                               readOnly: true,
                             }}
@@ -811,46 +816,6 @@ const Profile = () => {
                             }}
                           />
                         </Grid>
-                        <Grid item xs={12} sm={6}>
-                          <TextField
-                            fullWidth
-                            label="RTGS Enabled"
-                            value={bankDetails.data.ifsc_details?.rtgs ? 'Yes' : 'No'}
-                            InputProps={{
-                              readOnly: true,
-                            }}
-                          />
-                        </Grid>
-                        <Grid item xs={12} sm={6}>
-                          <TextField
-                            fullWidth
-                            label="NEFT Enabled"
-                            value={bankDetails.data.ifsc_details?.neft ? 'Yes' : 'No'}
-                            InputProps={{
-                              readOnly: true,
-                            }}
-                          />
-                        </Grid>
-                        <Grid item xs={12} sm={6}>
-                          <TextField
-                            fullWidth
-                            label="MICR Check"
-                            value={bankDetails.data.ifsc_details?.micr_check ? 'Yes' : 'No'}
-                            InputProps={{
-                              readOnly: true,
-                            }}
-                          />
-                        </Grid>
-                        <Grid item xs={12} sm={6}>
-                          <TextField
-                            fullWidth
-                            label="Status"
-                            value={bankDetails.data.status || ''}
-                            InputProps={{
-                              readOnly: true,
-                            }}
-                          />
-                        </Grid>
                       </Grid>
                     </Grid>
                   )}
@@ -858,6 +823,43 @@ const Profile = () => {
               </Box>
             </AccordionDetails>
           </Accordion>
+        </CardContent>
+      </Card>
+      
+      {/* Reset Password Section */}
+      <Card sx={{ mt: 3, boxShadow: 3, borderRadius: 2 }}>
+        <CardContent>
+          <Typography variant="h6" gutterBottom>
+            Reset Password
+          </Typography>
+          
+          {resetPasswordError && (
+            <Alert severity="error" sx={{ mb: 2 }}>
+              {resetPasswordError}
+            </Alert>
+          )}
+          
+          {resetPasswordSuccess && (
+            <Alert severity="success" sx={{ mb: 2 }}>
+              {resetPasswordSuccess}
+            </Alert>
+          )}
+          
+          <Typography variant="body1" paragraph>
+            Click the button below to receive a secure password reset link via email. You will receive an email with instructions to set a new password. The link will expire in 1 hour for security purposes.
+          </Typography>
+          
+          <Box sx={{ display: 'flex', justifyContent: 'flex-start', mt: 2 }}>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleResetPassword}
+              disabled={resetPasswordLoading}
+              sx={{ py: 1.5, px: 4 }}
+            >
+              {resetPasswordLoading ? <CircularProgress size={24} /> : 'Send Password Reset Link'}
+            </Button>
+          </Box>
         </CardContent>
       </Card>
     </Box>

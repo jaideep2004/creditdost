@@ -1,43 +1,195 @@
-import React from "react";
-import { Box, Typography, Card, CardContent } from "@mui/material";
+import React, { useState } from "react";
+import { 
+  Box, 
+  Typography, 
+  Card, 
+  CardContent, 
+  Button, 
+  Alert, 
+  CircularProgress, 
+  List, 
+  ListItem, 
+  ListItemText, 
+  Divider,
+  Chip
+} from "@mui/material";
+import { UploadFile as UploadIcon } from "@mui/icons-material";
+import { franchiseAPI } from "../../services/api";
 
 const AIAnalysis = () => {
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [uploading, setUploading] = useState(false);
+  const [uploadSuccess, setUploadSuccess] = useState(false);
+  const [uploadError, setUploadError] = useState('');
+  const [documents, setDocuments] = useState([]);
+  const [loadingDocuments, setLoadingDocuments] = useState(false);
+
+  // Handle file selection
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    if (file && file.type === 'application/pdf') {
+      setSelectedFile(file);
+      setUploadError('');
+    } else {
+      setUploadError('Please select a PDF file');
+      setSelectedFile(null);
+    }
+  };
+
+  // Upload document
+  const handleUpload = async () => {
+    if (!selectedFile) {
+      setUploadError('Please select a file to upload');
+      return;
+    }
+
+    setUploading(true);
+    setUploadError('');
+    setUploadSuccess(false);
+
+    try {
+      const formData = new FormData();
+      formData.append('document', selectedFile);
+
+      const response = await franchiseAPI.uploadAIAnalysisDocument(formData);
+      
+      if (response.data) {
+        setUploadSuccess(true);
+        setSelectedFile(null);
+        // Refresh documents list
+        fetchDocuments();
+      }
+    } catch (error) {
+      setUploadError(error.response?.data?.message || 'Failed to upload document');
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  // Fetch documents
+  const fetchDocuments = async () => {
+    setLoadingDocuments(true);
+    try {
+      const response = await franchiseAPI.getAIAnalysisDocuments();
+      setDocuments(response.data);
+    } catch (error) {
+      console.error('Failed to fetch documents:', error);
+    } finally {
+      setLoadingDocuments(false);
+    }
+  };
+
+
+
+  // Load documents on component mount
+  React.useEffect(() => {
+    fetchDocuments();
+  }, []);
+
   return (
     <Box>
       <Typography variant="h4" gutterBottom>
         AI Analysis
       </Typography>
 
+      {/* Upload Section */}
       <Card sx={{ mt: 3, boxShadow: 3, borderRadius: 2 }}>
         <CardContent>
           <Typography variant="h6" gutterBottom>
-            Artificial Intelligence Insights
+            Upload Document for AI Analysis
           </Typography>
-          <Typography variant="body1" paragraph>
-            This section will provide AI-powered analysis and insights for
-            franchise partners.
+          <Typography variant="body2" paragraph>
+            Upload your credit report or any PDF document for AI-powered analysis.
+            Our team will review and provide insights.
           </Typography>
-          <Typography variant="body1" paragraph>
-            Features to implement:
+          
+          <input
+            accept="application/pdf"
+            style={{ display: 'none' }}
+            id="pdf-upload"
+            type="file"
+            onChange={handleFileChange}
+          />
+          
+          <label htmlFor="pdf-upload">
+            <Button 
+              variant="outlined" 
+              component="span" 
+              startIcon={<UploadIcon />}
+              disabled={uploading}
+            >
+              Select PDF File
+            </Button>
+          </label>
+          
+          {selectedFile && (
+            <Typography variant="body2" sx={{ mt: 1 }}>
+              Selected: {selectedFile.name}
+            </Typography>
+          )}
+          
+          {uploadError && (
+            <Alert severity="error" sx={{ mt: 2 }}>
+              {uploadError}
+            </Alert>
+          )}
+          
+          {uploadSuccess && (
+            <Alert severity="success" sx={{ mt: 2 }}>
+              Document uploaded successfully! Our team will review and respond shortly.
+            </Alert>
+          )}
+          
+          <Button 
+            variant="contained" 
+            onClick={handleUpload}
+            disabled={!selectedFile || uploading}
+            sx={{ mt: 2 }}
+          >
+            {uploading ? <CircularProgress size={24} /> : 'Upload Document'}
+          </Button>
+        </CardContent>
+      </Card>
+
+      {/* Documents List */}
+      <Card sx={{ mt: 3, boxShadow: 3, borderRadius: 2 }}>
+        <CardContent>
+          <Typography variant="h6" gutterBottom>
+            Your Documents
           </Typography>
-          <ul>
-            <li>
-              <Typography variant="body2">Predictive lead scoring</Typography>
-            </li>
-            <li>
-              <Typography variant="body2">
-                Customer behavior analysis
-              </Typography>
-            </li>
-            <li>
-              <Typography variant="body2">Market trend predictions</Typography>
-            </li>
-            <li>
-              <Typography variant="body2">
-                Performance optimization recommendations
-              </Typography>
-            </li>
-          </ul>
+          
+          {loadingDocuments ? (
+            <Box sx={{ display: 'flex', justifyContent: 'center', p: 3 }}>
+              <CircularProgress />
+            </Box>
+          ) : documents.length === 0 ? (
+            <Typography variant="body2" color="text.secondary" align="center" sx={{ py: 3 }}>
+              No documents uploaded yet
+            </Typography>
+          ) : (
+            <List>
+              {documents.map((doc) => (
+                <React.Fragment key={doc._id}>
+                  <ListItem>
+                    <ListItemText 
+                      primary={doc.uploadedDocumentName}
+                      secondary={`Uploaded: ${new Date(doc.uploadedAt).toLocaleDateString()} | Status: ${doc.status}`}
+                    />
+                    <Chip 
+                      label={doc.status} 
+                      color={
+                        doc.status === 'uploaded' ? 'primary' : 
+                        doc.status === 'responded' ? 'success' : 'default'
+                      } 
+                      size="small" 
+                      sx={{ ml: 2 }}
+                    />
+                  </ListItem>
+                  <Divider />
+                </React.Fragment>
+              ))}
+            </List>
+          )}
         </CardContent>
       </Card>
     </Box>

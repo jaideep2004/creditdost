@@ -34,6 +34,7 @@ import {
   Logout as LogoutIcon,
   CreditScore as CreditScoreIcon,
   Description as DescriptionIcon,
+  AutoGraph as AutoGraphIcon,
 } from "@mui/icons-material";
 import { useAuth } from "../../hooks/useAuth.jsx";
 import { useNavigate, useLocation } from "react-router-dom";
@@ -243,6 +244,11 @@ const AdminDashboard = () => {
       text: "Digital Agreements",
       icon: <DescriptionIcon />,
       path: "/admin/digital-agreements",
+    },
+    {
+      text: "AI Analysis",
+      icon: <AutoGraphIcon />,
+      path: "/admin/ai-analysis",
     },
   ];
 

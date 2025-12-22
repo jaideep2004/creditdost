@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Create axios instance
 const api = axios.create({
-  baseURL: import.meta.env.VITE_REACT_APP_API_URL || 'http://localhost:5000/api',
+  baseURL: import.meta.env.VITE_REACT_APP_API_URL || 'https://creditdost-backend.onrender.com/api',
   withCredentials: true,
 });
 
@@ -40,6 +40,8 @@ export const authAPI = {
   login: (credentials) => api.post('/auth/login', credentials),
   register: (userData) => api.post('/auth/register', userData),
   forgotPassword: (email) => api.post('/auth/forgot-password', { email }),
+  requestPasswordReset: (data) => api.post('/auth/request-password-reset', data),
+  resetPassword: (data) => api.post('/auth/reset-password', data),
 };
 
 // Franchise API functions
@@ -66,8 +68,9 @@ export const franchiseAPI = {
   },
   // Add the new function for DigiLocker initialization
   initDigiLocker: () => api.post('/kyc/digilocker/init'),
-  getCreditPackages: () => api.get('/packages/franchise'),
-  initiatePayment: (packageId) => api.post('/payments/initiate', { packageId }),
+  getCreditPackages: () => api.get('/dashboard/packages'),
+  initiatePayment: (packageId) => api.post('/payments/create-order', { packageId }),
+    verifyPayment: (data) => api.post('/payments/verify-payment', data),
   getCreditReport: (data) => api.post('/credit/check', data),
   getCreditReports: () => api.get('/credit/reports'),
   getDashboardStats: () => api.get('/dashboard'),
@@ -100,6 +103,16 @@ export const franchiseAPI = {
   downloadDigitalAgreement: () => api.get('/digital-agreements/download', { responseType: 'blob' }),
   submitSignedDigitalAgreement: (data) => api.post('/digital-agreements/submit', data),
   initiateEsign: (data) => api.post('/digital-agreements/esign/initiate', data),
+  // AI Analysis endpoints
+  uploadAIAnalysisDocument: (formData) => {
+    const config = {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    };
+    return api.post('/ai-analysis/upload', formData, config);
+  },
+  getAIAnalysisDocuments: () => api.get('/ai-analysis/franchise/documents'),
 };
 
 // Blog API functions
@@ -186,6 +199,17 @@ export const adminAPI = {
   approveDigitalAgreement: (id) => api.put(`/digital-agreements/admin/${id}/approve`),
   rejectDigitalAgreement: (id, data) => api.put(`/digital-agreements/admin/${id}/reject`, data),
   downloadSignedDigitalAgreement: (id) => api.get(`/digital-agreements/admin/${id}/download`, { responseType: 'blob' }),
+  // AI Analysis endpoints (Admin)
+  getAIAnalysisDocuments: () => api.get('/ai-analysis/admin/documents'),
+  getAIAnalysisDocumentById: (id) => api.get(`/ai-analysis/admin/documents/${id}`),
+  respondToAIAnalysisDocument: (id, formData) => {
+    const config = {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    };
+    return api.post(`/ai-analysis/admin/respond/${id}`, formData, config);
+  },
 };
 
 // Credit API functions
@@ -203,6 +227,18 @@ export const emiAPI = {
 // IFSC API functions
 export const ifscAPI = {
   getBankDetails: (ifscCode) => axios.get(`https://ifsc.razorpay.com/${ifscCode}`),
+};
+
+// Careers API functions
+export const careersAPI = {
+  submitApplication: (formData) => {
+    const config = {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    };
+    return api.post('/careers/apply', formData, config);
+  },
 };
 
 export default api;

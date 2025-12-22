@@ -343,7 +343,7 @@ const Header = () => {
     { text: "About Us", path: "/about" },
     { text: "Services", path: "#", hasDropdown: true },
     { text: "Blog", path: "/blogs" },
-
+   
     { text: "Contact", path: "/contact" },
   ];
 
@@ -592,6 +592,46 @@ const Header = () => {
                               }
                             >
                               Franchise Opportunity
+                            </DropdownItem>
+                            <DropdownItem
+                              onClick={() => {
+                                navigate("/careers");
+                                handleMenuClose("services");
+                              }}
+                              startIcon={
+                                <Box
+                                  sx={
+                                    {
+                                      width: 16,
+                                      height: 16,
+                                      borderRadius: "50%",
+                                      backgroundColor: "#10b981",
+                                    }
+                                  }
+                                />
+                              }
+                            >
+                              Careers
+                            </DropdownItem>
+                            <DropdownItem
+                              onClick={() => {
+                                navigate("/suvidha-centre");
+                                handleMenuClose("services");
+                              }}
+                              startIcon={
+                                <Box
+                                  sx={
+                                    {
+                                      width: 16,
+                                      height: 16,
+                                      borderRadius: "50%",
+                                      backgroundColor: "#f59e0b",
+                                    }
+                                  }
+                                />
+                              }
+                            >
+                              Suvidha Centre
                             </DropdownItem>
                           </DropdownMenu>
                         </ServicesDropdown>

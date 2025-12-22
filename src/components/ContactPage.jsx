@@ -41,20 +41,20 @@ const ContactPage = () => {
   };
 
   const contactInfo = [
-    {
-      icon: <LocationOn sx={{ fontSize: 40, color: '#0891b2' }} />,
-      title: 'Address',
-      content: '6391 Elgin St. Celina, 10299'
-    },
+    // {
+    //   icon: <LocationOn sx={{ fontSize: 40, color: '#0891b2' }} />,
+    //   title: 'Address',
+    //   content: '6391 Elgin St. Celina, 10299'
+    // },
     {
       icon: <Email sx={{ fontSize: 40, color: '#0891b2' }} />,
       title: 'Mail Us',
-      content: ['contact@creditdost.com', 'support@creditdost.com']
+      content: [' info@creditdost.co.in']
     },
     {
       icon: <Phone sx={{ fontSize: 40, color: '#0891b2' }} />,
       title: 'Telephone',
-      content: ['(629) 555-0129', '(629) 555-0130']
+      content: ['98213-89400']
     }
   ];
 
@@ -326,7 +326,7 @@ const ContactPage = () => {
               
               <Grid container spacing={4}>
                 {contactInfo.map((info, index) => (
-                  <Grid item xs={12} key={index}>
+                  <Grid item xs={12} key={index} style={{width: '100%'}}>
                     <Box sx={{ display: 'flex', gap: 3 }}>
                       <Box sx={{ 
                         width: 70, 

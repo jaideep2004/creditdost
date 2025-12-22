@@ -79,7 +79,7 @@ const BusinessForms = () => {
   return (
     <Box>
       <Typography variant="h4" gutterBottom>
-        Business Forms
+        Business MIS
       </Typography>
       
       {error && (
