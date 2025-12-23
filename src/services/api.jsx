@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Create axios instance
 const api = axios.create({
-  baseURL: import.meta.env.VITE_REACT_APP_API_URL || 'https://creditdost-backend.onrender.com/api',
+  baseURL: import.meta.env.VITE_REACT_APP_API_URL || 'https://reactbackend.creditdostlearning.com/api',
   withCredentials: true,
 });
 
