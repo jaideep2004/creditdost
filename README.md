@@ -126,7 +126,7 @@ FRONTEND_URL=http://localhost:3000
 # Frontend Environment Variables
 
 # API URL
-REACT_APP_API_URL=https://creditdost-backend.onrender.com/api
+REACT_APP_API_URL=https://reactbackend.creditdostlearning.com/api
 
 # Razorpay Key (for frontend checkout)
 REACT_APP_RAZORPAY_KEY_ID=your_razorpay_key_id

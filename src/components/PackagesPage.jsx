@@ -185,7 +185,7 @@ const PackagesPage = () => {
       setLoading(true);
       const response = await axios.get(
         `${
-          import.meta.env.VITE_REACT_APP_API_URL || "https://creditdost-backend.onrender.com/api"
+          import.meta.env.VITE_REACT_APP_API_URL || "https://reactbackend.creditdostlearning.com/api"
         }/packages`
       );
       setPackages(response.data);
