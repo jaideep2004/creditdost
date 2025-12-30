@@ -637,66 +637,7 @@ const Profile = () => {
 
                       </Grid>
                       
-                      {/* Address Information from PAN */}
-                      {panDetails.data.address && (
-                        <Grid item xs={12}>
-                          <Typography variant="h6" gutterBottom sx={{ mt: 2 }}>
-                            Address from PAN
-                          </Typography>
-                          <Grid container spacing={2}>
-                            <Grid item xs={12} sm={6}>
-                              <TextField
-                                fullWidth
-                                label="Address Line 1"
-                                value={panDetails.data.address.line_1 || ''}
-                                InputProps={{
-                                  readOnly: true,
-                                }}
-                              />
-                            </Grid>
-                            <Grid item xs={12} sm={6}>
-                              <TextField
-                                fullWidth
-                                label="City"
-                                value={panDetails.data.address.city || ''}
-                                InputProps={{
-                                  readOnly: true,
-                                }}
-                              />
-                            </Grid>
-                            <Grid item xs={12} sm={6}>
-                              <TextField
-                                fullWidth
-                                label="State"
-                                value={panDetails.data.address.state || ''}
-                                InputProps={{
-                                  readOnly: true,
-                                }}
-                              />
-                            </Grid>
-                            <Grid item xs={12} sm={6}>
-                              <TextField
-                                fullWidth
-                                label="Zip Code"
-                                value={panDetails.data.address.zip || ''}
-                                InputProps={{
-                                  readOnly: true,
-                                }}
-                              />
-                            </Grid>
-                            <Grid item xs={12}>
-                              <TextField
-                                fullWidth
-                                label="Full Address"
-                                value={panDetails.data.address.full || ''}
-                                InputProps={{
-                                  readOnly: true,
-                                }}
-                              />
-                            </Grid>
-                          </Grid>
-                        </Grid>
-                      )}
+
                     </Grid>
                   )}
                 </Grid>

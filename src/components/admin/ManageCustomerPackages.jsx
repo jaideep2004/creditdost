@@ -24,12 +24,19 @@ import {
   DialogActions,
   Chip,
   MenuItem,
+  FormControl,
+  InputLabel,
+  Select,
+  ListItemText,
+  ListItemIcon,
+  Checkbox,
 } from '@mui/material';
 import { Add, Edit, Delete, Check, Close } from '@mui/icons-material';
 import { adminAPI } from '../../services/api';
 
 const ManageCustomerPackages = () => {
   const [packages, setPackages] = useState([]);
+  const [franchisePackages, setFranchisePackages] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
@@ -42,6 +49,7 @@ const ManageCustomerPackages = () => {
     creditsIncluded: '',
     features: [],
     isActive: true,
+    availableForPackages: [], // Add the new field
     // Business payout settings
     businessPayoutPercentage: 20,
     businessPayoutType: 'percentage',
@@ -49,9 +57,10 @@ const ManageCustomerPackages = () => {
   });
   const [featureInput, setFeatureInput] = useState('');
 
-  // Fetch all customer packages on component mount
+  // Fetch all customer packages and franchise packages on component mount
   useEffect(() => {
     fetchPackages();
+    fetchFranchisePackages();
   }, []);
 
   const fetchPackages = async () => {
@@ -68,6 +77,15 @@ const ManageCustomerPackages = () => {
     }
   };
 
+  const fetchFranchisePackages = async () => {
+    try {
+      const response = await adminAPI.getAllPackages();
+      setFranchisePackages(response.data);
+    } catch (err) {
+      console.error('Error fetching franchise packages:', err);
+    }
+  };
+
   const handleOpenDialog = (pkg = null) => {
     if (pkg) {
       setEditingPackage(pkg);
@@ -78,6 +96,7 @@ const ManageCustomerPackages = () => {
         creditsIncluded: pkg.creditsIncluded,
         features: pkg.features || [],
         isActive: pkg.isActive,
+        availableForPackages: pkg.availableForPackages || [],
         // Business payout settings
         businessPayoutPercentage: pkg.businessPayoutPercentage || 20,
         businessPayoutType: pkg.businessPayoutType || 'percentage',
@@ -92,6 +111,7 @@ const ManageCustomerPackages = () => {
         creditsIncluded: '',
         features: [],
         isActive: true,
+        availableForPackages: [],
         // Business payout settings
         businessPayoutPercentage: 20,
         businessPayoutType: 'percentage',
@@ -112,6 +132,13 @@ const ManageCustomerPackages = () => {
     setFormData({
       ...formData,
       [name]: type === 'checkbox' ? checked : value,
+    });
+  };
+
+  const handlePackageSelection = (selectedPackageIds) => {
+    setFormData({
+      ...formData,
+      availableForPackages: selectedPackageIds,
     });
   };
 
@@ -144,6 +171,7 @@ const ManageCustomerPackages = () => {
         ...formData,
         price: Number(formData.price),
         creditsIncluded: Number(formData.creditsIncluded),
+        availableForPackages: formData.availableForPackages || [],
       };
       
       if (editingPackage) {
@@ -247,8 +275,9 @@ const ManageCustomerPackages = () => {
                     <TableCell>Name</TableCell>
                     <TableCell>Description</TableCell>
                     <TableCell>Price</TableCell>
-                    <TableCell>Credits</TableCell>
+                   
                     <TableCell>Features</TableCell>
+                    <TableCell>Available For</TableCell>
                     <TableCell>Payout Settings</TableCell>
                     <TableCell>Status</TableCell>
                     <TableCell>Actions</TableCell>
@@ -265,7 +294,7 @@ const ManageCustomerPackages = () => {
                       </TableCell>
                       <TableCell>{pkg.description}</TableCell>
                       <TableCell>₹{pkg.price}</TableCell>
-                      <TableCell>{pkg.creditsIncluded}</TableCell>
+                                            
                       <TableCell>
                         {pkg.features && pkg.features.length > 0 ? (
                           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
@@ -276,6 +305,27 @@ const ManageCustomerPackages = () => {
                         ) : (
                           <Typography variant="body2" color="textSecondary">
                             No features
+                          </Typography>
+                        )}
+                      </TableCell>
+                      <TableCell>
+                        {pkg.availableForPackages && pkg.availableForPackages.length > 0 ? (
+                          <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                            {pkg.availableForPackages.map((pkgId, index) => {
+                              const franchisePackage = franchisePackages.find(fp => fp._id === pkgId);
+                              return (
+                                <Chip 
+                                  key={index} 
+                                  label={franchisePackage ? franchisePackage.name : 'Unknown Package'} 
+                                  size="small" 
+                                  variant="outlined" 
+                                />
+                              );
+                            })}
+                          </Box>
+                        ) : (
+                          <Typography variant="body2" color="textSecondary">
+                            All Packages
                           </Typography>
                         )}
                       </TableCell>
@@ -370,17 +420,7 @@ const ManageCustomerPackages = () => {
                   onChange={handleInputChange}
                 />
               </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  required
-                  fullWidth
-                  label="Credits Included"
-                  name="creditsIncluded"
-                  type="number"
-                  value={formData.creditsIncluded}
-                  onChange={handleInputChange}
-                />
-              </Grid>
+              
               <Grid item xs={12}>
                 <TextField
                   fullWidth
@@ -406,6 +446,40 @@ const ManageCustomerPackages = () => {
                     />
                   ))}
                 </Box>
+              </Grid>
+              
+              {/* Franchise Package Access */}
+              <Grid item xs={12}>
+                <FormControl fullWidth>
+                  <InputLabel id="franchise-packages-label">
+                    Available for Franchise Packages
+                  </InputLabel>
+                  <Select
+                    labelId="franchise-packages-label"
+                    multiple
+                    value={formData.availableForPackages}
+                    onChange={(e) => handlePackageSelection(e.target.value)}
+                    renderValue={(selected) => {
+                      const selectedNames = franchisePackages
+                        .filter(pkg => selected.includes(pkg._id))
+                        .map(pkg => pkg.name);
+                      return selectedNames.join(', '); 
+                    }}
+                  >
+                    {franchisePackages.map((pkg) => (
+                      <MenuItem key={pkg._id} value={pkg._id}>
+                        <ListItemIcon>
+                          <Checkbox
+                            edge="start"
+                            checked={formData.availableForPackages.includes(pkg._id)}
+                            tabIndex={-1}
+                          />
+                        </ListItemIcon>
+                        <ListItemText primary={pkg.name} />
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
               </Grid>
               
               {/* Business Payout Settings */}

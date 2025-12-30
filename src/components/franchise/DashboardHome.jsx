@@ -46,9 +46,11 @@ import {
 } from '@mui/icons-material';
 import { franchiseAPI } from '../../services/api';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../hooks/useAuth';
 
 const DashboardHome = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [stats, setStats] = useState({
     credits: 0,
     totalLeads: 0,
@@ -357,8 +359,8 @@ const DashboardHome = () => {
 
   return (
     <Box>
-      <Typography variant="h4" gutterBottom>
-        Dashboard Overview
+      <Typography variant="h4" gutterBottom sx={{ mb: 3 }}>
+        Welcome <span style={{ color: '#6200ea', fontWeight: 'bold' }}>{user?.name || 'User'}</span>
       </Typography>
       
       {/* Purchased Package Section */}
@@ -676,7 +678,7 @@ const DashboardHome = () => {
               ) : (
                 <Grid container spacing={3}>
                   {availablePackages.map((pkg) => (
-                    <Grid item xs={12} sm={6} md={4} key={pkg._id}>
+                    <Grid item xs={12} sm={6} md={4} key={pkg._id} style={{width:"100%"}}>
                       <Card 
                         sx={{ 
                           height: '100%', 

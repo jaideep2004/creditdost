@@ -302,15 +302,7 @@ const Leads = () => {
                 </Grid>
               </Grid>
             </Box>
-            <Box>
-              <Button
-                variant="contained"
-                startIcon={<Upload />}
-                onClick={() => handleOpenUploadDialog()}
-              >
-                Upload Leads
-              </Button>
-            </Box>
+           
           </Box>
           
           {loading && filteredLeads.length === 0 ? (

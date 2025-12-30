@@ -119,7 +119,9 @@ export const franchiseAPI = {
 export const blogAPI = {
   getAllBlogs: (params) => api.get('/blogs', { params }),
   getBlogBySlug: (slug) => api.get(`/blogs/${slug}`),
-  getBlogCategories: () => api.get('/blogs/categories')
+  getBlogCategories: () => api.get('/blogs/categories'),
+  getRecentBlogs: (params) => api.get('/blogs/recent', { params }),
+  getBlogTags: () => api.get('/blogs/tags')
 };
 
 // Admin API functions

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Container, Grid, Typography, TextField, Button, Paper, IconButton } from '@mui/material';
+import { Box, Container, Grid, Typography, TextField, Button, Paper, IconButton, Select, MenuItem, FormControl, InputLabel } from '@mui/material';
 import { Phone, Email, LocationOn, Facebook, Twitter, LinkedIn, YouTube } from '@mui/icons-material';
 import Header from './homepage/Header';
 import HomePageFooter from './homepage/HomePageFooter';
@@ -9,16 +9,28 @@ const ContactPage = () => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
+    mobileNumber: '',
     subject: '',
     message: ''
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
+    const { name, value } = e.target;
+    
+    // If it's the mobile number field, only allow digits and limit to 10
+    if (name === 'mobileNumber') {
+      const numericValue = value.replace(/[^0-9]/g, '').slice(0, 10);
+      setFormData({
+        ...formData,
+        [name]: numericValue
+      });
+    } else {
+      setFormData({
+        ...formData,
+        [name]: value
+      });
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -29,7 +41,7 @@ const ContactPage = () => {
       // Submit to backend API
       await api.post('/forms/contact', formData);
       // Reset form
-      setFormData({ name: '', email: '', subject: '', message: '' });
+      setFormData({ name: '', email: '', mobileNumber: '', subject: '', message: '' });
       // Show success message
       alert('Thank you for your message. We will get back to you soon!');
     } catch (error) {
@@ -207,15 +219,16 @@ const ContactPage = () => {
                       }}
                     />
                   </Grid>
-                  <Grid item xs={12}>
+                  <Grid item xs={12} sm={6}>
                     <TextField
                       fullWidth
-                      label="Subject"
-                      name="subject"
-                      value={formData.subject}
+                      label="Mobile Number"
+                      name="mobileNumber"
+                      value={formData.mobileNumber}
                       onChange={handleChange}
-                      required
                       variant="outlined"
+                      inputProps={{ maxLength: 10 }}
+                      placeholder="Enter 10-digit mobile number"
                       sx={{
                         '& .MuiOutlinedInput-root': {
                           '& fieldset': {
@@ -230,6 +243,37 @@ const ContactPage = () => {
                         }
                       }}
                     />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <FormControl fullWidth variant="outlined" sx={{
+                      '& .MuiOutlinedInput-root': {
+                        '& fieldset': {
+                          borderColor: '#e2e8f0'
+                        },
+                        '&:hover fieldset': {
+                          borderColor: '#cbd5e1'
+                        },
+                        '&.Mui-focused fieldset': {
+                          borderColor: '#0891b2'
+                        }
+                      }
+                    }}>
+                      <InputLabel id="subject-label">Subject</InputLabel>
+                      <Select
+                        labelId="subject-label"
+                        name="subject"
+                        value={formData.subject}
+                        onChange={handleChange}
+                        label="Subject"
+                        required
+                      >
+                        <MenuItem value="Franchise">Franchise</MenuItem>
+                        <MenuItem value="Credit Dost Suvidha Centre">Credit Dost Suvidha Centre</MenuItem>
+                        <MenuItem value="Credit Score Repair">Credit Score Repair</MenuItem>
+                        <MenuItem value="Apply for Loan">Apply for Loan</MenuItem>
+                        <MenuItem value="Others">Others</MenuItem>
+                      </Select>
+                    </FormControl>
                   </Grid>
                   <Grid item xs={12}>
                     <TextField

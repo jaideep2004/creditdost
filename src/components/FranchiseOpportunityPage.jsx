@@ -33,6 +33,10 @@ import {
 import Header from "./homepage/Header";
 import HomePageFooter from "./homepage/HomePageFooter";
 import api from "../services/api";
+import RegistrationForm from "./common/RegistrationForm";
+import { useAuth } from "../hooks/useAuth.jsx";
+import { useNavigate } from "react-router-dom";
+import TestimonialSection from "./homepage/TestimonialsSection.jsx";
 
 // Custom styled components for unique design
 const PageWrapper = styled(Box)(({ theme }) => ({
@@ -286,23 +290,25 @@ const FranchiseOpportunityPage = () => {
   });
 
   const [submitted, setSubmitted] = useState(false);
+  const { register } = useAuth();
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    
+
     // For mobile number, only allow digits
-    if (name === 'mobileNumber') {
-      const cleanValue = value.replace(/\D/g, '');
+    if (name === "mobileNumber") {
+      const cleanValue = value.replace(/\D/g, "");
       // Limit to 10 digits
       if (cleanValue.length <= 10) {
         setFormData({
           ...formData,
-          [name]: cleanValue
+          [name]: cleanValue,
         });
       }
       return;
     }
-    
+
     setFormData({
       ...formData,
       [name]: type === "checkbox" ? checked : value,
@@ -312,10 +318,10 @@ const FranchiseOpportunityPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     // Form validation would go here
-    
+
     try {
       // Submit to backend API
-      await api.post('/forms/franchise-opportunity', formData);
+      await api.post("/forms/franchise-opportunity", formData);
       setSubmitted(true);
       // Reset form
       setFormData({
@@ -329,41 +335,35 @@ const FranchiseOpportunityPage = () => {
         consent: false,
       });
     } catch (error) {
-      console.error('Form submission error:', error);
-      alert('Failed to submit your request. Please try again.');
+      console.error("Form submission error:", error);
+      alert("Failed to submit your request. Please try again.");
     }
   };
 
   const benefits = [
     {
       icon: <VerifiedUser sx={{ fontSize: 40, color: "#4caf50" }} />,
-      title: "Proven Business Model",
+      title: "Ready-to-Run Business Model",
       description:
-        "A ready-to-execute structure built on transparency and real results.",
+        " Launch your credit repair business with a proven structure, processes, and workflows already in place.",
     },
     {
       icon: <Build sx={{ fontSize: 40, color: "#2196f3" }} />,
-      title: "Expert-Led Training",
+      title: "Complete Skill-Based Training",
       description:
-        "Learn directly from experienced professionals in credit score repair and financial consulting.",
+        " Step-by-step training on credit reports, disputes, customer handling, and business operations — no prior finance experience required.",
     },
     {
       icon: <TrendingUp sx={{ fontSize: 40, color: "#ff9800" }} />,
-      title: "Technology & Tools",
+      title: "Centralized Technology Platform",
       description:
-        "Access our AI-powered software, CRM systems, and automation support.",
+        " Get access to CRM, case tracking, customer management, and automation tools to run your business smoothly.",
     },
     {
-      icon: <SupportAgent sx={{ fontSize: 40, color: "#9c27b0" }} />,
-      title: "Brand Credibility",
+      icon: <TrendingUp sx={{ fontSize: 40, color: "#ff9800" }} />,
+      title: "Brand Trust & Market Presence",
       description:
-        "Operate under a trusted and recognized brand with nationwide presence.",
-    },
-    {
-      icon: <EmojiEvents sx={{ fontSize: 40, color: "#f44336" }} />,
-      title: "Continuous Mentorship",
-      description:
-        "Get lifetime guidance and business support from our expert team.",
+        "Operate under the Credit Dost brand with nationwide visibility and growing customer trust.",
     },
   ];
 
@@ -514,7 +514,7 @@ const FranchiseOpportunityPage = () => {
                     textShadow: "0 2px 10px rgba(0, 0, 0, 0.2)",
                   }}
                 >
-                  Franchise Opportunity – Credit Dost
+                  Franchise Opportunity with Credit Dost
                 </Typography>
 
                 <Typography
@@ -832,9 +832,9 @@ const FranchiseOpportunityPage = () => {
                     lineHeight: 1.7,
                   }}
                 >
-                  At Credit Dost, we've designed a complete ecosystem to help
-                  you succeed — combining practical training, technology, and
-                  ongoing business support.
+                  Credit Dost is not just a franchise — it’s a complete business
+                  ecosystem designed to help partners build a sustainable,
+                  long-term income in the fast-growing credit repair industry.
                 </Typography>
               </Box>
 
@@ -1046,8 +1046,9 @@ const FranchiseOpportunityPage = () => {
                     lineHeight: 1.7,
                   }}
                 >
-                  Comprehensive support across all aspects of your business
-                  journey
+                  A complete business support ecosystem designed to help you
+                  launch, operate, and scale your credit repair franchise with
+                  confidence.
                 </Typography>
               </Box>
 
@@ -1056,27 +1057,27 @@ const FranchiseOpportunityPage = () => {
                   {
                     area: "Training & Certification",
                     description:
-                      "Professional training to become a certified Credit Score Repair Consultant.",
+                      "Get structured, hands-on training to become a Certified Credit Score Repair Consultant, covering credit reports, dispute handling, compliance, and customer management.",
                   },
                   {
                     area: "Tools & Resources",
                     description:
-                      "CRM access, report templates, dispute formats, and digital tools to manage your clients.",
+                      "Access ready-to-use CRM systems, dispute templates, report formats, and operational tools to manage clients efficiently from day one.",
                   },
                   {
                     area: "Marketing Support",
                     description:
-                      "Digital creatives, growth strategies, and co-branding assistance to promote your business.",
+                      "Receive co-branded creatives, digital marketing guidance, and growth strategies to help you generate leads and build local brand visibility.",
                   },
                   {
                     area: "Technology Access",
                     description:
-                      "AI-based backend systems for client progress tracking and performance management.",
+                      "Leverage AI-enabled backend systems for case tracking, client progress monitoring, documentation flow, and performance insights.",
                   },
                   {
                     area: "Dedicated Mentorship",
                     description:
-                      "Continuous learning, business development calls, and support from the Credit Dost team.",
+                      "Benefit from ongoing mentoring, business review calls, and operational support from the Credit Dost core team to help you grow sustainably.",
                   },
                 ].map((item, index) => (
                   <Grid
@@ -1313,7 +1314,7 @@ const FranchiseOpportunityPage = () => {
 
           {/* Testimonials Section */}
           <SectionCard>
-            <CardContent sx={{ p: 5 }}>
+            <CardContent style={{ paddingTop: "40px" }}>
               <Box sx={{ textAlign: "center", mb: 6 }}>
                 <Box
                   sx={{ display: "inline-block", position: "relative", mb: 2 }}
@@ -1367,93 +1368,7 @@ const FranchiseOpportunityPage = () => {
                 </Typography>
               </Box>
 
-              <Grid container spacing={4}>
-                <Grid item xs={12} md={6} style={{ flex: "1" }}>
-                  <TestimonialCard>
-                    <Typography
-                      sx={{
-                        color: "#333",
-                        fontStyle: "italic",
-                        lineHeight: 1.7,
-                        mb: 3,
-                      }}
-                    >
-                      "Joining Credit Dost completely changed my career. I now
-                      help clients fix their credit issues and have built a
-                      steady income stream. The training and backend support are
-                      world-class."
-                    </Typography>
-                    <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-                      <Box
-                        sx={{
-                          width: 50,
-                          height: 50,
-                          borderRadius: "50%",
-                          background:
-                            "linear-gradient(135deg, #4caf50, #2196f3)",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          color: "white",
-                          fontWeight: 700,
-                        }}
-                      >
-                        SS
-                      </Box>
-                      <Box>
-                        <Typography sx={{ fontWeight: 700, color: "#1a237e" }}>
-                          Saurabh Sharma
-                        </Typography>
-                        <Typography sx={{ color: "#666" }}>
-                          Partner – Delhi NCR
-                        </Typography>
-                      </Box>
-                    </Box>
-                  </TestimonialCard>
-                </Grid>
-                <Grid item xs={12} md={6} style={{ flex: "1" }}>
-                  <TestimonialCard>
-                    <Typography
-                      sx={{
-                        color: "#333",
-                        fontStyle: "italic",
-                        lineHeight: 1.7,
-                        mb: 3,
-                      }}
-                    >
-                      "The best part about Credit Dost is their integrity and
-                      process transparency. Every step is structured,
-                      professional, and supportive."
-                    </Typography>
-                    <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-                      <Box
-                        sx={{
-                          width: 50,
-                          height: 50,
-                          borderRadius: "50%",
-                          background:
-                            "linear-gradient(135deg, #4caf50, #2196f3)",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          color: "white",
-                          fontWeight: 700,
-                        }}
-                      >
-                        PM
-                      </Box>
-                      <Box>
-                        <Typography sx={{ fontWeight: 700, color: "#1a237e" }}>
-                          Pooja Mehta
-                        </Typography>
-                        <Typography sx={{ color: "#666" }}>
-                          Consultant – Ahmedabad
-                        </Typography>
-                      </Box>
-                    </Box>
-                  </TestimonialCard>
-                </Grid>
-              </Grid>
+              <TestimonialSection />
             </CardContent>
           </SectionCard>
 
@@ -1574,7 +1489,7 @@ const FranchiseOpportunityPage = () => {
                           color: "#1a237e",
                         }}
                       >
-                        📩 Ready to Start? Fill the Partner Enquiry Form
+                        📩 Ready to Start? Create Your Account
                       </Typography>
 
                       {submitted ? (
@@ -1586,162 +1501,125 @@ const FranchiseOpportunityPage = () => {
                             variant="h5"
                             sx={{ fontWeight: 700, mb: 2 }}
                           >
-                            Thank You for Your Interest!
+                            Registration Successful!
                           </Typography>
                           <Typography sx={{ color: "#666", mb: 3 }}>
-                            Our partnership team will contact you within 24
-                            hours.
+                            Welcome to Credit Dost! You have been registered
+                            successfully.
                           </Typography>
                           <Button
                             variant="contained"
-                            onClick={() => setSubmitted(false)}
+                            onClick={() => {
+                              setSubmitted(false);
+                              navigate("/");
+                            }}
                             sx={{
                               background:
                                 "linear-gradient(135deg, #4caf50, #2196f3)",
                             }}
                           >
-                            Submit Another Response
+                            Go to Home
                           </Button>
                         </Box>
                       ) : (
-                        <Box component="form" onSubmit={handleSubmit}>
-                          <Grid container spacing={3}>
-                            <Grid item xs={12} sm={6} style={{ width: "47%" }}>
-                              <TextField
-                                fullWidth
-                                label="Full Name"
-                                name="fullName"
-                                value={formData.fullName}
-                                onChange={handleChange}
-                                required
-                                variant="outlined"
-                              />
-                            </Grid>
-                            <Grid item xs={12} sm={6} style={{ width: "47%" }}>
-                              <TextField
-                                fullWidth
-                                label="Mobile Number"
-                                name="mobileNumber"
-                                value={formData.mobileNumber}
-                                onChange={handleChange}
-                                required
-                                variant="outlined"
-                                type="tel"
-                                inputProps={{ maxLength: 10 }}
-                                sx={{
-                                  "& .MuiOutlinedInput-root": {
-                                    borderRadius: 2,
-                                    "&:hover fieldset": {
-                                      borderColor: "#4caf50",
-                                    },
-                                  },
-                                }}
-                              />
-                            </Grid>
-                            <Grid item xs={12} sm={6} style={{ width: "47%" }}>
-                              <TextField
-                                fullWidth
-                                label="Email ID"
-                                name="email"
-                                value={formData.email}
-                                onChange={handleChange}
-                                required
-                                variant="outlined"
-                                type="email"
-                              />
-                            </Grid>
-                            <Grid item xs={12} sm={6} style={{ width: "47%" }}>
-                              <TextField
-                                fullWidth
-                                label="City"
-                                name="city"
-                                value={formData.city}
-                                onChange={handleChange}
-                                required
-                                variant="outlined"
-                              />
-                            </Grid>
-                            <Grid item xs={12} sm={6} style={{ width: "47%" }}>
-                              <TextField
-                                fullWidth
-                                select
-                                label="State"
-                                name="state"
-                                value={formData.state}
-                                onChange={handleChange}
-                                required
-                                variant="outlined"
-                                SelectProps={{
-                                  native: true,
-                                }}
-                              >
-                                <option value=""></option>
-                                {indianStates.map((state) => (
-                                  <option key={state} value={state}>
-                                    {state}
-                                  </option>
-                                ))}
-                              </TextField>
-                            </Grid>
-                            <Grid item xs={12} sm={6} style={{ width: "47%" }}>
-                              <TextField
-                                fullWidth
-                                label="Current Profession / Business"
-                                name="profession"
-                                value={formData.profession}
-                                onChange={handleChange}
-                                required
-                                variant="outlined"
-                              />
-                            </Grid>
-                            <Grid item xs={12} style={{ width: "100%" }}>
-                              <TextField
-                                fullWidth
-                                label="Message"
-                                name="message"
-                                value={formData.message}
-                                onChange={handleChange}
-                                variant="outlined"
-                                multiline
-                                rows={4}
-                              />
-                            </Grid>
-                            <Grid item xs={12}>
-                              <FormControlLabel
-                                control={
-                                  <Checkbox
-                                    name="consent"
-                                    checked={formData.consent}
-                                    onChange={handleChange}
-                                    required
-                                    sx={{
-                                      color: "#4caf50",
-                                      "&.Mui-checked": {
-                                        color: "#4caf50",
-                                      },
-                                    }}
-                                  />
+                        <RegistrationForm
+                          onSubmit={async (registrationData) => {
+                            try {
+                              // Call the actual registration function
+                              await register({
+                                name: registrationData.name,
+                                email: registrationData.email,
+                                phone: registrationData.phone,
+                                state: registrationData.state,
+                                pincode: registrationData.pincode,
+                                language: registrationData.language,
+                                password: registrationData.password,
+                              });
+
+                              // After successful registration, submit franchise inquiry
+                              const franchiseData = {
+                                fullName: registrationData.name || "",
+                                mobileNumber: registrationData.phone || "",
+                                email: registrationData.email || "",
+                                city:
+                                  registrationData.state ||
+                                  registrationData.pincode ||
+                                  "", // Use state first, then pincode as city since RegistrationForm doesn't have city field
+                                state: registrationData.state || "",
+                                profession: "Franchise Opportunity Inquiry", // Indicate this is a franchise inquiry
+                                message: "Interested in franchise opportunity",
+                                consent: true,
+                              };
+
+                              await api.post(
+                                "/forms/franchise-opportunity",
+                                franchiseData
+                              );
+                              setSubmitted(true);
+                              return Promise.resolve();
+                            } catch (error) {
+                              console.error("Registration error:", error);
+                              // Check if this is a validation error from the franchise opportunity form
+                              if (
+                                error.response &&
+                                error.response.status === 400
+                              ) {
+                                // Still consider registration successful if user was registered but franchise inquiry failed
+                                try {
+                                  const franchiseData = {
+                                    fullName: registrationData.name || "",
+                                    mobileNumber: registrationData.phone || "",
+                                    email: registrationData.email || "",
+                                    city:
+                                      registrationData.state ||
+                                      registrationData.pincode ||
+                                      "", // Use state first, then pincode as city since RegistrationForm doesn't have city field
+                                    state: registrationData.state || "",
+                                    profession: "Franchise Opportunity Inquiry",
+                                    message:
+                                      "Interested in franchise opportunity",
+                                    consent: true,
+                                  };
+
+                                  await api.post(
+                                    "/forms/franchise-opportunity",
+                                    franchiseData
+                                  );
+                                  setSubmitted(true);
+                                  return Promise.resolve();
+                                } catch (franchiseError) {
+                                  console.error(
+                                    "Franchise opportunity submission error:",
+                                    franchiseError
+                                  );
+                                  // If franchise submission fails but registration succeeded, we still consider it a success
+                                  setSubmitted(true);
+                                  // Log the specific error for debugging
+                                  console.log(
+                                    "Franchise opportunity form data:",
+                                    {
+                                      fullName: registrationData.name,
+                                      mobileNumber: registrationData.phone,
+                                      email: registrationData.email,
+                                      city:
+                                        registrationData.state ||
+                                        registrationData.pincode ||
+                                        "",
+                                      state: registrationData.state,
+                                      profession:
+                                        "Franchise Opportunity Inquiry",
+                                    }
+                                  );
+                                  return Promise.resolve();
                                 }
-                                label={
-                                  <Typography sx={{ color: "#666" }}>
-                                    I agree to receive communication from Credit
-                                    Dost.
-                                  </Typography>
-                                }
-                              />
-                            </Grid>
-                            <Grid item xs={12}>
-                              <StyledButton
-                                type="submit"
-                                variant="contained"
-                                fullWidth
-                                size="large"
-                              >
-                                Submit Enquiry
-                              </StyledButton>
-                            </Grid>
-                          </Grid>
-                        </Box>
+                              } else {
+                                return Promise.reject(error);
+                              }
+                            }
+                          }}
+                          submitButtonText="Register Now"
+                          formTitle="Create Your Account"
+                        />
                       )}
                     </CardContent>
                   </FormCard>

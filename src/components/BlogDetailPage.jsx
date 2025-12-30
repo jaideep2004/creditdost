@@ -2,12 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { blogAPI } from '../services/api';
 import Header from './homepage/Header';
+import { getImagePreviewUrl } from '../utils/googleDriveUtils';
 
 const BlogDetailPage = () => {
   const { slug } = useParams();
   const [blog, setBlog] = useState(null);
   const [loading, setLoading] = useState(true);
   const [recentPosts, setRecentPosts] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [tags, setTags] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
@@ -18,33 +21,18 @@ const BlogDetailPage = () => {
   const fetchBlog = async () => {
     try {
       setLoading(true);
-      // Replace with your actual API call
-      const response = await blogAPI.getBlogBySlug(slug);
-      setBlog(response.data);
+      // Fetch blog, categories, recent posts, and tags
+      const [blogResponse, categoriesResponse, recentResponse, tagsResponse] = await Promise.all([
+        blogAPI.getBlogBySlug(slug),
+        blogAPI.getBlogCategories(),
+        blogAPI.getRecentBlogs({ limit: 5 }),
+        blogAPI.getBlogTags()
+      ]);
       
-      // For demo purposes, we'll create some dummy recent posts
-      // In a real app, you would fetch these from the API
-      const dummyRecentPosts = [
-        {
-          _id: '1',
-          title: 'How to Improve Your Business Strategy',
-          date: '2024-10-15',
-          image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=200&h=200&fit=crop'
-        },
-        {
-          _id: '2',
-          title: 'The Future of Digital Marketing',
-          date: '2024-10-10',
-          image: 'https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=200&h=200&fit=crop'
-        },
-        {
-          _id: '3',
-          title: 'Top 10 Business Trends for 2024',
-          date: '2024-10-05',
-          image: 'https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=200&h=200&fit=crop'
-        }
-      ];
-      setRecentPosts(dummyRecentPosts);
+      setBlog(blogResponse.data);
+      setCategories(categoriesResponse.data.categories);
+      setRecentPosts(recentResponse.data.recentBlogs);
+      setTags(tagsResponse.data.tags);
       
       setLoading(false);
     } catch (error) {
@@ -62,13 +50,7 @@ const BlogDetailPage = () => {
     });
   };
 
-  const categories = [
-    { name: 'Agency', count: 26 },
-    { name: 'Corporate', count: 30 },
-    { name: 'Business', count: 71 }
-  ];
 
-  const tags = ['Start shape', 'Architecture', 'Large', 'Business', 'Strategy'];
 
   const styles = {
     container: {
@@ -130,7 +112,8 @@ const BlogDetailPage = () => {
     featuredImage: {
       width: '100%',
       height: 'auto',
-      display: 'block'
+      display: 'block',
+      minHeight: '100px'
     },
     articleContent: {
       padding: '40px'
@@ -397,9 +380,13 @@ const BlogDetailPage = () => {
             <div style={styles.contentCard}>
               {blog?.featuredImage && (
                 <img
-                  src={blog.featuredImage}
+                  src={getImagePreviewUrl(blog.featuredImage)}
                   alt={blog.title}
                   style={styles.featuredImage}
+                  onError={(e) => {
+                    e.target.style.display = 'none';
+                  }}
+                  
                 />
               )}
               
@@ -496,15 +483,19 @@ const BlogDetailPage = () => {
               <h3 style={styles.widgetTitle}>Recent Post</h3>
               {recentPosts.map((post, index) => (
                 <div
-                  key={index}
-                  style={{...styles.recentPost, borderBottom: index < recentPosts.length - 1 ? '1px solid #eee' : 'none'}}
+                  key={post._id || index}
+                  style={{...styles.recentPost, borderBottom: index < recentPosts.length - 1 ? '1px solid #eee' : 'none', cursor: 'pointer'}}
                   className="recent-post"
+                  onClick={() => window.location.href = `/blog/${post.slug}`}
                 >
-                  {post.image && (
+                  {post.featuredImage && (
                     <img
-                      src={post.image}
+                      src={getImagePreviewUrl(post.featuredImage)}
                       alt={post.title}
                       style={styles.recentPostImage}
+                      onError={(e) => {
+                        e.target.style.display = 'none';
+                      }}
                     />
                   )}
                   <div>
@@ -515,25 +506,14 @@ const BlogDetailPage = () => {
                       <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style={{verticalAlign: 'middle', marginRight: '4px'}}>
                         <path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"/>
                       </svg>
-                      {formatDate(post.date)}
+                      {formatDate(post.createdAt)}
                     </div>
                   </div>
                 </div>
               ))}
             </div>
 
-            {/* Work With Us */}
-            <div style={{...styles.sidebarWidget, ...styles.workWithUs}}>
-              <h3 style={styles.workTitle}>Work with us</h3>
-              <div style={styles.workIcon}>
-                <svg width="40" height="40" viewBox="0 0 24 24" fill="#0891b2">
-                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
-                </svg>
-              </div>
-              <p style={styles.workText}>
-                Aliquam posuere loborti viverra atti ullamcer posuere viverra .Aliquam er Aliquam r justo, posuere loborti viverra atti ullam
-              </p>
-            </div>
+           
 
             {/* Tags */}
             <div style={styles.sidebarWidget}>
@@ -541,7 +521,7 @@ const BlogDetailPage = () => {
               <div style={styles.tagsContainer}>
                 {tags.map((tag, index) => (
                   <button key={index} style={styles.tag} className="tag">
-                    {tag}
+                    {tag.name}
                   </button>
                 ))}
               </div>

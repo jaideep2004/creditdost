@@ -341,10 +341,10 @@ const Header = () => {
   const navItems = [
     { text: "Home", path: "/" },
     { text: "About Us", path: "/about" },
-    { text: "Services", path: "#", hasDropdown: true },
-    { text: "Blog", path: "/blogs" },
-   
-    { text: "Contact", path: "/contact" },
+    { text: "Credit Score Repair", path: "/credit-score-repair" },
+    { text: "Apply for loan", path: "/apply-for-loan" },
+
+    { text: "Suvidha Centre", path: "/suvidha-centre" },
   ];
 
   const drawer = (
@@ -449,8 +449,15 @@ const Header = () => {
             >
               Login
             </Button>
-            <Button fullWidth variant="outlined" onClick={handleRegister}>
-              Register as Franchise Partner
+            <Button
+              fullWidth
+              variant="outlined"
+              onClick={() => {
+                navigate("/franchise-opportunity");
+                handleDrawerToggle();
+              }}
+            >
+              Franchise Opportunity
             </Button>
           </Box>
         )}
@@ -600,14 +607,12 @@ const Header = () => {
                               }}
                               startIcon={
                                 <Box
-                                  sx={
-                                    {
-                                      width: 16,
-                                      height: 16,
-                                      borderRadius: "50%",
-                                      backgroundColor: "#10b981",
-                                    }
-                                  }
+                                  sx={{
+                                    width: 16,
+                                    height: 16,
+                                    borderRadius: "50%",
+                                    backgroundColor: "#10b981",
+                                  }}
                                 />
                               }
                             >
@@ -620,14 +625,12 @@ const Header = () => {
                               }}
                               startIcon={
                                 <Box
-                                  sx={
-                                    {
-                                      width: 16,
-                                      height: 16,
-                                      borderRadius: "50%",
-                                      backgroundColor: "#f59e0b",
-                                    }
-                                  }
+                                  sx={{
+                                    width: 16,
+                                    height: 16,
+                                    borderRadius: "50%",
+                                    backgroundColor: "#f59e0b",
+                                  }}
                                 />
                               }
                             >
@@ -645,10 +648,6 @@ const Header = () => {
                 </Box>
 
                 <Box sx={{ display: "flex", alignItems: "center" }}>
-                  <SearchIconButton>
-                    <SearchIcon />
-                  </SearchIconButton>
-
                   <ContactBox>
                     <PhoneIconBox>
                       <PhoneIcon sx={{ color: "white", fontSize: "1.2rem" }} />
@@ -672,7 +671,7 @@ const Header = () => {
                           fontSize: "1rem",
                         }}
                       >
-                        +91 1234567890
+                        +91 9821389400
                       </Typography>
                     </Box>
                   </ContactBox>
@@ -754,9 +753,9 @@ const Header = () => {
                               background: "rgba(8, 145, 178, 0.1)",
                             },
                           }}
-                          onClick={handleRegister}
+                          onClick={() => navigate("/franchise-opportunity")}
                         >
-                          Register as Franchise Partner
+                          Franchise Opportunity
                         </AuthButton>
                       </Box>
                     </Zoom>

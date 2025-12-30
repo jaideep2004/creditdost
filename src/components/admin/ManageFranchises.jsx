@@ -914,26 +914,7 @@ const ManageFranchises = () => {
                             {franchise.kycStatus === "pending" &&
                               !franchise.isActive && (
                                 <>
-                                  <IconButton
-                                    size="small"
-                                    onClick={() =>
-                                      handleApproveRegistration(franchise._id)
-                                    }
-                                    sx={{ color: "success.main" }}
-                                    title="Approve Registration"
-                                  >
-                                    <Check />
-                                  </IconButton>
-                                  <IconButton
-                                    size="small"
-                                    onClick={() =>
-                                      handleRejectRegistrationClick(franchise)
-                                    }
-                                    sx={{ color: "error.main" }}
-                                    title="Reject Registration"
-                                  >
-                                    <Close />
-                                  </IconButton>
+                                  {/* Removed direct approval buttons - only allow approval through registration details dialog */}
                                 </>
                               )}
                             {/* KYC Approval Buttons - Only show for submitted KYC */}

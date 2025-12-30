@@ -4,48 +4,57 @@ const faqs = [
   {
     id: 1,
     question: "What is Credit Score?",
-    answer: "A credit score is a 3-digit numeric score that determines your credit worthiness. Your credit score typically falls between 350-900, and the higher your score the stronger is your credit worthiness."
+    answer:
+      "A credit score is a 3-digit numeric score that determines your credit worthiness. Your credit score typically falls between 350-900, and the higher your score the stronger is your credit worthiness.",
   },
   {
     id: 2,
     question: "How is credit score calculated?",
-    answer: "Your credit score is derived from your past history on: • Amount of debt • Repayment of loans, credit cards • Number of open credit lines • Type and sub-type of loans • Tenure of loans • Recency of inquiry for new credit line"
+    answer:
+      "Your credit score is derived from your past history on: • Amount of debt • Repayment of loans, credit cards • Number of open credit lines • Type and sub-type of loans • Tenure of loans • Recency of inquiry for new credit line",
   },
   {
     id: 3,
     question: "Who calculates my credit score?",
-    answer: "In India, there are 4 credit information companies or credit bureaus licensed by the Reserve Bank of India (RBI): 1. CIBIL (300-900) 2. Equifax (300-900) 3. Experian (300-900) 4. CRIF Highmark (300-900)"
+    answer:
+      "In India, there are 4 credit information companies or credit bureaus licensed by the Reserve Bank of India (RBI): 1. CIBIL (300-900) 2. Equifax (300-900) 3. Experian (300-900) 4. CRIF Highmark (300-900)",
   },
   {
     id: 4,
     question: "How do I check my credit score?",
-    answer: "On Credit Dost, you can get your credit score here absolutely free. Alternatively, you can go to the websites of any of the 4 licensed credit bureaus in India, fill in your details and request for a credit score upon payment of a nominal fee."
+    answer:
+      "On Credit Dost, you can get your credit score here absolutely free. Alternatively, you can go to the websites of any of the 4 licensed credit bureaus in India, fill in your details and request for a credit score upon payment of a nominal fee.",
   },
   {
     id: 5,
     question: "Why is my credit score important?",
-    answer: "While evaluating your loan application, Banks and financial institutions use credit bureaus to obtain your credit history. A good credit score makes it easier for you to secure loans or extended credit lines with better terms."
+    answer:
+      "While evaluating your loan application, Banks and financial institutions use credit bureaus to obtain your credit history. A good credit score makes it easier for you to secure loans or extended credit lines with better terms.",
   },
   {
     id: 6,
     question: "What is a good credit score?",
-    answer: "A credit score of 750 or above is considered a good credit score. It helps you qualify for loans or credit cards better because it gives your potential lenders more confidence in approving your requests for loans and other credit."
+    answer:
+      "A credit score of 750 or above is considered a good credit score. It helps you qualify for loans or credit cards better because it gives your potential lenders more confidence in approving your requests for loans and other credit.",
   },
   {
     id: 7,
     question: "What are the disadvantages of bad credit score?",
-    answer: "A credit score of 650 or lower is considered low and 400 or lower is considered bad. With such scores: • You get loans at very high interest rates • You delay building your wealth because a lot of it goes towards repaying high interest"
+    answer:
+      "A credit score of 650 or lower is considered low and 400 or lower is considered bad. With such scores: • You get loans at very high interest rates • You delay building your wealth because a lot of it goes towards repaying high interest",
   },
   {
     id: 8,
     question: "Can I improve my credit score?",
-    answer: "Yes you can improve your credit score if you take conscious and consistent measures to improve it. However, credit scores do not get impacted immediately after you have prepaid a loan or paid up any outstanding dues. It takes at least 45-60 days for your credit score to climb."
+    answer:
+      "Yes you can improve your credit score if you take conscious and consistent measures to improve it. However, credit scores do not get impacted immediately after you have prepaid a loan or paid up any outstanding dues. It takes at least 45-60 days for your credit score to climb.",
   },
   {
     id: 9,
     question: "How soon can I expect my credit score to increase?",
-    answer: "Resolution of an open credit line takes about 15 days to impact your credit score. We estimate an average 15 days for your credit score to improve after you have resolved one or more open credit lines."
-  }
+    answer:
+      "Resolution of an open credit line takes about 15 days to impact your credit score. We estimate an average 15 days for your credit score to improve after you have resolved one or more open credit lines.",
+  },
 ];
 
 const FAQSection = () => {
@@ -58,18 +67,32 @@ const FAQSection = () => {
   const stats = [
     {
       icon: (
-        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <svg
+          width="40"
+          height="40"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+        >
           <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
         </svg>
       ),
-      number: "50,000+",
+      number: "10000+",
       label: "Happy Customers",
       suffix: "+",
-      duration: 2500
+      duration: 2500,
     },
     {
       icon: (
-        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <svg
+          width="40"
+          height="40"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+        >
           <path d="M12 2L20 7L12 12L4 7L12 2Z"></path>
           <path d="M20 17L12 22L4 17"></path>
           <path d="M20 12L12 17L4 12"></path>
@@ -78,31 +101,45 @@ const FAQSection = () => {
       number: "200+",
       label: "Financial Partners",
       suffix: "+",
-      duration: 2000
+      duration: 2000,
     },
     {
       icon: (
-        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <svg
+          width="40"
+          height="40"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+        >
           <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
         </svg>
       ),
       number: "98",
       label: "Success Rate",
       suffix: "%",
-      duration: 1800
+      duration: 1800,
     },
     {
       icon: (
-        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <svg
+          width="40"
+          height="40"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+        >
           <circle cx="12" cy="8" r="7"></circle>
           <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline>
         </svg>
       ),
-      number: "15+",
-      label: "Industry Awards",
+      number: "500+",
+      label: "Consultants Trained",
       suffix: "+",
-      duration: 2200
-    }
+      duration: 2200,
+    },
   ];
 
   const AnimatedCounter = ({ end, suffix, duration }) => {
@@ -142,7 +179,8 @@ const FAQSection = () => {
 
     return (
       <span id={`counter-${end}`}>
-        {count}{suffix}
+        {count}
+        {suffix}
       </span>
     );
   };
@@ -158,31 +196,32 @@ const FAQSection = () => {
 
         <div className="faq-container">
           <div className="faq-left">
-            <span className="overline" style={{ color: "#fff" }}>CREDIT EDUCATION</span>
+            <span className="overline" style={{ color: "#fff" }}>
+              CREDIT EDUCATION
+            </span>
             <h2 className="faq-title">
               Frequently Asked
               <br />
               Questions
             </h2>
             <p className="faq-description">
-              Get answers to all your credit score related questions. 
-              Understanding your credit is the first step towards financial freedom.
+              Get answers to all your credit score related questions.
+              Understanding your credit is the first step towards financial
+              freedom.
             </p>
 
             <div className="stats-container">
               {stats.map((stat, index) => (
-                <div 
+                <div
                   key={index}
                   className="stat-card"
                   style={{ animationDelay: `${index * 0.1}s` }}
                 >
-                  <div className="stat-icon">
-                    {stat.icon}
-                  </div>
+                  <div className="stat-icon">{stat.icon}</div>
                   <div className="stat-content">
                     <div className="stat-number">
-                      <AnimatedCounter 
-                        end={parseInt(stat.number)} 
+                      <AnimatedCounter
+                        end={parseInt(stat.number)}
                         suffix={stat.suffix}
                         duration={stat.duration}
                       />
