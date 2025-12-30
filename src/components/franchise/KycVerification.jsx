@@ -22,10 +22,6 @@ const KycVerification = () => {
   const [formData, setFormData] = useState({
     aadhaarNumber: '',
     panNumber: '',
-    aadhaarFront: '',
-    aadhaarBack: '',
-    panDocument: '',
-    businessRegistration: '',
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -70,13 +66,7 @@ const KycVerification = () => {
     });
   };
 
-  const handleLinkChange = (e, fieldName) => {
-    const value = e.target.value;
-    setFormData({
-      ...formData,
-      [fieldName]: value,
-    });
-  };
+
 
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -109,14 +99,10 @@ const KycVerification = () => {
     setError('');
     setSuccess('');
     
-    // Create object for link submissions
+    // Create object for KYC submission
     const kycData = {
       aadhaarNumber: formData.aadhaarNumber,
       panNumber: formData.panNumber,
-      aadhaarFrontDocument: formData.aadhaarFront,
-      aadhaarBackDocument: formData.aadhaarBack,
-      panDocument: formData.panDocument,
-      businessRegistrationDocument: formData.businessRegistration
     };
 
     try {
@@ -127,10 +113,6 @@ const KycVerification = () => {
       setFormData({
         aadhaarNumber: '',
         panNumber: '',
-        aadhaarFront: '',
-        aadhaarBack: '',
-        panDocument: '',
-        businessRegistration: '',
       });
       
       // Update local KYC status
@@ -149,7 +131,7 @@ const KycVerification = () => {
     }
   };
 
-  const steps = ['Provide Details', 'Document Links', 'Review & Submit'];
+  const steps = ['Provide Details', 'Review & Submit'];
 
   const getStepContent = (step) => {
     switch (step) {
@@ -192,51 +174,6 @@ const KycVerification = () => {
         );
       case 1:
         return (
-          <Grid container spacing={3}>
-            <Grid item xs={12}>
-              <TextField
-                fullWidth
-                label="Aadhaar Front Document Link (Google Drive)"
-                placeholder="https://drive.google.com/file/d/.../view"
-                value={formData.aadhaarFront}
-                onChange={(e) => handleLinkChange(e, 'aadhaarFront')}
-                helperText="Make sure the link is set to 'Anyone with the link can view'"
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                fullWidth
-                label="Aadhaar Back Document Link (Google Drive)"
-                placeholder="https://drive.google.com/file/d/.../view"
-                value={formData.aadhaarBack}
-                onChange={(e) => handleLinkChange(e, 'aadhaarBack')}
-                helperText="Make sure the link is set to 'Anyone with the link can view'"
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                fullWidth
-                label="PAN Card Document Link (Google Drive)"
-                placeholder="https://drive.google.com/file/d/.../view"
-                value={formData.panDocument}
-                onChange={(e) => handleLinkChange(e, 'panDocument')}
-                helperText="Make sure the link is set to 'Anyone with the link can view'"
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                fullWidth
-                label="Business Registration Document Link (Google Drive)"
-                placeholder="https://drive.google.com/file/d/.../view"
-                value={formData.businessRegistration}
-                onChange={(e) => handleLinkChange(e, 'businessRegistration')}
-                helperText="Make sure the link is set to 'Anyone with the link can view'"
-              />
-            </Grid>
-          </Grid>
-        );
-      case 2:
-        return (
           <Box>
             <Typography variant="h6" gutterBottom>
               Please review your information before submitting:
@@ -244,15 +181,7 @@ const KycVerification = () => {
             <Typography><strong>Aadhaar Number:</strong> {formData.aadhaarNumber}</Typography>
             <Typography><strong>PAN Number:</strong> {formData.panNumber}</Typography>
             
-            <Box sx={{ mt: 2 }}>
-              <Typography><strong>Document Links Provided:</strong></Typography>
-              <ul>
-                <li>Aadhaar Front: {formData.aadhaarFront ? 'Provided' : 'Not provided'}</li>
-                <li>Aadhaar Back: {formData.aadhaarBack ? 'Provided' : 'Not provided'}</li>
-                <li>PAN Card: {formData.panDocument ? 'Provided' : 'Not provided'}</li>
-                <li>Business Registration: {formData.businessRegistration ? 'Provided' : 'Not provided'}</li>
-              </ul>
-            </Box>
+
           </Box>
         );
       default:

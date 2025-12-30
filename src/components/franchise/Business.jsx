@@ -32,6 +32,7 @@ import api, { franchiseAPI } from "../../services/api";
 
 const Business = () => {
   const [customerPackages, setCustomerPackages] = useState([]);
+  const [filteredPackages, setFilteredPackages] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -62,12 +63,55 @@ const Business = () => {
     try {
       setLoading(true);
       setError("");
-      // Using the existing api instance which includes authentication headers
-      const response = await api.get("/customer-packages");
-      setCustomerPackages(response.data);
+      
+      // Fetch customer packages
+      const packagesResponse = await api.get("/customer-packages");
+      const allPackages = packagesResponse.data;
+      
+      // Fetch franchise details to get assigned packages
+      const franchiseResponse = await franchiseAPI.getDashboardStats();
+      const franchiseData = franchiseResponse.data.franchise;
+      
+      // Get the franchise's assigned packages
+      const assignedPackageIds = franchiseData.assignedPackages.map(pkg => pkg._id);
+      
+      // Get packages purchased through transactions
+      const transactionsResponse = await franchiseAPI.getTransactions();
+      const paidTransactions = transactionsResponse.data.filter(tx => tx.status === 'paid');
+      const purchasedPackageIds = paidTransactions
+        .filter(tx => tx.packageId) // Only transactions with package
+        .map(tx => tx.packageId._id);
+      
+      // Combine both sets of package IDs
+      const allAccessiblePackageIds = [...new Set([...assignedPackageIds, ...purchasedPackageIds])];
+      
+      // Filter customer packages based on availableForPackages
+      const filtered = allPackages.filter(pkg => {
+        if (!pkg.availableForPackages || pkg.availableForPackages.length === 0) {
+          // If no restrictions, make available to all
+          return true;
+        }
+        
+        // Check if any of the accessible packages match the allowed packages
+        return pkg.availableForPackages.some(allowedPackageId => 
+          allAccessiblePackageIds.includes(allowedPackageId)
+        );
+      });
+      
+      setCustomerPackages(allPackages);
+      setFilteredPackages(filtered);
     } catch (err) {
       setError("Failed to fetch customer packages. Please try again later.");
       console.error("Error fetching customer packages:", err);
+      
+      // Fallback to original behavior
+      try {
+        const response = await api.get("/customer-packages");
+        setCustomerPackages(response.data);
+        setFilteredPackages(response.data); // Show all if filtering fails
+      } catch (fallbackErr) {
+        console.error("Error in fallback fetch:", fallbackErr);
+      }
     } finally {
       setLoading(false);
     }
@@ -294,7 +338,7 @@ const Business = () => {
                       </Typography>
 
                       <Grid container spacing={2}>
-                        <Grid item xs={12} sm={6}>
+                        <Grid item xs={12} sm={6} style={{ minWidth: "350px" }}>
                           <TextField
                             required
                             fullWidth
@@ -304,7 +348,7 @@ const Business = () => {
                             onChange={handleInputChange}
                           />
                         </Grid>
-                        <Grid item xs={12} sm={6}>
+                        <Grid item xs={12} sm={6} style={{ minWidth: "350px" }}>
                           <TextField
                             required
                             fullWidth
@@ -315,7 +359,7 @@ const Business = () => {
                             onChange={handleInputChange}
                           />
                         </Grid>
-                        <Grid item xs={12} sm={6}>
+                        <Grid item xs={12} sm={6} style={{ minWidth: "350px" }}>
                           <TextField
                             required
                             fullWidth
@@ -325,7 +369,7 @@ const Business = () => {
                             onChange={handleInputChange}
                           />
                         </Grid>
-                        <Grid item xs={12} sm={6}>
+                        <Grid item xs={12} sm={6} style={{ minWidth: "350px" }}>
                           <TextField
                             required
                             fullWidth
@@ -336,7 +380,7 @@ const Business = () => {
                             inputProps={{ maxLength: 10 }}
                           />
                         </Grid>
-                        <Grid item xs={12} sm={6}>
+                        <Grid item xs={12} sm={6} style={{ minWidth: "350px" }}>
                           <TextField
                             required
                             fullWidth
@@ -347,7 +391,7 @@ const Business = () => {
                             inputProps={{ maxLength: 12 }}
                           />
                         </Grid>
-                        <Grid item xs={12} sm={6}>
+                        <Grid item xs={12} sm={6} style={{ minWidth: "350px" }}>
                           <TextField
                             required
                             fullWidth
@@ -357,8 +401,12 @@ const Business = () => {
                             onChange={handleInputChange}
                           />
                         </Grid>
-                        <Grid item xs={12} sm={6}>
-                          <FormControl fullWidth required style={{minWidth:"200px"}}>
+                        <Grid item xs={12} sm={6} style={{ minWidth: "350px" }}>
+                          <FormControl
+                            fullWidth
+                            required
+                            style={{ minWidth: "200px" }}
+                          >
                             <InputLabel>State</InputLabel>
                             <Select
                               name="state"
@@ -374,8 +422,12 @@ const Business = () => {
                             </Select>
                           </FormControl>
                         </Grid>
-                        <Grid item xs={12} sm={6}>
-                          <FormControl fullWidth required style={{minWidth:"200px"}}>
+                        <Grid item xs={12} sm={6} style={{ minWidth: "350px" }}>
+                          <FormControl
+                            fullWidth
+                            required
+                            style={{ minWidth: "200px" }}
+                          >
                             <InputLabel>Language</InputLabel>
                             <Select
                               name="language"
@@ -391,8 +443,12 @@ const Business = () => {
                             </Select>
                           </FormControl>
                         </Grid>
-                        <Grid item xs={12} sm={6}>
-                          <FormControl fullWidth required style={{minWidth:"200px"}}>
+                        <Grid item xs={12} sm={6} style={{ minWidth: "350px" }}>
+                          <FormControl
+                            fullWidth
+                            required
+                            style={{ minWidth: "200px" }}
+                          >
                             <InputLabel>Occupation</InputLabel>
                             <Select
                               name="occupation"
@@ -408,7 +464,7 @@ const Business = () => {
                             </Select>
                           </FormControl>
                         </Grid>
-                        <Grid item xs={12} sm={6}>
+                        <Grid item xs={12} sm={6} style={{ minWidth: "350px" }}>
                           <TextField
                             required
                             fullWidth
@@ -419,7 +475,7 @@ const Business = () => {
                             onChange={handleInputChange}
                           />
                         </Grid>
-                        <Grid item xs={12}>
+                        <Grid item xs={12} style={{ minWidth: "350px" }}>
                           <TextField
                             required
                             fullWidth
@@ -429,10 +485,10 @@ const Business = () => {
                             onChange={handleInputChange}
                             multiline
                             rows={3}
-                            style={{minWidth:"280px"}}
+                            style={{ minWidth: "280px" }}
                           />
                         </Grid>
-                        <Grid item xs={12}>
+                        <Grid item xs={12} style={{ minWidth: "350px" }}>
                           <Box
                             sx={{ display: "flex", justifyContent: "flex-end" }}
                           >
@@ -476,20 +532,20 @@ const Business = () => {
                         Choose the best package for your customer's credit needs
                       </Typography>
 
-                      {customerPackages.length === 0 ? (
+                      {filteredPackages.length === 0 ? (
                         <Alert severity="info">
                           No packages available at the moment.
                         </Alert>
                       ) : (
                         <Grid container spacing={3}>
-                          {customerPackages.map((pkg) => (
+                          {filteredPackages.map((pkg) => (
                             <Grid
                               item
                               xs={12}
                               sm={6}
                               md={4}
                               key={pkg._id}
-                              style={{ minWidth: "230px" }}
+                              style={{ minWidth: "400px", maxWidth: "400px" }}
                             >
                               <Card
                                 sx={{
@@ -590,17 +646,9 @@ const Business = () => {
                                         fontSize: "2rem",
                                       }}
                                     >
-                                      ₹{pkg.price}
+                                      ₹{pkg.price} + GST
                                     </Typography>
-                                    <Typography
-                                      variant="body2"
-                                      color="text.secondary"
-                                      sx={{
-                                        fontWeight: 500,
-                                      }}
-                                    >
-                                      for {pkg.creditsIncluded} credits
-                                    </Typography>
+                                   
                                   </Box>
 
                                   <Box sx={{ mb: 2 }}>

@@ -9,16 +9,17 @@ const services = [
     image:
       "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=600&h=400&fit=crop",
   },
-  {
-    title: "Apply For Loan",
-    description:
-      "Rebuild your creditworthiness and secure financing even with a poor CIBIL score. Contact today",
-    icon: "🧠",
-    image:
-      "https://images.unsplash.com/photo-1553877522-43269d4ea984?w=600&h=400&fit=crop",
-  },
+ 
   {
     title: "Franchise Opportunity",
+    description:
+      "Partner with Credit Dost and build a rewarding business helping people improve their credit scores and financial confidence.",
+    icon: "📈",
+    image:
+      "https://images.unsplash.com/photo-1556761175-b413da4baf72?w=600&h=400&fit=crop",
+  },
+  {
+    title: "CreditDost Suvidha Kendra",
     description:
       "Partner with Credit Dost and build a rewarding business helping people improve their credit scores and financial confidence.",
     icon: "📈",

@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import api from '../services/api';
 import {
   Container,
   Box,
@@ -12,6 +13,11 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
+  TextField,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
 } from "@mui/material";
 import {
   Check,
@@ -34,10 +40,55 @@ import HomePageFooter from "./homepage/HomePageFooter";
 
 const SuvidhaCentrePage = () => {
   const [hoveredCard, setHoveredCard] = useState(null);
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    mobileNumber: '',
+    subject: '',
+    message: ''
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    
+    // If it's the mobile number field, only allow digits and limit to 10
+    if (name === 'mobileNumber') {
+      const numericValue = value.replace(/[^0-9]/g, '').slice(0, 10);
+      setFormData({
+        ...formData,
+        [name]: numericValue
+      });
+    } else {
+      setFormData({
+        ...formData,
+        [name]: value
+      });
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    
+    try {
+      // Submit to backend API
+      await api.post('/forms/contact', formData);
+      // Reset form
+      setFormData({ name: '', email: '', mobileNumber: '', subject: '', message: '' });
+      // Show success message
+      alert('Thank you for your message. We will get back to you soon!');
+    } catch (error) {
+      console.error('Form submission error:', error);
+      alert('Failed to submit your message. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <>
-    <Header/>
+      <Header />
       <Box
         sx={{
           minHeight: "100vh",
@@ -60,57 +111,6 @@ const SuvidhaCentrePage = () => {
         .pulse-bg-3 { animation: pulse 3s ease-in-out infinite 4s; }
         .bounce-chip { animation: bounce 2s ease-in-out infinite; }
       `}</style>
-
-        {/* Floating Background Elements */}
-        {/* <Box
-        sx={{
-          position: "fixed",
-          inset: 0,
-          overflow: "hidden",
-          pointerEvents: "none",
-          zIndex: 0,
-        }}
-      >
-        <Box
-          className="pulse-bg-1"
-          sx={{
-            position: "absolute",
-            top: 80,
-            left: 40,
-            width: 288,
-            height: 288,
-            bgcolor: "#22d3ee",
-            borderRadius: "50%",
-            filter: "blur(64px)",
-          }}
-        />
-        <Box
-          className="pulse-bg-2"
-          sx={{
-            position: "absolute",
-            top: 160,
-            right: 40,
-            width: 288,
-            height: 288,
-            bgcolor: "#c084fc",
-            borderRadius: "50%",
-            filter: "blur(64px)",
-          }}
-        />
-        <Box
-          className="pulse-bg-3"
-          sx={{
-            position: "absolute",
-            bottom: 80,
-            left: "50%",
-            width: 288,
-            height: 288,
-            bgcolor: "#3b82f6",
-            borderRadius: "50%",
-            filter: "blur(64px)",
-          }}
-        />
-      </Box> */}
 
         {/* Hero Section */}
         <Box sx={{ position: "relative", pt: 10, pb: 16, overflow: "hidden" }}>
@@ -139,7 +139,8 @@ const SuvidhaCentrePage = () => {
             <Chip
               className="bounce-chip"
               icon={<AutoAwesome sx={{ color: "#fde047 !important" }} />}
-              label="Launch Your Business Today"
+              label="Launch Your Own Credit & Financial Services Business
+"
               sx={{
                 bgcolor: "rgba(255,255,255,0.2)",
                 backdropFilter: "blur(8px)",
@@ -155,10 +156,10 @@ const SuvidhaCentrePage = () => {
             <Typography
               variant="h1"
               sx={{
-                fontSize: { xs: "3rem", md: "4rem" },
+                fontSize: { xs: "3rem", md: "3.5rem" },
                 fontWeight: 700,
                 color: "white",
-               
+
                 lineHeight: 1.2,
               }}
             >
@@ -167,7 +168,7 @@ const SuvidhaCentrePage = () => {
             <Typography
               variant="h1"
               sx={{
-                fontSize: { xs: "3rem", md: "4rem" },
+                fontSize: { xs: "3rem", md: "3.5rem" },
                 fontWeight: 700,
                 background: "linear-gradient(to right, #67e8f9, #fde047)",
                 WebkitBackgroundClip: "text",
@@ -175,7 +176,7 @@ const SuvidhaCentrePage = () => {
                 mb: 3,
               }}
             >
-              Suvidha Centre
+              Suvidha Centre Franchise
             </Typography>
 
             <Typography
@@ -187,7 +188,7 @@ const SuvidhaCentrePage = () => {
                 fontSize: { xs: "1.5rem", md: "2rem" },
               }}
             >
-              Start Your Own Credit Repair Business
+              Start Your Own Credit Repair Business in India
             </Typography>
 
             <Typography
@@ -198,7 +199,8 @@ const SuvidhaCentrePage = () => {
                 fontSize: { xs: "1.1rem", md: "1.25rem" },
               }}
             >
-              Endless Opportunities • Exciting Income • Start Your Journey Today
+              No Banking Background Required • PAN-India Opportunity • Scalable
+              Income Model
             </Typography>
 
             <Box
@@ -368,10 +370,12 @@ const SuvidhaCentrePage = () => {
                 lineHeight: 1.7,
               }}
             >
-              The Credit Dost Suvidha Centre program empowers individuals, shop
-              owners, freelancers, and small agencies to start their own Credit
-              Repair & Credit Score Improvement business with full training,
-              tools, and support.
+              Credit Dost Suvidha Centre empowers individuals, shop owners,
+              freelancers, and small agencies to start their own credit repair
+              and credit score improvement business in India. With end-to-end
+              training, technology tools, and operational support from Credit
+              Dost, you can build a scalable financial services business without
+              any prior banking or finance experience.
             </Typography>
           </Box>
 
@@ -403,9 +407,10 @@ const SuvidhaCentrePage = () => {
                     Massive Market
                   </Typography>
                   <Typography sx={{ color: "#4b5563" }}>
-                    India has 40+ crore credit-active customers, with millions
-                    needing help to improve their CIBIL score and become
-                    loan-ready.
+                    India has 40+ crore credit-active consumers, and millions
+                    struggle with low CIBIL scores, loan rejections, and
+                    incorrect credit reports — creating a huge and consistent
+                    demand for credit repair services.
                   </Typography>
                 </CardContent>
               </Card>
@@ -435,8 +440,10 @@ const SuvidhaCentrePage = () => {
                     Fast Growing
                   </Typography>
                   <Typography sx={{ color: "#4b5563" }}>
-                    Credit repair is one of India's fastest-growing financial
-                    service sectors with high demand and minimal competition.
+                    Credit repair and credit consulting is among India’s
+                    fastest-growing financial service segments, driven by rising
+                    loan demand, digital lending, and increased credit awareness
+                    — with low competition in most cities.
                   </Typography>
                 </CardContent>
               </Card>
@@ -463,11 +470,13 @@ const SuvidhaCentrePage = () => {
                     variant="h5"
                     sx={{ fontWeight: 700, color: "#111827", mb: 2 }}
                   >
-                    Long-Term Income
+                    Long-Term & Scalable Income
                   </Typography>
                   <Typography sx={{ color: "#4b5563" }}>
-                    Join a profitable industry with minimal investment and build
-                    a sustainable business with recurring revenue streams.
+                    Build a sustainable, service-based business with minimal
+                    investment, recurring client opportunities, and long-term
+                    earning potential — supported by Credit Dost’s systems and
+                    expertise.
                   </Typography>
                 </CardContent>
               </Card>
@@ -822,13 +831,17 @@ const SuvidhaCentrePage = () => {
                 <Typography
                   variant="h5"
                   sx={{
+                    fontSize: { xs: "1rem", md: "1.3rem" },
                     fontWeight: 600,
                     color: "#1f2937",
                     fontStyle: "italic",
                   }}
                 >
-                  "If you can talk to people and guide them, you can build a
-                  successful income with Credit Dost."
+                  If you can understand people’s financial challenges and guide
+                  them correctly, Credit Dost provides the system to help you
+                  build a successful and sustainable business No finance
+                  background required — training, tools, and expert support are
+                  provided by Credit Dost.
                 </Typography>
               </CardContent>
             </Card>
@@ -982,9 +995,11 @@ const SuvidhaCentrePage = () => {
             >
               <CardContent sx={{ p: 3 }}>
                 <Typography variant="body1" sx={{ color: "#4b5563" }}>
-                  Your earnings depend on effort, customer volume, and
-                  marketing. Credit repair is a high-demand service, so growth
-                  can be rapid.
+                  Income figures are indicative and not guaranteed. Actual
+                  earnings depend on individual effort, time commitment, market
+                  conditions, and customer acquisition. Credit Dost provides
+                  training, tools, and support to help partners scale their
+                  business effectively.
                 </Typography>
               </CardContent>
             </Card>
@@ -1031,23 +1046,23 @@ const SuvidhaCentrePage = () => {
               {[
                 {
                   step: "01",
-                  title: "Apply Online",
-                  desc: "Fill the partner form and our team connects within 24 hours",
+                  title: "Submit Your Partner Application",
+                  desc: " Fill out the online partner form. Our team will review your details and connect with you within 24 working hours.",
                 },
                 {
                   step: "02",
-                  title: "Attend Orientation",
-                  desc: "Understand business model, earnings, and tools",
+                  title: "Understand the Business Model",
+                  desc: "Join a detailed orientation session to learn about the Credit Dost Suvidha Centre model, income structure, tools, and support system.",
                 },
                 {
                   step: "03",
-                  title: "Get Training Access",
-                  desc: "Start learning and set up your Suvidha Centre",
+                  title: "Training, Tools & System Setup",
+                  desc: "Receive complete training and access to dashboards, resources, and processes required to set up and operate your Suvidha Centre smoothly.",
                 },
                 {
                   step: "04",
-                  title: "Start Earning",
-                  desc: "Begin serving customers and grow your income",
+                  title: "Serve Customers & Grow Your Income",
+                  desc: " Begin assisting customers with credit score improvement and related services while building a scalable, recurring-income business.",
                 },
               ].map((item, idx) => (
                 <Grid
@@ -1119,6 +1134,203 @@ const SuvidhaCentrePage = () => {
                 </Grid>
               ))}
             </Grid>
+          </Container>
+        </Box>
+
+        {/* Contact Form Section */}
+        <Box sx={{ bgcolor: "#f0f9ff", py: 10 }}>
+          <Container maxWidth="md">
+            <Box sx={{ textAlign: "center", mb: 6 }}>
+              <Typography
+                variant="h3"
+                sx={{
+                  fontSize: { xs: "2rem", md: "2.5rem" },
+                  fontWeight: 700,
+                  color: "#111827",
+                  mb: 2,
+                }}
+              >
+                Have Questions?
+              </Typography>
+              <Typography variant="h6" sx={{ color: "#4b5563", mb: 4 }}>
+                Reach out to us and our team will get back to you shortly
+              </Typography>
+            </Box>
+
+            <Card
+              sx={{
+                borderRadius: 4,
+                boxShadow: "0 25px 50px -12px rgba(0,0,0,0.25)",
+                border: "2px solid #bae6fd",
+              }}
+            >
+              <CardContent sx={{ p: 4 }}>
+                <Box component="form" onSubmit={handleSubmit}>
+                  <Grid container spacing={3}>
+                    <Grid item xs={12} sm={6}>
+                      <TextField
+                        fullWidth
+                        label="Your Name"
+                        name="name"
+                        value={formData.name}
+                        onChange={handleChange}
+                        required
+                        variant="outlined"
+                        sx={{
+                          '& .MuiOutlinedInput-root': {
+                            '& fieldset': {
+                              borderColor: '#e2e8f0'
+                            },
+                            '&:hover fieldset': {
+                              borderColor: '#cbd5e1'
+                            },
+                            '&.Mui-focused fieldset': {
+                              borderColor: '#0891b2'
+                            }
+                          }
+                        }}
+                      />
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                      <TextField
+                        fullWidth
+                        label="Email Address"
+                        name="email"
+                        type="email"
+                        value={formData.email}
+                        onChange={handleChange}
+                        required
+                        variant="outlined"
+                        sx={{
+                          '& .MuiOutlinedInput-root': {
+                            '& fieldset': {
+                              borderColor: '#e2e8f0'
+                            },
+                            '&:hover fieldset': {
+                              borderColor: '#cbd5e1'
+                            },
+                            '&.Mui-focused fieldset': {
+                              borderColor: '#0891b2'
+                            }
+                          }
+                        }}
+                      />
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                      <TextField
+                        fullWidth
+                        label="Mobile Number"
+                        name="mobileNumber"
+                        value={formData.mobileNumber}
+                        onChange={handleChange}
+                        variant="outlined"
+                        inputProps={{ maxLength: 10 }}
+                        placeholder="Enter 10-digit mobile number"
+                        sx={{
+                          '& .MuiOutlinedInput-root': {
+                            '& fieldset': {
+                              borderColor: '#e2e8f0'
+                            },
+                            '&:hover fieldset': {
+                              borderColor: '#cbd5e1'
+                            },
+                            '&.Mui-focused fieldset': {
+                              borderColor: '#0891b2'
+                            }
+                          }
+                        }}
+                      />
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                      <FormControl fullWidth variant="outlined" sx={{
+                        '& .MuiOutlinedInput-root': {
+                          '& fieldset': {
+                            borderColor: '#e2e8f0'
+                          },
+                          '&:hover fieldset': {
+                            borderColor: '#cbd5e1'
+                          },
+                          '&.Mui-focused fieldset': {
+                            borderColor: '#0891b2'
+                          }
+                        }
+                      }}>
+                        <InputLabel id="subject-label">Subject</InputLabel>
+                        <Select
+                          labelId="subject-label"
+                          name="subject"
+                          value={formData.subject}
+                          onChange={handleChange}
+                          label="Subject"
+                          required
+                        >
+                          <MenuItem value="Franchise">Franchise</MenuItem>
+                          <MenuItem value="Credit Dost Suvidha Centre">Credit Dost Suvidha Centre</MenuItem>
+                          <MenuItem value="Credit Score Repair">Credit Score Repair</MenuItem>
+                          <MenuItem value="Apply for Loan">Apply for Loan</MenuItem>
+                          <MenuItem value="Others">Others</MenuItem>
+                        </Select>
+                      </FormControl>
+                    </Grid>
+                    <Grid item xs={12}>
+                      <TextField
+                        fullWidth
+                        label="Message"
+                        name="message"
+                        value={formData.message}
+                        onChange={handleChange}
+                        required
+                        multiline
+                        rows={6}
+                        variant="outlined"
+                        sx={{
+                          '& .MuiOutlinedInput-root': {
+                            '& fieldset': {
+                              borderColor: '#e2e8f0'
+                            },
+                            '&:hover fieldset': {
+                              borderColor: '#cbd5e1'
+                            },
+                            '&.Mui-focused fieldset': {
+                              borderColor: '#0891b2'
+                            }
+                          }
+                        }}
+                      />
+                    </Grid>
+                    <Grid item xs={12}>
+                      <Button
+                        type="submit"
+                        variant="contained"
+                        disabled={isSubmitting}
+                        sx={{
+                          background: 'linear-gradient(135deg, #0891b2 0%, #06b6d4 100%)',
+                          color: 'white',
+                          fontWeight: 700,
+                          textTransform: 'none',
+                          padding: '12px 32px',
+                          borderRadius: '50px',
+                          fontSize: '1rem',
+                          boxShadow: '0 4px 20px rgba(8, 145, 178, 0.3)',
+                          transition: 'all 0.3s ease',
+                          '&:hover': {
+                            transform: 'translateY(-2px)',
+                            boxShadow: '0 6px 25px rgba(8, 145, 178, 0.4)',
+                            background: 'linear-gradient(135deg, #0e7490 0%, #0891b2 100%)'
+                          },
+                          '&.Mui-disabled': {
+                            background: 'linear-gradient(135deg, #94a3b8 0%, #cbd5e1 100%)',
+                            color: 'white'
+                          }
+                        }}
+                      >
+                        {isSubmitting ? 'Sending...' : 'Send Message'}
+                      </Button>
+                    </Grid>
+                  </Grid>
+                </Box>
+              </CardContent>
+            </Card>
           </Container>
         </Box>
 
@@ -1247,7 +1459,7 @@ const SuvidhaCentrePage = () => {
           </Container>
         </Box>
       </Box>
-      <HomePageFooter/>
+      <HomePageFooter />
     </>
   );
 };

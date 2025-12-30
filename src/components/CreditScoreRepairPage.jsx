@@ -240,21 +240,21 @@ const CreditScoreRepairPage = () => {
   const [error, setError] = useState("");
 
   const handleChange = (e) => {
-    const { name, value, type, checked } = e.target; 
-    
+    const { name, value, type, checked } = e.target;
+
     // For mobile number, only allow digits
-    if (name === 'mobileNumber') {
-      const cleanValue = value.replace(/\D/g, '');
+    if (name === "mobileNumber") {
+      const cleanValue = value.replace(/\D/g, "");
       // Limit to 10 digits
       if (cleanValue.length <= 10) {
         setFormData({
           ...formData,
-          [name]: cleanValue
+          [name]: cleanValue,
         });
       }
       return;
     }
-    
+
     setFormData({
       ...formData,
       [name]: type === "checkbox" ? checked : value,
@@ -266,7 +266,11 @@ const CreditScoreRepairPage = () => {
       setError("Please enter your full name");
       return false;
     }
-    if (!formData.mobileNumber || formData.mobileNumber.length !== 10 || !/^[0-9]{10}$/.test(formData.mobileNumber)) {
+    if (
+      !formData.mobileNumber ||
+      formData.mobileNumber.length !== 10 ||
+      !/^[0-9]{10}$/.test(formData.mobileNumber)
+    ) {
       setError("Please enter a valid 10-digit mobile number");
       return false;
     }
@@ -284,7 +288,7 @@ const CreditScoreRepairPage = () => {
     }
     if (!formData.problemType) {
       setError("Please select a problem type");
-      return false; 
+      return false;
     }
     if (!formData.authorization) {
       setError("Please authorize us to contact you");
@@ -303,40 +307,40 @@ const CreditScoreRepairPage = () => {
 
     // Clean the mobile number to ensure it contains only digits
     const cleanFormData = {
-      fullName: formData.fullName || '',
-      email: formData.email || '',
-      mobileNumber: formData.mobileNumber.replace(/\D/g, ''),
-      city: formData.city || '',
-      state: formData.state || '',
-      problemType: formData.problemType || '',
-      creditScore: formData.creditScore || '',
-      message: formData.message || ''
+      fullName: formData.fullName || "",
+      email: formData.email || "",
+      mobileNumber: formData.mobileNumber.replace(/\D/g, ""),
+      city: formData.city || "",
+      state: formData.state || "",
+      problemType: formData.problemType || "",
+      creditScore: formData.creditScore || "",
+      message: formData.message || "",
       // Note: authorization field is not sent to backend as it's only for frontend validation
     };
-    
+
     // Log the data being sent
-    console.log('Clean form data:', cleanFormData);
-    
+    console.log("Clean form data:", cleanFormData);
+
     // Additional validation for mobile number
     if (cleanFormData.mobileNumber.length !== 10) {
       setError("Please enter a valid 10-digit mobile number");
       setLoading(false);
       return;
     }
-    
+
     // Ensure all required fields are present
     if (!cleanFormData.problemType) {
       setError("Please select a problem type");
       setLoading(false);
       return;
     }
-    
+
     if (!cleanFormData.state) {
       setError("Please select your state");
       setLoading(false);
       return;
     }
-    
+
     if (!formData.authorization) {
       setError("Please authorize us to contact you");
       setLoading(false);
@@ -347,8 +351,8 @@ const CreditScoreRepairPage = () => {
 
     try {
       // Submit to backend API
-      console.log('Submitting credit repair form with data:', cleanFormData);
-      await api.post('/forms/credit-repair', cleanFormData);
+      console.log("Submitting credit repair form with data:", cleanFormData);
+      await api.post("/forms/credit-repair", cleanFormData);
       setSuccess(true);
       // Reset form
       setFormData({
@@ -363,16 +367,16 @@ const CreditScoreRepairPage = () => {
         authorization: false,
       });
     } catch (err) {
-      console.error('Form submission error:', err);
+      console.error("Form submission error:", err);
       let errorMessage = "Failed to submit your request. Please try again.";
-      
+
       if (err.response?.data?.message) {
         errorMessage = err.response.data.message;
         if (err.response.data.details) {
           errorMessage += ": " + err.response.data.details.join(", ");
         }
       }
-      
+
       setError(errorMessage);
     } finally {
       setLoading(false);
@@ -489,7 +493,7 @@ const CreditScoreRepairPage = () => {
             <Box sx={{ textAlign: "center", position: "relative", zIndex: 1 }}>
               <FeatureBadge sx={{ mb: 3 }}>
                 <CheckCircle sx={{ fontSize: 20, mr: 1 }} />
-                Trusted by 10,000+ Customers
+                Trusted by clients across India
               </FeatureBadge>
 
               <Typography
@@ -707,7 +711,9 @@ const CreditScoreRepairPage = () => {
         <SectionBox>
           <Container style={{ maxWidth: "1300px" }}>
             <Box sx={{ textAlign: "center", mb: 8 }}>
-              <SectionTitle>Our Proven 4-Step Process</SectionTitle>
+              <SectionTitle>
+                Our Step-by-Step Credit Improvement Process
+              </SectionTitle>
               <SectionSubtitle>
                 A systematic approach to repairing and improving your credit
                 score
@@ -749,7 +755,7 @@ const CreditScoreRepairPage = () => {
           </Container>
         </SectionBox>
 
-        {/* Service Plans */}
+        {/* Our Approach */}
         <SectionBox sx={{ background: "#f8fafc" }}>
           {/* Animated Background Elements */}
           <Box
@@ -793,153 +799,69 @@ const CreditScoreRepairPage = () => {
           />
           <Container maxWidth="lg">
             <Box sx={{ textAlign: "center", mb: 8 }}>
-              <SectionTitle>Choose Your Credit Boost Plan</SectionTitle>
+              <SectionTitle>Our Credit Repair Approach</SectionTitle>
               <SectionSubtitle>
-                Flexible plans designed for every credit repair need
+                Personalized solutions for your unique credit challenges
               </SectionSubtitle>
             </Box>
 
             <Grid container spacing={4} style={{ justifyContent: "center" }}>
-              <Grid item xs={12} md={6} style={{ flex: "1" }}>
-                <PlanCard>
-                  <CardContent sx={{ p: 4 }}>
-                    <Typography
-                      variant="overline"
-                      sx={{ color: "#64748b", fontWeight: 600 }}
-                    >
-                      For Moderate Issues
-                    </Typography>
-                    <Typography
-                      variant="h4"
-                      sx={{ fontWeight: 800, mb: 1, color: "#0f172a" }}
-                    >
-                      Credit Boost Pro
-                    </Typography>
-                    <Typography
-                      variant="body1"
-                      sx={{ color: "#64748b", mb: 4 }}
-                    >
-                      Perfect for individuals with 1-2 credit issues
-                    </Typography>
-
-                    <Divider sx={{ my: 3 }} />
-
-                    <Box sx={{ mb: 3 }}>
-                      {[
-                        "Comprehensive report analysis",
-                        "1-2 dispute resolutions",
-                        "Personalized improvement plan",
-                        "30-day support",
-                      ].map((feature, idx) => (
-                        <Box
-                          key={idx}
-                          sx={{ display: "flex", alignItems: "center", mb: 2 }}
-                        >
-                          <CheckCircle
-                            sx={{ color: "#10b981", mr: 2, fontSize: 24 }}
-                          />
-                          <Typography variant="body1" sx={{ color: "#334155" }}>
-                            {feature}
-                          </Typography>
-                        </Box>
-                      ))}
-                    </Box>
-
-                    <Button
-                      variant="outlined"
-                      fullWidth
-                      size="large"
-                      sx={{
-                        borderRadius: 3,
-                        py: 1.5,
-                        fontWeight: 700,
-                        textTransform: "none",
-                        borderColor: "#0ea5e9",
-                        color: "#0ea5e9",
-                        "&:hover": {
-                          borderColor: "#0284c7",
-                          background: "#f0f9ff",
-                        },
-                      }}
-                    >
-                      Get Started
-                    </Button>
-                  </CardContent>
-                </PlanCard>
-              </Grid>
-
-              <Grid item xs={12} md={6} style={{ flex: "1" }}>
-                <PlanCard className="featured">
-                  <Box
-                    sx={{
-                      position: "absolute",
-                      top: 20,
-                      right: 20,
-                      background:
-                        "linear-gradient(135deg, #0ea5e9 0%, #06b6d4 100%)",
-                      color: "white",
-                      px: 2,
-                      py: 0.5,
-                      borderRadius: 2,
-                      fontSize: "0.875rem",
-                      fontWeight: 700,
-                    }}
-                  >
-                    RECOMMENDED
-                  </Box>
-                  <CardContent sx={{ p: 4 }}>
-                    <Typography
-                      variant="overline"
-                      sx={{ color: "#0369a1", fontWeight: 600 }}
-                    >
-                      For Complex Cases
-                    </Typography>
-                    <Typography
-                      variant="h4"
-                      sx={{ fontWeight: 800, mb: 1, color: "#0f172a" }}
-                    >
-                      Credit Boost Premier
-                    </Typography>
-                    <Typography
-                      variant="body1"
-                      sx={{ color: "#64748b", mb: 4 }}
-                    >
-                      Complete solution for multiple or severe issues
-                    </Typography>
-
-                    <Divider sx={{ my: 3 }} />
-
-                    <Box sx={{ mb: 3 }}>
-                      {[
-                        "Full credit file cleanup",
-                        "Unlimited dispute resolutions",
-                        "End-to-end score tracking",
-                        "90-day priority support",
-                        "Direct bank coordination",
-                      ].map((feature, idx) => (
-                        <Box
-                          key={idx}
-                          sx={{ display: "flex", alignItems: "center", mb: 2 }}
-                        >
-                          <CheckCircle
-                            sx={{ color: "#0ea5e9", mr: 2, fontSize: 24 }}
-                          />
-                          <Typography
-                            variant="body1"
-                            sx={{ color: "#334155", fontWeight: 500 }}
-                          >
-                            {feature}
-                          </Typography>
-                        </Box>
-                      ))}
-                    </Box>
-
-                    <StyledButton variant="contained" fullWidth size="large">
-                      Get Started
-                    </StyledButton>
-                  </CardContent>
-                </PlanCard>
-              </Grid>
+              {[
+                {
+                  title: "One-to-one expert guidance",
+                  icon: <ContactSupport />,
+                  color: "#0ea5e9",
+                },
+                {
+                  title: "Ethical and compliant dispute support",
+                  icon: <Security />,
+                  color: "#06b6d4",
+                },
+                {
+                  title: "Regular progress updates",
+                  icon: <Timeline />,
+                  color: "#8b5cf6",
+                },
+                {
+                  title: "Focus on long-term credit health",
+                  icon: <TrendingUp />,
+                  color: "#10b981",
+                },
+              ].map((feature, index) => (
+                <Grid item xs={12} md={6} key={index} style={{ flex: "1" }}>
+                  <PlanCard>
+                    <CardContent sx={{ p: 4, textAlign: "center" }}>
+                      <Box
+                        sx={{
+                          width: 80,
+                          height: 80,
+                          borderRadius: "50%",
+                          background: `${feature.color}20`,
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          mx: "auto",
+                          mb: 3,
+                        }}
+                      >
+                        {React.cloneElement(feature.icon, {
+                          sx: { fontSize: 40, color: feature.color },
+                        })}
+                      </Box>
+                      <Typography
+                        variant="h6"
+                        sx={{ fontWeight: 600, mb: 1, color: "#0f172a" }}
+                      >
+                        {feature.title}
+                      </Typography>
+                      <Typography
+                        variant="body1"
+                        sx={{ color: "#64748b", mb: 2 }}
+                      ></Typography>
+                    </CardContent>
+                  </PlanCard>
+                </Grid>
+              ))}
             </Grid>
           </Container>
         </SectionBox>
@@ -950,7 +872,7 @@ const CreditScoreRepairPage = () => {
             <Box sx={{ textAlign: "center", mb: 8 }}>
               <SectionTitle>Why Choose Credit Dost</SectionTitle>
               <SectionSubtitle>
-                India's most trusted credit repair partner
+                India’s leading credit repair specialists
               </SectionSubtitle>
             </Box>
 
@@ -1146,7 +1068,7 @@ const CreditScoreRepairPage = () => {
                           }}
                         >
                           {/* City and State in one row */}
-                          <Grid item xs={12} md={6} style={{flex:"1"}}>
+                          <Grid item xs={12} md={6} style={{ flex: "1" }}>
                             <TextField
                               fullWidth
                               label="City"
@@ -1166,7 +1088,7 @@ const CreditScoreRepairPage = () => {
                             />
                           </Grid>
 
-                          <Grid item xs={12} md={6} style={{flex:"1"}}>
+                          <Grid item xs={12} md={6} style={{ flex: "1" }}>
                             <FormControl fullWidth>
                               <InputLabel>State</InputLabel>
                               <Select
@@ -1324,7 +1246,7 @@ const CreditScoreRepairPage = () => {
                 "Hard inquiries from rejected applications",
                 "Identity theft or fraud reporting",
               ].map((problem, index) => (
-                <Grid item xs={12} sm={6} key={index} style={{width:"47%"}}>
+                <Grid item xs={12} sm={6} key={index} style={{ width: "47%" }}>
                   <Paper
                     sx={{
                       p: 2.5,
@@ -1370,7 +1292,7 @@ const CreditScoreRepairPage = () => {
 
         {/* Contact Section */}
         <SectionBox>
-          <Container style={{maxWidth:"1200px"}}>
+          <Container style={{ maxWidth: "1200px" }}>
             <Box
               sx={{
                 textAlign: "center",
@@ -1465,10 +1387,9 @@ const CreditScoreRepairPage = () => {
         </SectionBox>
 
         {/* Footer */}
-     
       </PageBackground>
 
-      <HomePageFooter/>
+      <HomePageFooter />
     </>
   );
 };

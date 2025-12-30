@@ -4,25 +4,32 @@ import { ArrowBackIos, ArrowForwardIos, Star, StarBorder } from '@mui/icons-mate
 
 const testimonials = [
   {
-    name: 'Hardli sefa',
-    role: 'Customer',
-    content: "Don't just take our word for it hear what our customers have to say about us! we have helped thousand people",
+    name: 'Amit Verma',
+    role: 'Delhi',
+    content: "I started with Credit Dost as a side activity while doing my regular job. I had no background in credit repair. The training was simple and practical. Within a few months, I started getting regular clients, and today this is my primary source of income. What I like most is the continuous support—someone is always there to guide you.",
     rating: 5,
     avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop'
   },
   {
-    name: 'Sefa Hardli',
-    role: 'Customer',
-    content: "Don't just take our word for it hear what our customers have to say about us! we have helped thousand people",
-    rating: 4,
+    name: 'Pooja Sharma',
+    role: 'Jaipur',
+    content: "People come to me after loan rejections and broken confidence. Through Credit Dost, I learned how to correctly analyse credit reports and guide customers ethically. It's not just about earning money; it's about solving real problems. That's why referrals come naturally.",
+    rating: 5,
     avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=400&fit=crop'
   },
   {
-    name: 'John Smith',
-    role: 'Customer',
-    content: "Don't just take our word for it hear what our customers have to say about us! we have helped thousand people",
+    name: 'Rakesh Singh',
+    role: 'Patna',
+    content: "I already worked as a loan agent, but many cases were getting rejected due to low CIBIL scores. Partnering with Credit Dost helped me convert those rejected cases into opportunities. Now, I don't lose customers—I help them fix their profile and then get loans approved.",
     rating: 5,
     avatar: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=400&h=400&fit=crop'
+  },
+  {
+    name: 'Neha Kapoor',
+    role: 'Mumbai',
+    content: "What I appreciated most was the transparency. There were no fake income promises. I was told clearly—results depend on effort and consistency. The systems, training, and tools are strong, but you still have to work. That honesty gave me confidence to join.",
+    rating: 5,
+    avatar: 'https://images.unsplash.com/photo-1519699047748-de8e457a634e?w=400&h=400&fit=crop'
   }
 ];
 
@@ -120,16 +127,17 @@ const TestimonialSection = () => {
             textTransform: 'uppercase',
             mb: 2
           }}>
-            CLIENTS TESTOMONIAL
+            TESTIMONIALS
           </Typography>
           <Typography sx={{
             fontSize: "2.5rem",
             fontWeight: 800,
             color: '#1e293b',
             lineHeight: 1.2,
-            maxWidth: '600px'
+            maxWidth: '600px',
+            textAlign: 'center'
           }}>
-            Unleashing the power of your business
+            Real people. Real journeys. Real results.
           </Typography>
         </Box>
 

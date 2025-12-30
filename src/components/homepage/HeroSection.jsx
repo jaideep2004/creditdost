@@ -342,7 +342,7 @@ const HeroSection = () => {
                 <StyledButton
                   variant="contained"
                   endIcon={<Add />}
-                  onClick={() => navigate("/register")}
+                  onClick={() => navigate("/credit-check")}
                   sx={{
                     backgroundColor: "#0ea5e9",
                     color: "white",
@@ -354,7 +354,7 @@ const HeroSection = () => {
                     },
                   }}
                 >
-                  Get Started
+                  Download Free Credit Report
                 </StyledButton>
 
                 <Box
@@ -407,13 +407,13 @@ const HeroSection = () => {
                         },
                       }}
                     >
-                      +91 9876543210
+                      +91 98213-89400
                     </Typography>
                   </Box>
                 </Box>
               </Box>
             </ContentWrapper>
-          </Grid>
+          </Grid> 
 
           <Grid item xs={12} md={6} style={{ flex: "1" }}>
             <ImageWrapper isVisible={isVisible}>

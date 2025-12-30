@@ -347,6 +347,11 @@ const IndianStates = [
   "Puducherry",
 ];
 
+const OccupationOptions = [
+  "Salaried",
+  "Self Employed",
+];
+
 const LoanAmountOptions = [
   "Below ₹10,000",
   "₹10,000 – ₹50,000",
@@ -361,9 +366,14 @@ const ApplyForLoanPage = () => {
     customerName: "",
     customerEmail: "",
     customerPhone: "",
+    whatsappNumber: "",
+    panNumber: "",
+    aadharNumber: "",
     city: "",
     state: "",
+    pincode: "",
     monthlyIncome: "",
+    occupation: "",
     creditScore: "",
     loanAmount: "",
     loanPurpose: "",
@@ -410,12 +420,28 @@ const ApplyForLoanPage = () => {
       setError("Please select your state");
       return false;
     }
+    if (!formData.pincode || formData.pincode.length !== 6) {
+      setError("Please enter a valid 6-digit pincode");
+      return false;
+    }
     if (!formData.loanAmount) {
       setError("Please select the loan amount required");
       return false;
     }
     if (!formData.loanPurpose) {
       setError("Please select the loan purpose");
+      return false;
+    }
+    if (!formData.panNumber || formData.panNumber.length !== 10) {
+      setError("Please enter a valid 10-character PAN number");
+      return false;
+    }
+    if (!formData.panNumber || formData.panNumber.length !== 10 || !/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(formData.panNumber)) {
+      setError("Please enter a valid 10-character PAN number (e.g., ABCDE1234F)");
+      return false;
+    }
+    if (!formData.aadharNumber || formData.aadharNumber.length !== 12 || !/^[0-9]{12}$/.test(formData.aadharNumber)) {
+      setError("Please enter a valid 12-digit Aadhar number");
       return false;
     }
     if (!formData.consent) {
@@ -441,18 +467,21 @@ const ApplyForLoanPage = () => {
         customerName: formData.customerName,
         customerEmail: formData.customerEmail,
         customerPhone: formData.customerPhone,
+        whatsappNumber: formData.whatsappNumber || undefined,
         city: formData.city,
         state: formData.state,
+        pincode: formData.pincode,
+        panNumber: formData.panNumber,
+        aadharNumber: formData.aadharNumber,
         monthlyIncome: formData.monthlyIncome || undefined,
+        occupation: formData.occupation || undefined,
         creditScore: formData.creditScore || undefined,
         loanAmount: formData.loanAmount,
         loanPurpose: formData.loanPurpose,
         message: formData.message || undefined,
         consent: formData.consent,
         language: "en",
-        fullAddress: `${formData.city}, ${formData.state}`,
-        occupation: formData.loanPurpose,
-        pincode: "000000", // Placeholder since not collected in new form
+        fullAddress: `${formData.city}, ${formData.state}, ${formData.pincode}`,
       };
 
       // Submit to backend
@@ -465,9 +494,14 @@ const ApplyForLoanPage = () => {
           customerName: "",
           customerEmail: "",
           customerPhone: "",
+          whatsappNumber: "",
+          panNumber: "",
+          aadharNumber: "",
           city: "",
           state: "",
+          pincode: "",
           monthlyIncome: "",
+          occupation: "",
           creditScore: "",
           loanAmount: "",
           loanPurpose: "",
@@ -502,7 +536,7 @@ const ApplyForLoanPage = () => {
               sx={{
                 fontWeight: 800,
                 mb: 3,
-                fontSize: { xs: "2.2rem", md: "3rem" },
+                fontSize: { xs: "2.2rem", md: "2.5rem" },
                 lineHeight: 1.2,
                 animation: "fadeInDown 1s ease-out",
                 "@keyframes fadeInDown": {
@@ -511,7 +545,7 @@ const ApplyForLoanPage = () => {
                 },
               }}
             >
-              Guaranteed Loan Approval for Low Credit Scores
+              Loan Assistance for Individuals with Low Credit Scores
             </Typography>
             <Typography
               variant="h5"
@@ -520,15 +554,36 @@ const ApplyForLoanPage = () => {
                 maxWidth: "800px",
                 mx: "auto",
                 opacity: 0.95,
-                fontSize: { xs: "1.2rem", md: "1.5rem" },
+                fontSize: { xs: "1.2rem", md: "1.3rem" },
                 lineHeight: 1.6,
                 animation: "fadeInUp 1s ease-out 0.3s both",
               }}
             >
-              Rebuild your creditworthiness and secure financing even with a
-              poor CIBIL score
+              Rebuild your creditworthiness and understand loan possibilities
+              based on your credit profile.
             </Typography>
           </HeroSection>
+
+          {/* Disclaimer Box after Hero Section */}
+          <Box sx={{ textAlign: "center", mb: 6, px: 2 }}>
+            <Typography
+              variant="body2"
+              sx={{
+                color: "#64748b",
+                fontSize: "0.9rem",
+                fontStyle: "italic",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: 1,
+              }}
+            >
+              <Star sx={{ fontSize: "1rem", color: "#f59e0b" }} />
+              Loan approval is subject to lender policies, eligibility criteria,
+              and credit profile assessment. Credit Dost does not guarantee loan
+              approval.
+            </Typography>
+          </Box>
 
           {/* Challenge Section */}
           <SectionWrapper>
@@ -539,7 +594,7 @@ const ApplyForLoanPage = () => {
                   fontWeight: 700,
                   color: "#0f172a",
                   fontSize: { xs: "1.8rem", md: "2.5rem" },
-                  marginTop:"100px"
+                  marginTop: "100px",
                 }}
               >
                 The Credit Challenge in India
@@ -681,7 +736,7 @@ const ApplyForLoanPage = () => {
                   fontWeight: 700,
                   color: "#0f172a",
                   fontSize: { xs: "1.8rem", md: "2.5rem" },
-                  marginTop:"110px"
+                  marginTop: "110px",
                 }}
               >
                 Our 5-Step Success Process
@@ -818,7 +873,7 @@ const ApplyForLoanPage = () => {
                   fontWeight: 700,
                   color: "#0f172a",
                   fontSize: { xs: "1.8rem", md: "2.5rem" },
-                  marginTop:"110px"
+                  marginTop: "110px",
                 }}
               >
                 Loan Categories We Facilitate
@@ -918,7 +973,7 @@ const ApplyForLoanPage = () => {
                   fontWeight: 700,
                   color: "#0f172a",
                   fontSize: { xs: "1.8rem", md: "2.5rem" },
-                  marginTop:"110px"
+                  marginTop: "110px",
                 }}
               >
                 Why Choose Credit Dost
@@ -1033,7 +1088,7 @@ const ApplyForLoanPage = () => {
                   fontWeight: 700,
                   color: "#0f172a",
                   fontSize: { xs: "1.8rem", md: "2.5rem" },
-                  marginTop:"110px"
+                  marginTop: "110px",
                 }}
               >
                 Important Disclosure
@@ -1093,7 +1148,7 @@ const ApplyForLoanPage = () => {
                   fontWeight: 700,
                   color: "#0f172a",
                   fontSize: { xs: "1.8rem", md: "2.5rem" },
-                  marginTop:"110px"
+                  marginTop: "110px",
                 }}
               >
                 Apply for Loan Assistance
@@ -1212,18 +1267,32 @@ const ApplyForLoanPage = () => {
                         </Grid>
                       </div>
 
-                      <Grid item xs={12} md={6}>
-                        <TextField
-                          fullWidth
-                          required
-                          label="Mobile Number"
-                          name="customerPhone"
-                          value={formData.customerPhone}
-                          onChange={handleChange}
-                          variant="outlined"
-                          size="medium"
-                        />
-                      </Grid>
+                      <div style={{ display: "flex", gap: "15px" }}>
+                        <Grid item xs={12} md={6} style={{ width: "100%" }}>
+                          <TextField
+                            fullWidth
+                            required
+                            label="Mobile Number"
+                            name="customerPhone"
+                            value={formData.customerPhone}
+                            onChange={handleChange}
+                            variant="outlined"
+                            size="medium"
+                          />
+                        </Grid>
+
+                        <Grid item xs={12} md={6} style={{ width: "100%" }}>
+                          <TextField
+                            fullWidth
+                            label="WhatsApp Number"
+                            name="whatsappNumber"
+                            value={formData.whatsappNumber}
+                            onChange={handleChange}
+                            variant="outlined"
+                            size="medium"
+                          />
+                        </Grid>
+                      </div>
 
                       {/* Address Information Section */}
                       <Grid item xs={12}>
@@ -1281,6 +1350,52 @@ const ApplyForLoanPage = () => {
                         </Grid>
                       </div>
 
+                      <div style={{ display: "flex", gap: "15px" }}>
+                        <Grid item xs={12} md={6} style={{ width: "100%" }}>
+                          <TextField
+                            fullWidth
+                            required
+                            label="PAN Number"
+                            name="panNumber"
+                            value={formData.panNumber}
+                            onChange={handleChange}
+                            variant="outlined"
+                            size="medium"
+                            inputProps={{ maxLength: 10, minLength: 10 }}
+                            placeholder="ABCDE1234F"
+                          />
+                        </Grid>
+
+                        <Grid item xs={12} md={6} style={{ width: "100%" }}>
+                          <TextField
+                            fullWidth
+                            required
+                            label="Aadhar Number"
+                            name="aadharNumber"
+                            value={formData.aadharNumber}
+                            onChange={handleChange}
+                            variant="outlined"
+                            size="medium"
+                            inputProps={{ maxLength: 12, minLength: 12 }}
+                            placeholder="123456789012"
+                          />
+                        </Grid>
+                      </div>
+
+                      <Grid item xs={12} md={6}>
+                        <TextField
+                          fullWidth
+                          required
+                          label="Pincode"
+                          name="pincode"
+                          value={formData.pincode}
+                          onChange={handleChange}
+                          variant="outlined"
+                          size="medium"
+                          inputProps={{ maxLength: 6, minLength: 6 }}
+                        />
+                      </Grid>
+
                       {/* Financial Information Section */}
 
                       <Grid item xs={12}>
@@ -1318,6 +1433,30 @@ const ApplyForLoanPage = () => {
                           />
                         </Grid>
 
+                        <Grid item xs={12} md={6} style={{ width: "100%" }}>
+                          <FormControl fullWidth>
+                            <InputLabel>Occupation</InputLabel>
+                            <Select
+                              value={formData.occupation}
+                              label="Occupation"
+                              name="occupation"
+                              onChange={handleChange}
+                              size="medium"
+                            >
+                              <MenuItem value="">
+                                <em>Select Occupation</em>
+                              </MenuItem>
+                              {OccupationOptions.map((occupation) => (
+                                <MenuItem key={occupation} value={occupation}>
+                                  {occupation}
+                                </MenuItem>
+                              ))}
+                            </Select>
+                          </FormControl>
+                        </Grid>
+                      </div>
+
+                      <div style={{ display: "flex", gap: "15px" }}>
                         <Grid item xs={12} md={6} style={{ width: "100%" }}>
                           <TextField
                             fullWidth
@@ -1467,7 +1606,7 @@ const ApplyForLoanPage = () => {
                 variant="h3"
                 sx={{
                   fontWeight: 700,
-                  marginTop:"110px",
+                  marginTop: "110px",
                   color: "#0f172a",
                   fontSize: { xs: "1.8rem", md: "2.5rem" },
                   animation: "fadeInUp 0.8s ease-out",
@@ -1494,40 +1633,63 @@ const ApplyForLoanPage = () => {
 
             <ContactCard>
               <Grid container spacing={4}>
-                <Grid item xs={12} md={6} style={{flex: "1"}}>
-                  <Box 
-                    sx={{ 
+                <Grid item xs={12} md={6} style={{ flex: "1" }}>
+                  <Box
+                    sx={{
                       mb: 3,
                       transition: "all 0.3s ease",
                       "&:hover": {
                         transform: "scale(1.05)",
-                      }
+                      },
                     }}
-                    
                   >
-                    <Phone sx={{ fontSize: 50, mb: 2, animation: "floatIcon 3s ease-in-out infinite" }} />
-                    <Typography variant="h4" sx={{ fontWeight: 700, mb: 1 , fontSize: "2.1rem"}}>
+                    <Phone
+                      sx={{
+                        fontSize: 50,
+                        mb: 2,
+                        animation: "floatIcon 3s ease-in-out infinite",
+                      }}
+                    />
+                    <Typography
+                      variant="h4"
+                      sx={{ fontWeight: 700, mb: 1, fontSize: "2.1rem" }}
+                    >
                       Helpline / WhatsApp
                     </Typography>
-                    <Typography variant="h5" sx={{ fontWeight: 600, fontSize: "1.1rem" }}>
+                    <Typography
+                      variant="h5"
+                      sx={{ fontWeight: 600, fontSize: "1.1rem" }}
+                    >
                       +91 XXXXXXXXXX
                     </Typography>
                   </Box>
                 </Grid>
-                <Grid item xs={12} md={6} style={{flex: "1"}}>
-                  <Box 
-                    sx={{ 
+                <Grid item xs={12} md={6} style={{ flex: "1" }}>
+                  <Box
+                    sx={{
                       transition: "all 0.3s ease",
                       "&:hover": {
                         transform: "scale(1.05)",
-                      }
+                      },
                     }}
                   >
-                    <Email sx={{ fontSize: 50, mb: 2, animation: "floatIcon 3.5s ease-in-out infinite" }} />
-                    <Typography variant="h4" sx={{ fontWeight: 700, mb: 1, fontSize: "2rem" }}>
+                    <Email
+                      sx={{
+                        fontSize: 50,
+                        mb: 2,
+                        animation: "floatIcon 3.5s ease-in-out infinite",
+                      }}
+                    />
+                    <Typography
+                      variant="h4"
+                      sx={{ fontWeight: 700, mb: 1, fontSize: "2rem" }}
+                    >
                       Email Support
                     </Typography>
-                    <Typography variant="h5" sx={{ fontWeight: 600, fontSize: "1.1rem" }}>
+                    <Typography
+                      variant="h5"
+                      sx={{ fontWeight: 600, fontSize: "1.1rem" }}
+                    >
                       info@creditdost.co.in
                     </Typography>
                   </Box>

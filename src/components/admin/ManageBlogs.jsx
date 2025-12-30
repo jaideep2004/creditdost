@@ -27,15 +27,21 @@ import {
   Chip,
   Tooltip,
   Snackbar,
-  Alert
+  Alert,
+  FormControlLabel,
+  Switch,
+  InputAdornment,
+  IconButton as MuiIconButton
 } from '@mui/material';
 import {
   Add as AddIcon,
   Edit as EditIcon,
   Delete as DeleteIcon,
-  Visibility as VisibilityIcon
+  Visibility as VisibilityIcon,
+  Link as LinkIcon
 } from '@mui/icons-material';
 import { adminAPI } from '../../services/api';
+import { convertGoogleDriveLinkToImage, isGoogleDriveLink, getImagePreviewUrl } from '../../utils/googleDriveUtils';
 
 const ManageBlogs = () => {
   const [blogs, setBlogs] = useState([]);
@@ -54,6 +60,10 @@ const ManageBlogs = () => {
     categories: '',
     featuredImage: ''
   });
+  
+  // State for Google Drive link handling
+  const [isGDriveLink, setIsGDriveLink] = useState(false);
+  const [googleDriveUrl, setGoogleDriveUrl] = useState('');
 
   // Fetch blogs
   const fetchBlogs = async () => {
@@ -96,6 +106,7 @@ const ManageBlogs = () => {
   const handleOpenDialog = (blog = null) => {
     if (blog) {
       setEditingBlog(blog);
+      const featuredImageUrl = blog.featuredImage || '';
       setFormData({
         title: blog.title,
         content: blog.content,
@@ -103,8 +114,16 @@ const ManageBlogs = () => {
         status: blog.status,
         tags: blog.tags ? blog.tags.join(', ') : '',
         categories: blog.categories ? blog.categories.join(', ') : '',
-        featuredImage: blog.featuredImage || ''
+        featuredImage: featuredImageUrl
       });
+      
+      // Check if the featured image is a Google Drive link
+      setIsGDriveLink(isGoogleDriveLink(featuredImageUrl));
+      
+      // Set the Google Drive URL field if it's a Google Drive link
+      if (isGoogleDriveLink(featuredImageUrl)) {
+        setGoogleDriveUrl(featuredImageUrl); // Store the current URL (could be converted)
+      }
     } else {
       setEditingBlog(null);
       setFormData({
@@ -116,6 +135,8 @@ const ManageBlogs = () => {
         categories: '',
         featuredImage: ''
       });
+      setIsGDriveLink(false);
+      setGoogleDriveUrl('');
     }
     setOpenDialog(true);
   };
@@ -128,6 +149,26 @@ const ManageBlogs = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
+    
+    // Check if the field being changed is the featuredImage field
+    if (name === 'featuredImage') {
+      // Check if the URL is a Google Drive link
+      setIsGDriveLink(isGoogleDriveLink(value));
+    }
+  };
+  
+  // Handle Google Drive URL conversion
+  const handleConvertGoogleDriveLink = () => {
+    if (googleDriveUrl) {
+      const convertedUrl = convertGoogleDriveLinkToImage(googleDriveUrl);
+      if (convertedUrl) {
+        setFormData({ ...formData, featuredImage: convertedUrl });
+        setIsGDriveLink(true);
+        showSnackbar('Google Drive link converted successfully');
+      } else {
+        showSnackbar('Invalid Google Drive link', 'error');
+      }
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -432,17 +473,63 @@ const ManageBlogs = () => {
                   onChange={handleChange}
                   variant="outlined"
                   helperText="Enter the full URL to your featured image"
+                  InputProps={
+                    {
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <MuiIconButton 
+                            onClick={() => setIsGDriveLink(!isGDriveLink)}
+                            title={isGDriveLink ? "Switch to direct URL" : "Use Google Drive link"}
+                          >
+                            <LinkIcon color={isGDriveLink ? "primary" : "disabled"} />
+                          </MuiIconButton>
+                        </InputAdornment>
+                      )
+                    }
+                  }
                 />
+                
+                {isGDriveLink && (
+                  <Box mt={2}>
+                    <TextField
+                      fullWidth
+                      label="Google Drive Sharing URL"
+                      value={googleDriveUrl}
+                      onChange={(e) => setGoogleDriveUrl(e.target.value)}
+                      variant="outlined"
+                      helperText="Paste your Google Drive sharing link here to convert to image URL"
+                      InputProps={
+                        {
+                          endAdornment: (
+                            <InputAdornment position="end">
+                              <Button 
+                                variant="contained" 
+                                size="small" 
+                                onClick={handleConvertGoogleDriveLink}
+                              >
+                                Convert
+                              </Button>
+                            </InputAdornment>
+                          )
+                        }
+                      }
+                    />
+                  </Box>
+                )}
+                
                 {formData.featuredImage && (
                   <Box mt={2} textAlign="center">
                     <Typography variant="caption" display="block" gutterBottom>
                       Featured Image Preview:
                     </Typography>
                     <img 
-                      src={formData.featuredImage} 
+                      src={getImagePreviewUrl(formData.featuredImage)} 
                       alt="Featured preview" 
                       style={{ maxWidth: '100%', maxHeight: '200px', borderRadius: '4px' }} 
-                      onError={(e) => { e.target.style.display = 'none'; }}
+                      onError={(e) => { 
+                        e.target.style.display = 'none'; 
+                        showSnackbar('Error loading image preview. The URL might be incorrect or the image may not be publicly accessible.', 'error');
+                      }}
                     />
                   </Box>
                 )}

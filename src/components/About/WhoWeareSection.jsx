@@ -57,13 +57,13 @@ const WhoWeAreSection = () => {
           </div>
 
           <h2 style={{
-            fontSize: 'clamp(2rem, 4vw, 2.75rem)',
+            fontSize: '2.1rem',
             fontWeight: '700',
             color: '#0f172a',
             marginBottom: '24px',
             lineHeight: 1.2,
           }}>
-            Your Trusted Partner in Credit Score Improvement
+            Your Trusted Partner in Credit Score Improvement in India
           </h2>
 
           <p style={{

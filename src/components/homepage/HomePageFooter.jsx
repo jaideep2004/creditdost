@@ -165,6 +165,9 @@ const HomePageFooter = () => {
             </FooterHeading>
             <FooterLink href="/about">About Us</FooterLink>
             <FooterLink href="/contact">Contact Us</FooterLink>
+            <FooterLink href="/careers">Careers</FooterLink>
+            <FooterLink href="/suvidha-centre">Suvidha Centre</FooterLink>
+            <FooterLink href="/blogs">Blog</FooterLink>
           </Grid>
 
           <Grid item xs={6} md={2} style={{ flex: "1" }}>

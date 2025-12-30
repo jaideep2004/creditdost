@@ -323,9 +323,19 @@ const FranchiseDashboard = () => {
       return allMenuItems.slice(0, 3); // Dashboard, My Profile, KYC Verification
     }
     
-    // If KYC is pending or submitted, show only Dashboard and KYC Verification
+    // If KYC is pending or submitted, show Dashboard, My Profile, KYC Verification, and Digital Agreement
     if (kycStatus === "pending" || kycStatus === "submitted") {
-      return allMenuItems.slice(0, 3); // Dashboard, My Profile, KYC Verification
+      // Find the index of Digital Agreement in the menu items
+      const digitalAgreementIndex = allMenuItems.findIndex(item => item.text === "Digital Agreement");
+      
+      // Return Dashboard, My Profile, KYC Verification, and Digital Agreement
+      const baseItems = allMenuItems.slice(0, 3); // Dashboard, My Profile, KYC Verification
+      
+      if (digitalAgreementIndex !== -1) {
+        baseItems.push(allMenuItems[digitalAgreementIndex]); // Add Digital Agreement
+      }
+      
+      return baseItems;
     }
     
     // Default: show only Dashboard and KYC Verification
@@ -538,6 +548,7 @@ const FranchiseDashboard = () => {
           minHeight: "100vh",
           backgroundColor: "#f8f9fa",
           mt: "64px",
+          
           width: {
             xs: "100%",
             sm: open
@@ -557,32 +568,8 @@ const FranchiseDashboard = () => {
         }}
       >
         <Outlet />
-        {/* Floating WhatsApp Button */}
-        <Box
-          sx={{
-            position: 'fixed',
-            bottom: 20,
-            right: 20,
-            zIndex: 1000,
-          }}
-        >
-          <Tooltip title="Join our WhatsApp group for support">
-            <IconButton
-              sx={{
-                backgroundColor: '#25D366',
-                color: 'white',
-                width: 60,
-                height: 60,
-                '&:hover': {
-                  backgroundColor: '#128C7E',
-                },
-              }}
-              onClick={() => window.open(import.meta.env.VITE_WHATSAPP_GROUP_LINK, '_blank')}
-            >
-              <WhatsAppIcon sx={{ fontSize: 30 }} />
-            </IconButton>
-          </Tooltip>
-        </Box>
+        
+       
       </Box>
     </Box>
   );
