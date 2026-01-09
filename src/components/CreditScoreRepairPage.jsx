@@ -232,6 +232,9 @@ const CreditScoreRepairPage = () => {
     creditScore: "",
     problemType: "",
     message: "",
+    language: "",
+    occupation: "",
+    income: "",
     // authorization: false,
   });
 
@@ -252,6 +255,16 @@ const CreditScoreRepairPage = () => {
           [name]: cleanValue,
         });
       }
+      return;
+    }
+
+    // For income field, only allow digits
+    if (name === "income") {
+      const cleanValue = value.replace(/\D/g, "");
+      setFormData({
+        ...formData,
+        [name]: cleanValue,
+      });
       return;
     }
 
@@ -315,6 +328,9 @@ const CreditScoreRepairPage = () => {
       problemType: formData.problemType || "",
       creditScore: formData.creditScore || "",
       message: formData.message || "",
+      language: formData.language || "",
+      occupation: formData.occupation || "",
+      income: formData.income || "",
       // Note: authorization field is not sent to backend as it's only for frontend validation
     };
 
@@ -364,6 +380,9 @@ const CreditScoreRepairPage = () => {
         creditScore: "",
         problemType: "",
         message: "",
+        language: "",
+        occupation: "",
+        income: "",
         authorization: false,
       });
     } catch (err) {
@@ -388,6 +407,8 @@ const CreditScoreRepairPage = () => {
     "Report Error",
     "Low Score",
     "Settlement Update",
+    "DPD",
+    "Suit File",
     "Other",
   ];
 
@@ -554,26 +575,7 @@ const CreditScoreRepairPage = () => {
                 >
                   Get Free Consultation
                 </StyledButton>
-                <Button
-                  variant="outlined"
-                  size="large"
-                  sx={{
-                    borderRadius: 3,
-                    borderColor: "white",
-                    color: "white",
-                    fontWeight: 700,
-                    px: 4,
-                    py: 1.8,
-                    fontSize: "1.1rem",
-                    textTransform: "none",
-                    "&:hover": {
-                      borderColor: "#0ea5e9",
-                      background: "rgba(14, 165, 233, 0.1)",
-                    },
-                  }}
-                >
-                  Learn More
-                </Button>
+                
               </Box>
 
               {/* Stats Row */}
@@ -1161,6 +1163,75 @@ const CreditScoreRepairPage = () => {
                             }}
                           />
                         </Grid>
+
+                        {/* Language, Occupation, and Income fields in one row */}
+                        <div
+                          style={{
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            gap: "12px",
+                            width: "100%",
+                          }}
+                        >
+                          <Grid item xs={12} md={4} style={{ flex: "1" }}>
+                            <TextField
+                              fullWidth
+                              label="Language"
+                              name="language"
+                              value={formData.language}
+                              onChange={handleChange}
+                              variant="outlined"
+                              sx={{
+                                "& .MuiOutlinedInput-root": {
+                                  borderRadius: 2,
+                                  "&:hover fieldset": {
+                                    borderColor: "#0ea5e9",
+                                  },
+                                },
+                              }}
+                            />
+                          </Grid>
+
+                          <Grid item xs={12} md={4} style={{ flex: "1" }}>
+                            <TextField
+                              fullWidth
+                              label="Occupation"
+                              name="occupation"
+                              value={formData.occupation}
+                              onChange={handleChange}
+                              variant="outlined"
+                              sx={{
+                                "& .MuiOutlinedInput-root": {
+                                  borderRadius: 2,
+                                  "&:hover fieldset": {
+                                    borderColor: "#0ea5e9",
+                                  },
+                                },
+                              }}
+                            />
+                          </Grid>
+
+                          <Grid item xs={12} md={4} style={{ flex: "1" }}>
+                            <TextField
+                              fullWidth
+                              label="Monthly Income"
+                              name="income"
+                              value={formData.income}
+                              onChange={handleChange}
+                              variant="outlined"
+                              placeholder="Enter amount"
+                              sx={{
+                                "& .MuiOutlinedInput-root": {
+                                  borderRadius: 2,
+                                  "&:hover fieldset": {
+                                    borderColor: "#0ea5e9",
+                                  },
+                                },
+                              }}
+                            />
+                          </Grid>
+                        </div>
 
                         {/* Authorization checkbox */}
                         <Grid item xs={12}>

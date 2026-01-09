@@ -128,6 +128,7 @@ export const blogAPI = {
 export const adminAPI = {
   getDashboardStats: () => api.get('/admin/dashboard'),
   getRecentActivities: () => api.get('/admin/dashboard/activities'),
+  getPerformanceOverview: (params) => api.get('/admin/dashboard/performance', { params }),
   // Franchise management
   getAllFranchises: () => api.get('/franchises'),
   getFranchiseById: (id) => api.get(`/franchises/${id}`),

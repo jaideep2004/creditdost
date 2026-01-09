@@ -129,7 +129,7 @@ const SidebarTitle = styled(Typography)(({ theme }) => ({
 const NavItem = styled(ListItem)(({ theme, active }) => ({
   borderRadius: theme.shape.borderRadius,
   margin: theme.spacing(0.5, 1),
-  backgroundColor: active ? theme.palette.primary.light : "transparent",
+  backgroundColor: active ? theme.palette.primary.main : "transparent",
   color: active
     ? theme.palette.primary.contrastText
     : theme.palette.text.primary,
@@ -211,7 +211,7 @@ const AdminDashboard = () => {
       path: "/admin/referrals",
     },
     {
-      text: "Business Forms",
+      text: "Business MIS",
       icon: <DescriptionIcon />,
       path: "/admin/business-forms",
     },

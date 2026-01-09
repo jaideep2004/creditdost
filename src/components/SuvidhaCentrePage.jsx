@@ -1,23 +1,30 @@
 import React, { useState } from "react";
-import api from '../services/api';
+import api from "../services/api";
 import {
   Container,
   Box,
   Typography,
+  TextField,
   Button,
-  Grid,
+  Box as BoxUI,
   Card,
   CardContent,
+  Alert,
+  CircularProgress,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  Grid,
+  styled,
+  Checkbox,
+  FormControlLabel,
+  Divider,
   Chip,
   List,
   ListItem,
   ListItemIcon,
   ListItemText,
-  TextField,
-  Select,
-  MenuItem,
-  FormControl,
-  InputLabel,
 } from "@mui/material";
 import {
   Check,
@@ -34,53 +41,159 @@ import {
   Star,
   TrackChanges,
   FlashOn,
+  Person,
+  Email,
+  Phone,
+  LocationOn,
+  Work,
+  AccountBalance,
+  CreditCard,
+  CheckCircle,
+  TrendingUp as TrendingUpIcon,
+  Security,
+  SupportAgent,
+  VerifiedUser,
+  Star as StarIcon,
+  AttachMoney as MoneyIcon,
+  Business,
+  DriveEta,
+  CreditScore,
 } from "@mui/icons-material";
 import Header from "./homepage/Header";
 import HomePageFooter from "./homepage/HomePageFooter";
 
+// Styled Components
+const StyledCard = styled(Card)(({ theme }) => ({
+  borderRadius: 20,
+  boxShadow: "0 10px 30px rgba(0,0,0,0.08)",
+  border: "1px solid rgba(0,0,0,0.03)",
+  background: "white",
+  transition: "all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)",
+  height: "100%",
+  animation: "fadeIn 0.6s ease-out",
+  "@keyframes fadeIn": {
+    "0%": { opacity: 0, transform: "translateY(20px)" },
+    "100%": { opacity: 1, transform: "translateY(0)" },
+  },
+  "&:hover": {
+    transform: "translateY(-10px)",
+    boxShadow: "0 20px 40px rgba(0,0,0,0.12)",
+  },
+}));
+
+const StyledButton = styled(Button)(({ theme }) => ({
+  padding: theme.spacing(1.8, 4.5),
+  borderRadius: 16,
+  fontWeight: 700,
+  fontSize: "1.1rem",
+  textTransform: "none",
+  transition: "all 0.4s ease",
+  background: "linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%)",
+  boxShadow: "0 10px 25px rgba(14, 165, 233, 0.4)",
+  "&:hover": {
+    transform: "translateY(-5px) scale(1.02)",
+    boxShadow: "0 15px 35px rgba(14, 165, 233, 0.5)",
+    background: "linear-gradient(135deg, #0284c7 0%, #0369a1 100%)",
+  },
+  "&:disabled": {
+    background: "#cbd5e1",
+    transform: "none",
+    boxShadow: "none",
+  },
+}));
+
+const FormSection = styled(StyledCard)(({ theme }) => ({
+  padding: theme.spacing(5),
+  marginBottom: theme.spacing(6),
+  background: "linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)",
+  animation: "fadeIn 0.8s ease-out",
+  "@keyframes fadeIn": {
+    "0%": { opacity: 0, transform: "translateY(30px)" },
+    "100%": { opacity: 1, transform: "translateY(0)" },
+  },
+}));
+
 const SuvidhaCentrePage = () => {
   const [hoveredCard, setHoveredCard] = useState(null);
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    mobileNumber: '',
-    subject: '',
-    message: ''
+    fullName: "",
+    mobileNumber: "",
+    whatsappNumber: "",
+    email: "",
+    city: "",
+    state: "",
+    pincode: "",
+    occupation: "",
+    financeExperience: "",
+    smartphoneLaptop: "",
+    communication: "",
+    investmentReadiness: "",
+    consent: false,
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    
+
     // If it's the mobile number field, only allow digits and limit to 10
-    if (name === 'mobileNumber') {
-      const numericValue = value.replace(/[^0-9]/g, '').slice(0, 10);
+    if (
+      name === "mobileNumber" ||
+      name === "whatsappNumber" ||
+      name === "pincode"
+    ) {
+      let numericValue = value.replace(/[^0-9]/g, "");
+      if (name === "mobileNumber" || name === "whatsappNumber") {
+        numericValue = numericValue.slice(0, 10);
+      } else if (name === "pincode") {
+        numericValue = numericValue.slice(0, 6);
+      }
       setFormData({
         ...formData,
-        [name]: numericValue
+        [name]: numericValue,
       });
     } else {
       setFormData({
         ...formData,
-        [name]: value
+        [name]: value,
       });
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Validate consent checkbox
+    if (!formData.consent) {
+      alert("Please agree to be contacted by Credit Dost team.");
+      return;
+    }
+
     setIsSubmitting(true);
-    
+
     try {
       // Submit to backend API
-      await api.post('/forms/contact', formData);
+      await api.post("/forms/suvidha-centre", formData);
       // Reset form
-      setFormData({ name: '', email: '', mobileNumber: '', subject: '', message: '' });
+      setFormData({
+        fullName: "",
+        mobileNumber: "",
+        whatsappNumber: "",
+        email: "",
+        city: "",
+        state: "",
+        pincode: "",
+        occupation: "",
+        financeExperience: "",
+        smartphoneLaptop: "",
+        communication: "",
+        investmentReadiness: "",
+        consent: false,
+      });
       // Show success message
-      alert('Thank you for your message. We will get back to you soon!');
+      alert("Thank you for your application. We will get back to you soon!");
     } catch (error) {
-      console.error('Form submission error:', error);
-      alert('Failed to submit your message. Please try again.');
+      console.error("Form submission error:", error);
+      alert("Failed to submit your application. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
@@ -231,29 +344,9 @@ const SuvidhaCentrePage = () => {
                   },
                   transition: "all 0.3s",
                 }}
+                href="#suvidha-centre-application"
               >
                 Apply Now
-              </Button>
-              <Button
-                variant="outlined"
-                sx={{
-                  borderColor: "white",
-                  borderWidth: 2,
-                  color: "white",
-                  px: 4,
-                  py: 2,
-                  borderRadius: 50,
-                  fontWeight: 700,
-                  fontSize: "1.125rem",
-                  "&:hover": {
-                    bgcolor: "white",
-                    color: "#2563eb",
-                    borderWidth: 2,
-                  },
-                  transition: "all 0.3s",
-                }}
-              >
-                Download Brochure
               </Button>
             </Box>
           </Container>
@@ -1137,8 +1230,11 @@ const SuvidhaCentrePage = () => {
           </Container>
         </Box>
 
-        {/* Contact Form Section */}
-        <Box sx={{ bgcolor: "#f0f9ff", py: 10 }}>
+        {/* Suvidha Centre Application Form */}
+        <Box
+          sx={{ bgcolor: "#f0f9ff", py: 10 }}
+          id="suvidha-centre-application"
+        >
           <Container maxWidth="md">
             <Box sx={{ textAlign: "center", mb: 6 }}>
               <Typography
@@ -1150,187 +1246,382 @@ const SuvidhaCentrePage = () => {
                   mb: 2,
                 }}
               >
-                Have Questions?
+                Apply for Suvidha Centre
               </Typography>
               <Typography variant="h6" sx={{ color: "#4b5563", mb: 4 }}>
-                Reach out to us and our team will get back to you shortly
+                Fill out the form below to apply for your Suvidha Centre
+                franchise
               </Typography>
             </Box>
 
-            <Card
-              sx={{
-                borderRadius: 4,
-                boxShadow: "0 25px 50px -12px rgba(0,0,0,0.25)",
-                border: "2px solid #bae6fd",
-              }}
-            >
-              <CardContent sx={{ p: 4 }}>
-                <Box component="form" onSubmit={handleSubmit}>
-                  <Grid container spacing={3}>
-                    <Grid item xs={12} sm={6}>
+            <FormSection>
+              <Box component="form" onSubmit={handleSubmit}>
+                <Grid container spacing={4} style={{ flexDirection: "column" }}>
+                  {/* Personal Information Section */}
+                  <Grid item xs={12}>
+                    <Box sx={{ display: "flex", alignItems: "center", mb: 3 }}>
+                      <Person sx={{ color: "#0ea5e9", mr: 2 }} />
+                      <Typography
+                        variant="h5"
+                        sx={{
+                          fontWeight: 700,
+                          color: "#0f172a",
+                        }}
+                      >
+                        Personal Information
+                      </Typography>
+                    </Box>
+                    <Divider sx={{ mb: 3 }} />
+                  </Grid>
+
+                  <div style={{ display: "flex", gap: "15px" }}>
+                    <Grid item xs={12} md={6} style={{ width: "100%" }}>
                       <TextField
                         fullWidth
-                        label="Your Name"
-                        name="name"
-                        value={formData.name}
-                        onChange={handleChange}
                         required
+                        label="Full Name"
+                        name="fullName"
+                        value={formData.fullName}
+                        onChange={handleChange}
                         variant="outlined"
-                        sx={{
-                          '& .MuiOutlinedInput-root': {
-                            '& fieldset': {
-                              borderColor: '#e2e8f0'
-                            },
-                            '&:hover fieldset': {
-                              borderColor: '#cbd5e1'
-                            },
-                            '&.Mui-focused fieldset': {
-                              borderColor: '#0891b2'
-                            }
-                          }
-                        }}
+                        size="medium"
                       />
                     </Grid>
-                    <Grid item xs={12} sm={6}>
+
+                    <Grid item xs={12} md={6} style={{ width: "100%" }}>
                       <TextField
                         fullWidth
+                        required
                         label="Email Address"
                         name="email"
                         type="email"
                         value={formData.email}
                         onChange={handleChange}
-                        required
                         variant="outlined"
-                        sx={{
-                          '& .MuiOutlinedInput-root': {
-                            '& fieldset': {
-                              borderColor: '#e2e8f0'
-                            },
-                            '&:hover fieldset': {
-                              borderColor: '#cbd5e1'
-                            },
-                            '&.Mui-focused fieldset': {
-                              borderColor: '#0891b2'
-                            }
-                          }
-                        }}
+                        size="medium"
                       />
                     </Grid>
-                    <Grid item xs={12} sm={6}>
+                  </div>
+
+                  <div style={{ display: "flex", gap: "15px" }}>
+                    <Grid item xs={12} md={6} style={{ width: "100%" }}>
                       <TextField
                         fullWidth
-                        label="Mobile Number"
+                        required
+                        label="Mobile Number (Primary)"
                         name="mobileNumber"
                         value={formData.mobileNumber}
                         onChange={handleChange}
                         variant="outlined"
-                        inputProps={{ maxLength: 10 }}
-                        placeholder="Enter 10-digit mobile number"
-                        sx={{
-                          '& .MuiOutlinedInput-root': {
-                            '& fieldset': {
-                              borderColor: '#e2e8f0'
-                            },
-                            '&:hover fieldset': {
-                              borderColor: '#cbd5e1'
-                            },
-                            '&.Mui-focused fieldset': {
-                              borderColor: '#0891b2'
-                            }
-                          }
-                        }}
+                        size="medium"
                       />
                     </Grid>
-                    <Grid item xs={12} sm={6}>
-                      <FormControl fullWidth variant="outlined" sx={{
-                        '& .MuiOutlinedInput-root': {
-                          '& fieldset': {
-                            borderColor: '#e2e8f0'
-                          },
-                          '&:hover fieldset': {
-                            borderColor: '#cbd5e1'
-                          },
-                          '&.Mui-focused fieldset': {
-                            borderColor: '#0891b2'
-                          }
-                        }
-                      }}>
-                        <InputLabel id="subject-label">Subject</InputLabel>
+
+                    <Grid item xs={12} md={6} style={{ width: "100%" }}>
+                      <TextField
+                        fullWidth
+                        label="WhatsApp Number"
+                        name="whatsappNumber"
+                        value={formData.whatsappNumber}
+                        onChange={handleChange}
+                        variant="outlined"
+                        size="medium"
+                      />
+                    </Grid>
+                  </div>
+
+                  {/* Location Details Section */}
+                  <Grid item xs={12}>
+                    <Box sx={{ display: "flex", alignItems: "center", my: 3 }}>
+                      <LocationOn sx={{ color: "#0ea5e9", mr: 2 }} />
+                      <Typography
+                        variant="h5"
+                        sx={{
+                          fontWeight: 700,
+                          color: "#0f172a",
+                        }}
+                      >
+                        Location Details
+                      </Typography>
+                    </Box>
+                    <Divider sx={{ mb: 3 }} />
+                  </Grid>
+
+                  <div style={{ display: "flex", gap: "15px" }}>
+                    <Grid item xs={12} md={6} style={{ width: "100%" }}>
+                      <TextField
+                        fullWidth
+                        required
+                        label="City"
+                        name="city"
+                        value={formData.city}
+                        onChange={handleChange}
+                        variant="outlined"
+                        size="medium"
+                      />
+                    </Grid>
+
+                    <Grid item xs={12} md={6} style={{ width: "100%" }}>
+                      <TextField
+                        fullWidth
+                        required
+                        label="State"
+                        name="state"
+                        value={formData.state}
+                        onChange={handleChange}
+                        variant="outlined"
+                        size="medium"
+                      />
+                    </Grid>
+                  </div>
+
+                  <Grid item xs={12} md={6}>
+                    <TextField
+                      fullWidth
+                      required
+                      label="Pincode"
+                      name="pincode"
+                      value={formData.pincode}
+                      onChange={handleChange}
+                      variant="outlined"
+                      size="medium"
+                      inputProps={{ maxLength: 6, minLength: 6 }}
+                    />
+                  </Grid>
+
+                  {/* Background Information Section */}
+                  <Grid item xs={12}>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        my: 3,
+                      }}
+                    >
+                      <Work sx={{ color: "#0ea5e9", mr: 2 }} />
+                      <Typography
+                        variant="h5"
+                        sx={{
+                          fontWeight: 700,
+                          color: "#0f172a",
+                        }}
+                      >
+                        Background Information
+                      </Typography>
+                    </Box>
+                    <Divider sx={{ mb: 3 }} />
+                  </Grid>
+
+                  <div style={{ display: "flex", gap: "15px" }}>
+                    <Grid item xs={12} md={6} style={{ width: "100%" }}>
+                      <FormControl fullWidth required>
+                        <InputLabel>Current Occupation</InputLabel>
                         <Select
-                          labelId="subject-label"
-                          name="subject"
-                          value={formData.subject}
+                          value={formData.occupation}
+                          label="Current Occupation"
+                          name="occupation"
                           onChange={handleChange}
-                          label="Subject"
-                          required
+                          size="medium"
                         >
-                          <MenuItem value="Franchise">Franchise</MenuItem>
-                          <MenuItem value="Credit Dost Suvidha Centre">Credit Dost Suvidha Centre</MenuItem>
-                          <MenuItem value="Credit Score Repair">Credit Score Repair</MenuItem>
-                          <MenuItem value="Apply for Loan">Apply for Loan</MenuItem>
-                          <MenuItem value="Others">Others</MenuItem>
+                          <MenuItem value="">
+                            <em>Select Occupation</em>
+                          </MenuItem>
+                          <MenuItem value="Student">Student</MenuItem>
+                          <MenuItem value="Working Professional">
+                            Working Professional
+                          </MenuItem>
+                          <MenuItem value="Business Owner / Shop Owner">
+                            Business Owner / Shop Owner
+                          </MenuItem>
+                          <MenuItem value="Loan Agent">Loan Agent</MenuItem>
+                          <MenuItem value="Insurance Agent">
+                            Insurance Agent
+                          </MenuItem>
+                          <MenuItem value="Freelancer">Freelancer</MenuItem>
+                          <MenuItem value="Homemaker">Homemaker</MenuItem>
+                          <MenuItem value="Other">Other</MenuItem>
                         </Select>
                       </FormControl>
                     </Grid>
-                    <Grid item xs={12}>
-                      <TextField
-                        fullWidth
-                        label="Message"
-                        name="message"
-                        value={formData.message}
-                        onChange={handleChange}
-                        required
-                        multiline
-                        rows={6}
-                        variant="outlined"
-                        sx={{
-                          '& .MuiOutlinedInput-root': {
-                            '& fieldset': {
-                              borderColor: '#e2e8f0'
-                            },
-                            '&:hover fieldset': {
-                              borderColor: '#cbd5e1'
-                            },
-                            '&.Mui-focused fieldset': {
-                              borderColor: '#0891b2'
-                            }
-                          }
-                        }}
-                      />
+
+                    <Grid item xs={12} md={6} style={{ width: "100%" }}>
+                      <FormControl fullWidth required>
+                        <InputLabel>
+                          Do you have experience in finance / loans / sales?
+                        </InputLabel>
+                        <Select
+                          value={formData.financeExperience}
+                          label="Do you have experience in finance / loans / sales?"
+                          name="financeExperience"
+                          onChange={handleChange}
+                          size="medium"
+                        >
+                          <MenuItem value="">
+                            <em>Select Option</em>
+                          </MenuItem>
+                          <MenuItem value="Yes">Yes</MenuItem>
+                          <MenuItem value="No">No</MenuItem>
+                        </Select>
+                      </FormControl>
                     </Grid>
-                    <Grid item xs={12}>
-                      <Button
-                        type="submit"
-                        variant="contained"
-                        disabled={isSubmitting}
+                  </div>
+
+                  {/* Infrastructure Check Section */}
+                  <Grid item xs={12}>
+                    <Box sx={{ display: "flex", alignItems: "center", my: 3 }}>
+                      <Home sx={{ color: "#0ea5e9", mr: 2 }} />
+                      <Typography
+                        variant="h5"
                         sx={{
-                          background: 'linear-gradient(135deg, #0891b2 0%, #06b6d4 100%)',
-                          color: 'white',
                           fontWeight: 700,
-                          textTransform: 'none',
-                          padding: '12px 32px',
-                          borderRadius: '50px',
-                          fontSize: '1rem',
-                          boxShadow: '0 4px 20px rgba(8, 145, 178, 0.3)',
-                          transition: 'all 0.3s ease',
-                          '&:hover': {
-                            transform: 'translateY(-2px)',
-                            boxShadow: '0 6px 25px rgba(8, 145, 178, 0.4)',
-                            background: 'linear-gradient(135deg, #0e7490 0%, #0891b2 100%)'
-                          },
-                          '&.Mui-disabled': {
-                            background: 'linear-gradient(135deg, #94a3b8 0%, #cbd5e1 100%)',
-                            color: 'white'
-                          }
+                          color: "#0f172a",
                         }}
                       >
-                        {isSubmitting ? 'Sending...' : 'Send Message'}
-                      </Button>
-                    </Grid>
+                        Infrastructure Check
+                      </Typography>
+                    </Box>
+                    <Divider sx={{ mb: 3 }} />
                   </Grid>
-                </Box>
-              </CardContent>
-            </Card>
+
+                  <div style={{ display: "flex", gap: "15px" }}>
+                    <Grid item xs={12} md={6} style={{ width: "100%" }}>
+                      <FormControl fullWidth required>
+                        <InputLabel>
+                          Do you have a smartphone/laptop with internet?
+                        </InputLabel>
+                        <Select
+                          value={formData.smartphoneLaptop}
+                          label="Do you have a smartphone/laptop with internet?"
+                          name="smartphoneLaptop"
+                          onChange={handleChange}
+                          size="medium"
+                        >
+                          <MenuItem value="">
+                            <em>Select Option</em>
+                          </MenuItem>
+                          <MenuItem value="Yes">Yes</MenuItem>
+                          <MenuItem value="No">No</MenuItem>
+                        </Select>
+                      </FormControl>
+                    </Grid>
+
+                    <Grid item xs={12} md={6} style={{ width: "100%" }}>
+                      <FormControl fullWidth required>
+                        <InputLabel>
+                          Can you communicate confidently with customers in
+                          Hindi / English?
+                        </InputLabel>
+                        <Select
+                          value={formData.communication}
+                          label="Can you communicate confidently with customers in Hindi / English?"
+                          name="communication"
+                          onChange={handleChange}
+                          size="medium"
+                        >
+                          <MenuItem value="">
+                            <em>Select Option</em>
+                          </MenuItem>
+                          <MenuItem value="Yes">Yes</MenuItem>
+                          <MenuItem value="Somewhat">Somewhat</MenuItem>
+                          <MenuItem value="No">No</MenuItem>
+                        </Select>
+                      </FormControl>
+                    </Grid>
+                  </div>
+
+                  {/* Investment Readiness Section */}
+                  <Grid item xs={12}>
+                    <Box sx={{ display: "flex", alignItems: "center", my: 3 }}>
+                      <AttachMoney sx={{ color: "#0ea5e9", mr: 2 }} />
+                      <Typography
+                        variant="h5"
+                        sx={{
+                          fontWeight: 700,
+                          color: "#0f172a",
+                        }}
+                      >
+                        Investment Readiness
+                      </Typography>
+                    </Box>
+                    <Divider sx={{ mb: 3 }} />
+                  </Grid>
+
+                  <Grid item xs={12} md={6}>
+                    <FormControl fullWidth required>
+                      <InputLabel>
+                        Are you ready to invest in training & setup to start
+                        this business?
+                      </InputLabel>
+                      <Select
+                        value={formData.investmentReadiness}
+                        label="Are you ready to invest in training & setup to start this business?"
+                        name="investmentReadiness"
+                        onChange={handleChange}
+                        size="medium"
+                      >
+                        <MenuItem value="">
+                          <em>Select Option</em>
+                        </MenuItem>
+                        <MenuItem value="Yes">Yes</MenuItem>
+                        <MenuItem value="Need more details">
+                          Need more details
+                        </MenuItem>
+                        <MenuItem value="Not sure">Not sure</MenuItem>
+                      </Select>
+                    </FormControl>
+                  </Grid>
+
+                  {/* Consent Checkbox */}
+                  <Grid item xs={12}>
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          name="consent"
+                          checked={formData.consent}
+                          onChange={(e) =>
+                            setFormData({
+                              ...formData,
+                              consent: e.target.checked,
+                            })
+                          }
+                          required
+                          sx={{
+                            color: "#0ea5e9",
+                            "&.Mui-checked": {
+                              color: "#0ea5e9",
+                            },
+                          }}
+                        />
+                      }
+                      label="I agree to be contacted by Credit Dost team via call, WhatsApp, SMS & email."
+                    />
+                  </Grid>
+
+                  <Grid item xs={12}>
+                    <StyledButton
+                      type="submit"
+                      variant="contained"
+                      size="large"
+                      fullWidth
+                      endIcon={<ArrowForward />}
+                      disabled={isSubmitting}
+                    >
+                      {isSubmitting ? (
+                        <>
+                          <CircularProgress
+                            size={24}
+                            sx={{ mr: 1, color: "white" }}
+                          />
+                          Processing Your Application...
+                        </>
+                      ) : (
+                        "Submit Application"
+                      )}
+                    </StyledButton>
+                  </Grid>
+                </Grid>
+              </Box>
+            </FormSection>
           </Container>
         </Box>
 
@@ -1394,6 +1685,7 @@ const SuvidhaCentrePage = () => {
               <Button
                 variant="contained"
                 endIcon={<ArrowForward />}
+                href="/contact"
                 sx={{
                   bgcolor: "white",
                   color: "#2563eb",
@@ -1411,49 +1703,7 @@ const SuvidhaCentrePage = () => {
                   transition: "all 0.3s",
                 }}
               >
-                Apply Now
-              </Button>
-              <Button
-                variant="outlined"
-                startIcon={<Download />}
-                sx={{
-                  borderColor: "white",
-                  borderWidth: 2,
-                  color: "white",
-                  px: 5,
-                  py: 2.5,
-                  borderRadius: 50,
-                  fontWeight: 700,
-                  fontSize: "1.125rem",
-                  "&:hover": {
-                    bgcolor: "rgba(255,255,255,0.1)",
-                    borderWidth: 2,
-                  },
-                  transition: "all 0.3s",
-                }}
-              >
-                Download Brochure
-              </Button>
-              <Button
-                variant="outlined"
-                startIcon={<Chat />}
-                sx={{
-                  borderColor: "white",
-                  borderWidth: 2,
-                  color: "white",
-                  px: 5,
-                  py: 2.5,
-                  borderRadius: 50,
-                  fontWeight: 700,
-                  fontSize: "1.125rem",
-                  "&:hover": {
-                    bgcolor: "rgba(255,255,255,0.1)",
-                    borderWidth: 2,
-                  },
-                  transition: "all 0.3s",
-                }}
-              >
-                Chat with Team
+                Contact Us
               </Button>
             </Box>
           </Container>

@@ -489,7 +489,7 @@ const DigitalAgreement = () => {
             disabled={signing || !transactionId.trim()}
             startIcon={signing ? <CircularProgress size={20} /> : null}
           >
-            {signing ? "Submitting..." : "Submit"}
+            {signing ? "Submitting..." : "Submit"} 
           </Button>
         </DialogActions>
       </Dialog>
