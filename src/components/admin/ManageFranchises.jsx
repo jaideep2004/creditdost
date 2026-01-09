@@ -1171,284 +1171,7 @@ const ManageFranchises = () => {
                   </Card>
                 </Grid>
 
-                <Grid item xs={12} style={{width:"100%"}}>
-                  <Typography
-                    variant="h6" 
-                    gutterBottom
-                    sx={{ mt: 2, color: "primary.main", fontWeight: "bold" }}
-                  >
-                    Documents
-                  </Typography>
-                  
-                  {kycData.isDigiLockerSubmission ? (
-                    // For DigiLocker submissions, show a message instead of document previews
-                    <Card variant="outlined" sx={{ boxShadow: 3, borderRadius: 2, bgcolor: "white", p: 3 }}>
-                      <Box sx={{ textAlign: 'center' }}>
-                        <Info sx={{ fontSize: 48, color: 'primary.main', mb: 2 }} />
-                        <Typography variant="h6" gutterBottom>
-                          DigiLocker Submission
-                        </Typography>
-                        <Typography variant="body1" color="textSecondary" paragraph>
-                          This KYC was submitted using DigiLocker integration. Documents were fetched directly 
-                          from the user's DigiLocker account and are not available for preview in the admin panel.
-                        </Typography>
-                        <Typography variant="body2" sx={{ mt: 2 }}>
-                          <strong>Verification Method:</strong> DigiLocker
-                        </Typography>
-                        <Typography variant="body2">
-                          <strong>Submission Status:</strong> Completed
-                        </Typography>
-                      </Box>
-                    </Card>
-                  ) : (
-                    // For manual uploads with Google Drive links, show the links
-                    <Grid container spacing={2}>
-                      <Grid item xs={12} sm={6} md={3} style={{ flex: "1" }}>
-                        <Card
-                          variant="outlined"
-                          sx={{
-                            height: "100%",
-                            display: "flex",
-                            flexDirection: "column",
-                            boxShadow: 3,
-                            borderRadius: 2,
-                            bgcolor: "white",
-                          }}
-                        >
-                          <CardContent sx={{ flexGrow: 1, p: 2 }}>
-                            <Typography
-                              variant="subtitle1"
-                              gutterBottom
-                              align="center"
-                              sx={{
-                                fontWeight: "medium",
-                                color: "primary.dark",
-                                mb: 1,
-                              }}
-                            >
-                              Aadhaar Front
-                            </Typography>
-                            {kycData.aadhaarFrontDocument ? (
-                              <>
-                                <Typography
-                                  color="textSecondary"
-                                  variant="body2"
-                                  align="center"
-                                  sx={{ mt: 1.5 }}
-                                >
-                                  Google Drive Link
-                                </Typography>
-                                <Button
-                                  startIcon={<Visibility />}
-                                  href={kycData.aadhaarFrontDocument}
-                                  target="_blank"
-                                  fullWidth
-                                  sx={{ mt: 1.5 }}
-                                  variant="outlined"
-                                  size="small"
-                                >
-                                  View Document
-                                </Button>
-                              </>
-                            ) : (
-                              <Typography
-                                color="textSecondary"
-                                variant="body2"
-                                align="center"
-                                sx={{ mt: 1.5 }}
-                              >
-                                Document not available
-                              </Typography>
-                            )}
-                          </CardContent>
-                        </Card>
-                      </Grid>
-
-                      <Grid item xs={12} sm={6} md={3} style={{ flex: "1" }}>
-                        <Card
-                          variant="outlined"
-                          sx={{
-                            height: "100%",
-                            display: "flex",
-                            flexDirection: "column",
-                            boxShadow: 3,
-                            borderRadius: 2,
-                            bgcolor: "white",
-                          }}
-                        >
-                          <CardContent sx={{ flexGrow: 1, p: 2 }}>
-                            <Typography
-                              variant="subtitle1"
-                              gutterBottom
-                              align="center"
-                              sx={{
-                                fontWeight: "medium",
-                                color: "primary.dark",
-                                mb: 1,
-                              }}
-                            >
-                              Aadhaar Back
-                            </Typography>
-                            {kycData.aadhaarBackDocument ? (
-                              <>
-                                <Typography
-                                  color="textSecondary"
-                                  variant="body2"
-                                  align="center"
-                                  sx={{ mt: 1.5 }}
-                                >
-                                  Google Drive Link
-                                </Typography>
-                                <Button
-                                  startIcon={<Visibility />}
-                                  href={kycData.aadhaarBackDocument}
-                                  target="_blank"
-                                  fullWidth
-                                  sx={{ mt: 1.5 }}
-                                  variant="outlined"
-                                  size="small"
-                                >
-                                  View Document
-                                </Button>
-                              </>
-                            ) : (
-                              <Typography
-                                color="textSecondary"
-                                variant="body2"
-                                align="center"
-                                sx={{ mt: 1.5 }}
-                              >
-                                Document not available
-                              </Typography>
-                            )}
-                          </CardContent>
-                        </Card>
-                      </Grid>
-
-                      <Grid item xs={12} sm={6} md={3} style={{ flex: "1" }}>
-                        <Card
-                          variant="outlined"
-                          sx={{
-                            height: "100%",
-                            display: "flex",
-                            flexDirection: "column",
-                            boxShadow: 3,
-                            borderRadius: 2,
-                            bgcolor: "white",
-                          }}
-                        >
-                          <CardContent sx={{ flexGrow: 1, p: 2 }}>
-                            <Typography
-                              variant="subtitle1"
-                              gutterBottom
-                              align="center"
-                              sx={{
-                                fontWeight: "medium",
-                                color: "primary.dark",
-                                mb: 1,
-                              }}
-                            >
-                              PAN Card
-                            </Typography>
-                            {kycData.panDocument ? (
-                              <>
-                                <Typography
-                                  color="textSecondary"
-                                  variant="body2"
-                                  align="center"
-                                  sx={{ mt: 1.5 }}
-                                >
-                                  Google Drive Link
-                                </Typography>
-                                <Button
-                                  startIcon={<Visibility />}
-                                  href={kycData.panDocument}
-                                  target="_blank"
-                                  fullWidth
-                                  sx={{ mt: 1.5 }}
-                                  variant="outlined"
-                                  size="small"
-                                >
-                                  View Document
-                                </Button>
-                              </>
-                            ) : (
-                              <Typography
-                                color="textSecondary"
-                                variant="body2"
-                                align="center"
-                                sx={{ mt: 1.5 }}
-                              >
-                                Document not available
-                              </Typography>
-                            )}
-                          </CardContent>
-                        </Card>
-                      </Grid>
-
-                      <Grid item xs={12} sm={6} md={3} style={{ flex: "1" }}>
-                        <Card
-                          variant="outlined"
-                          sx={{
-                            height: "100%",
-                            display: "flex",
-                            flexDirection: "column",
-                            boxShadow: 3,
-                            borderRadius: 2,
-                            bgcolor: "white",
-                          }}
-                        >
-                          <CardContent sx={{ flexGrow: 1, p: 2 }}>
-                            <Typography
-                              variant="subtitle1"
-                              gutterBottom
-                              align="center"
-                              sx={{
-                                fontWeight: "medium",
-                                color: "primary.dark",
-                                mb: 1,
-                              }}
-                            >
-                              Business Registration
-                            </Typography>
-                            {kycData.businessRegistrationDocument ? (
-                              <>
-                                <Typography
-                                  color="textSecondary"
-                                  variant="body2"
-                                  align="center"
-                                  sx={{ mt: 1.5 }}
-                                >
-                                  Google Drive Link
-                                </Typography>
-                                <Button
-                                  startIcon={<Visibility />}
-                                  href={kycData.businessRegistrationDocument}
-                                  target="_blank"
-                                  fullWidth
-                                  sx={{ mt: 1.5 }}
-                                  variant="outlined"
-                                  size="small"
-                                >
-                                  View Document
-                                </Button>
-                              </>
-                            ) : (
-                              <Typography
-                                color="textSecondary"
-                                variant="body2"
-                                align="center"
-                                sx={{ mt: 1.5 }}
-                              >
-                                Document not available
-                              </Typography>
-                            )}
-                          </CardContent>
-                        </Card>
-                      </Grid>
-                    </Grid>
-                  )}
-                </Grid>
+               
               </Grid>
             </Box>
           ) : (
@@ -1917,6 +1640,30 @@ const ManageFranchises = () => {
               </Grid>
             </Grid>
           </Box>
+          {/* Packages Information Section */}
+          <Grid container spacing={3} sx={{ mt: 3 }}>
+            <Grid item xs={12}>
+              <Typography variant="h6" gutterBottom sx={{ fontWeight: 'bold', color: 'primary.main', textAlign: 'left' }}>
+                Purchased Packages
+              </Typography>
+              <Divider sx={{ mb: 2 }} />
+            </Grid>
+            <Grid item xs={12}>
+              {editFranchiseData.assignedPackages && editFranchiseData.assignedPackages.length > 0 ? (
+                <Box>
+                  {editFranchiseData.assignedPackages.map((pkg, index) => (
+                    <Box key={pkg._id || index} sx={{ mb: 1, p: 2, bgcolor: 'grey.50', borderRadius: 1, border: '1px solid #e0e0e0' }}>
+                      <Typography variant="body1" fontWeight="bold" gutterBottom>{pkg.name}</Typography>
+                      <Typography variant="body2" color="textSecondary" gutterBottom>Price: ₹{pkg.price}</Typography>
+                      <Typography variant="body2" color="textSecondary">Credits Included: {pkg.creditsIncluded}</Typography>
+                    </Box>
+                  ))}
+                </Box>
+              ) : (
+                <Typography variant="body2" color="textSecondary">No packages purchased</Typography>
+              )}
+            </Grid>
+          </Grid>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseEditDialog} disabled={loading}>

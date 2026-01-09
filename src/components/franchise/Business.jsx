@@ -26,9 +26,11 @@ import {
   Step,
   StepLabel,
   StepContent,
+  Snackbar,
 } from "@mui/material";
-import { Check as CheckIcon } from "@mui/icons-material";
+import { Check as CheckIcon, Close as CloseIcon } from "@mui/icons-material";
 import api, { franchiseAPI } from "../../services/api";
+import IconButton from "@mui/material/IconButton";
 
 const Business = () => {
   const [customerPackages, setCustomerPackages] = useState([]);
@@ -53,6 +55,10 @@ const Business = () => {
   const [selectedPackage, setSelectedPackage] = useState(null);
   const [razorpayOrderId, setRazorpayOrderId] = useState("");
   const [businessFormId, setBusinessFormId] = useState("");
+  const [paymentProcessing, setPaymentProcessing] = useState(false);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState("success");
 
   // Fetch customer packages
   useEffect(() => {
@@ -186,6 +192,9 @@ const Business = () => {
       description: selectedPackage.name,
       order_id: razorpayOrderId,
       handler: async function (response) {
+        // Show loader after payment completion
+        setPaymentProcessing(true);
+        
         try {
           // Verify payment
           await franchiseAPI.verifyBusinessPayment({
@@ -198,9 +207,22 @@ const Business = () => {
           setSuccess("Payment successful! Business form has been submitted.");
           resetForm();
           setActiveStep(0); // Reset to first step
+          
+          // Show success toast
+          setSnackbarMessage("Payment completed successfully!");
+          setSnackbarSeverity("success");
+          setSnackbarOpen(true);
         } catch (err) {
           setError("Payment verification failed. Please contact support.");
           console.error("Error verifying payment:", err);
+          
+          // Show error toast
+          setSnackbarMessage("Payment verification failed. Please contact support.");
+          setSnackbarSeverity("error");
+          setSnackbarOpen(true);
+        } finally {
+          // Hide loader after verification is complete
+          setPaymentProcessing(false);
         }
       },
       prefill: {
@@ -759,9 +781,18 @@ const Business = () => {
                         <Button
                           variant="contained"
                           onClick={handlePayment}
-                          disabled={loading}
+                          disabled={loading || paymentProcessing}
                         >
-                          {loading ? <CircularProgress size={24} /> : "Pay Now"}
+                          {paymentProcessing ? (
+                            <>
+                              <CircularProgress size={24} sx={{ mr: 1 }} />
+                              Processing...
+                            </>
+                          ) : loading ? (
+                            <CircularProgress size={24} />
+                          ) : (
+                            "Pay Now"
+                          )}
                         </Button>
                       </Box>
                     </Box>
@@ -772,6 +803,22 @@ const Business = () => {
           </Stepper>
         </CardContent>
       </Card>
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={() => setSnackbarOpen(false)}
+        message={snackbarMessage}
+        action={
+          <IconButton
+            size="small"
+            aria-label="close"
+            color="inherit"
+            onClick={() => setSnackbarOpen(false)}
+          >
+            <CloseIcon fontSize="small" />
+          </IconButton>
+        }
+      />
     </Box>
   );
 };

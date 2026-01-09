@@ -278,7 +278,7 @@ const ManageCustomerPackages = () => {
                    
                     <TableCell>Features</TableCell>
                     <TableCell>Available For</TableCell>
-                    <TableCell>Payout Settings</TableCell>
+                    
                     <TableCell>Status</TableCell>
                     <TableCell>Actions</TableCell>
                   </TableRow>
@@ -329,17 +329,7 @@ const ManageCustomerPackages = () => {
                           </Typography>
                         )}
                       </TableCell>
-                      <TableCell>
-                        {pkg.businessPayoutType === 'percentage' ? (
-                          <Typography variant="body2">
-                            {pkg.businessPayoutPercentage}% of package price
-                          </Typography>
-                        ) : (
-                          <Typography variant="body2">
-                            ₹{pkg.businessPayoutFixedAmount} fixed
-                          </Typography>
-                        )}
-                      </TableCell>
+                      
                       <TableCell>
                         {pkg.isActive ? (
                           <Typography variant="body2" sx={{ color: 'success.main', fontWeight: 'bold' }}>
@@ -449,7 +439,7 @@ const ManageCustomerPackages = () => {
               </Grid>
               
               {/* Franchise Package Access */}
-              <Grid item xs={12}>
+              <Grid item xs={12} style={{minWidth:"250px"}}>
                 <FormControl fullWidth>
                   <InputLabel id="franchise-packages-label">
                     Available for Franchise Packages
@@ -483,7 +473,7 @@ const ManageCustomerPackages = () => {
               </Grid>
               
               {/* Business Payout Settings */}
-              <Grid item xs={12}>
+              {/* <Grid item xs={12}>
                 <Typography variant="h6" gutterBottom sx={{ mt: 2 }}>
                   Business Payout Settings
                 </Typography>
@@ -501,9 +491,9 @@ const ManageCustomerPackages = () => {
                   <MenuItem value="percentage">Percentage</MenuItem>
                   <MenuItem value="fixed">Fixed Amount</MenuItem>
                 </TextField>
-              </Grid>
+              </Grid> */}
               
-              {formData.businessPayoutType === 'percentage' ? (
+              {/* {formData.businessPayoutType === 'percentage' ? (
                 <Grid item xs={12} sm={6}>
                   <TextField
                     fullWidth
@@ -527,7 +517,7 @@ const ManageCustomerPackages = () => {
                     InputProps={{ inputProps: { min: 0 } }}
                   />
                 </Grid>
-              )}
+              )} */}
               
               <Grid item xs={12}>
                 <Box sx={{ display: 'flex', alignItems: 'center' }}>

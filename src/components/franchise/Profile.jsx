@@ -399,7 +399,21 @@ const Profile = () => {
 
   return (
     <Box>
-      <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+      {/* Sticky Save Button Container */}
+      <Box
+        sx={{
+          position: 'sticky',
+          top: 0,
+          zIndex: 1000,
+          backgroundColor: 'white',
+          p: 2,
+          boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          mb: 2
+        }}
+      >
         <Typography variant="h4" gutterBottom>
           Profile
         </Typography>
@@ -426,63 +440,65 @@ const Profile = () => {
         </Alert>
       )}
       
-      {/* Basic Business Information Section */}
-      <Card sx={{ mt: 3, boxShadow: 3, borderRadius: 2 }}>
-        <CardContent>
-          <Typography variant="h6" gutterBottom>
-            Business Information
-          </Typography>
-          <Box>
-            <Grid container spacing={3}>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  required
-                  id="businessName"
-                  name="businessName"
-                  label="Business Name"
-                  fullWidth
-                  value={formData.businessName}
-                  onChange={handleInputChange}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  required
-                  id="ownerName"
-                  name="ownerName"
-                  label="Owner Name"
-                  fullWidth
-                  value={formData.ownerName}
-                  onChange={handleInputChange}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  required
-                  id="email"
-                  name="email"
-                  label="Email Address"
-                  fullWidth
-                  value={formData.email}
-                  onChange={handleInputChange}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  required
-                  id="phone"
-                  name="phone"
-                  label="Phone Number"
-                  fullWidth
-                  value={formData.phone}
-                  onChange={handleInputChange}
-                />
-              </Grid>
+      {/* Scrollable Content Container */}
+      <Box sx={{ maxHeight: 'calc(100vh - 200px)', overflowY: 'auto', pr: 1 }}>
+        {/* Basic Business Information Section */}
+        <Card sx={{ mt: 3, boxShadow: 3, borderRadius: 2 }}>
+          <CardContent>
+            <Typography variant="h6" gutterBottom>
+              Business Information
+            </Typography>
+            <Box>
+              <Grid container spacing={3}>
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    required
+                    id="businessName"
+                    name="businessName"
+                    label="Business Name"
+                    fullWidth
+                    value={formData.businessName}
+                    onChange={handleInputChange}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    required
+                    id="ownerName"
+                    name="ownerName"
+                    label="Owner Name"
+                    fullWidth
+                    value={formData.ownerName}
+                    onChange={handleInputChange}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    required
+                    id="email"
+                    name="email"
+                    label="Email Address"
+                    fullWidth
+                    value={formData.email}
+                    onChange={handleInputChange}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    required
+                    id="phone"
+                    name="phone"
+                    label="Phone Number"
+                    fullWidth
+                    value={formData.phone}
+                    onChange={handleInputChange}
+                  />
+                </Grid>
 
-            </Grid>
-          </Box>
-        </CardContent>
-      </Card>
+              </Grid>
+            </Box>
+          </CardContent>
+        </Card>
       
       {/* Address Details Section */}
       <Card sx={{ mt: 3, boxShadow: 3, borderRadius: 2 }}>
@@ -803,6 +819,7 @@ const Profile = () => {
           </Box>
         </CardContent>
       </Card>
+      </Box> {/* Closing tag for scrollable content container */}
     </Box>
   );
 };
