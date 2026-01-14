@@ -71,7 +71,7 @@ const ViewReports = () => {
       // For local paths, use the base server URL without /api prefix
       const baseUrl = import.meta.env.VITE_REACT_APP_API_URL 
         ? import.meta.env.VITE_REACT_APP_API_URL.replace('/api', '') 
-        : 'http://localhost:5000';
+        : 'https://reactbackend.creditdostlearning.com';
       return `${baseUrl}${report.localPath}`;
     }
     return report.reportUrl;
