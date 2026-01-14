@@ -69,47 +69,56 @@ const Business = () => {
     try {
       setLoading(true);
       setError("");
-      
+
       // Fetch customer packages
       const packagesResponse = await api.get("/customer-packages");
       const allPackages = packagesResponse.data;
-      
+
       // Fetch franchise details to get assigned packages
       const franchiseResponse = await franchiseAPI.getDashboardStats();
       const franchiseData = franchiseResponse.data.franchise;
-      
+
       // Get the franchise's assigned packages
-      const assignedPackageIds = franchiseData.assignedPackages.map(pkg => pkg._id);
-      
+      const assignedPackageIds = franchiseData.assignedPackages.map(
+        (pkg) => pkg._id
+      );
+
       // Get packages purchased through transactions
       const transactionsResponse = await franchiseAPI.getTransactions();
-      const paidTransactions = transactionsResponse.data.filter(tx => tx.status === 'paid');
+      const paidTransactions = transactionsResponse.data.filter(
+        (tx) => tx.status === "paid"
+      );
       const purchasedPackageIds = paidTransactions
-        .filter(tx => tx.packageId) // Only transactions with package
-        .map(tx => tx.packageId._id);
-      
+        .filter((tx) => tx.packageId) // Only transactions with package
+        .map((tx) => tx.packageId._id);
+
       // Combine both sets of package IDs
-      const allAccessiblePackageIds = [...new Set([...assignedPackageIds, ...purchasedPackageIds])];
-      
+      const allAccessiblePackageIds = [
+        ...new Set([...assignedPackageIds, ...purchasedPackageIds]),
+      ];
+
       // Filter customer packages based on availableForPackages
-      const filtered = allPackages.filter(pkg => {
-        if (!pkg.availableForPackages || pkg.availableForPackages.length === 0) {
+      const filtered = allPackages.filter((pkg) => {
+        if (
+          !pkg.availableForPackages ||
+          pkg.availableForPackages.length === 0
+        ) {
           // If no restrictions, make available to all
           return true;
         }
-        
+
         // Check if any of the accessible packages match the allowed packages
-        return pkg.availableForPackages.some(allowedPackageId => 
+        return pkg.availableForPackages.some((allowedPackageId) =>
           allAccessiblePackageIds.includes(allowedPackageId)
         );
       });
-      
+
       setCustomerPackages(allPackages);
       setFilteredPackages(filtered);
     } catch (err) {
       setError("Failed to fetch customer packages. Please try again later.");
       console.error("Error fetching customer packages:", err);
-      
+
       // Fallback to original behavior
       try {
         const response = await api.get("/customer-packages");
@@ -194,7 +203,7 @@ const Business = () => {
       handler: async function (response) {
         // Show loader after payment completion
         setPaymentProcessing(true);
-        
+
         try {
           // Verify payment
           await franchiseAPI.verifyBusinessPayment({
@@ -207,7 +216,7 @@ const Business = () => {
           setSuccess("Payment successful! Business form has been submitted.");
           resetForm();
           setActiveStep(0); // Reset to first step
-          
+
           // Show success toast
           setSnackbarMessage("Payment completed successfully!");
           setSnackbarSeverity("success");
@@ -215,9 +224,11 @@ const Business = () => {
         } catch (err) {
           setError("Payment verification failed. Please contact support.");
           console.error("Error verifying payment:", err);
-          
+
           // Show error toast
-          setSnackbarMessage("Payment verification failed. Please contact support.");
+          setSnackbarMessage(
+            "Payment verification failed. Please contact support."
+          );
           setSnackbarSeverity("error");
           setSnackbarOpen(true);
         } finally {
@@ -567,7 +578,7 @@ const Business = () => {
                               sm={6}
                               md={4}
                               key={pkg._id}
-                              style={{ minWidth: "400px", maxWidth: "400px" }}
+                              style={{ minWidth: "350px", maxWidth: "350px" }}
                             >
                               <Card
                                 sx={{
@@ -668,9 +679,9 @@ const Business = () => {
                                         fontSize: "2rem",
                                       }}
                                     >
-                                      ₹{pkg.price} + GST
+                                      ₹{pkg.price}
                                     </Typography>
-                                   
+                                    <p>(Inclusive of GST)</p>
                                   </Box>
 
                                   <Box sx={{ mb: 2 }}>

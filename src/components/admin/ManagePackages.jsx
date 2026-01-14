@@ -209,7 +209,7 @@ const ManagePackages = () => {
   return (
     <Box>
       <Typography variant="h4" gutterBottom>
-        Manage Packages
+        Manage Franchise Packages
       </Typography>
       
       {error && (

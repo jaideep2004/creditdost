@@ -7,24 +7,24 @@ const services = [
       "Expert credit repair services that fix errors, improve your score, and restore your financial credibility",
     icon: "👥",
     image:
-      "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?w=600&h=400&fit=crop",
+      "/images/IMG 2-01.jpg",
   },
- 
+
   {
     title: "Franchise Opportunity",
     description:
       "Partner with Credit Dost and build a rewarding business helping people improve their credit scores and financial confidence.",
     icon: "📈",
     image:
-      "https://images.unsplash.com/photo-1556761175-b413da4baf72?w=600&h=400&fit=crop",
+      "/images/WHY-PARTNER.jpg",
   },
   {
-    title: "CreditDost Suvidha Kendra",
+    title: "CreditDost Suvidha Centre",
     description:
-      "Partner with Credit Dost and build a rewarding business helping people improve their credit scores and financial confidence.",
+      "Start a profitable credit repair business with Credit Dost Suvidha Centre and help people improve their credit scores.",
     icon: "📈",
     image:
-      "https://images.unsplash.com/photo-1556761175-b413da4baf72?w=600&h=400&fit=crop",
+      "/images/Suvidha-centre.jpg",
   },
 ];
 

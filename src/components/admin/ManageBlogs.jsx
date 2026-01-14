@@ -41,7 +41,7 @@ import {
   Link as LinkIcon
 } from '@mui/icons-material';
 import { adminAPI } from '../../services/api';
-import { convertGoogleDriveLinkToImage, isGoogleDriveLink, getImagePreviewUrl } from '../../utils/googleDriveUtils';
+import { getImagePreviewUrl } from '../../utils/googleDriveUtils';
 
 const ManageBlogs = () => {
   const [blogs, setBlogs] = useState([]);
@@ -61,9 +61,9 @@ const ManageBlogs = () => {
     featuredImage: ''
   });
   
-  // State for Google Drive link handling
-  const [isGDriveLink, setIsGDriveLink] = useState(false);
-  const [googleDriveUrl, setGoogleDriveUrl] = useState('');
+  // State for image upload
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [imagePreview, setImagePreview] = useState('');
 
   // Fetch blogs
   const fetchBlogs = async () => {
@@ -117,13 +117,8 @@ const ManageBlogs = () => {
         featuredImage: featuredImageUrl
       });
       
-      // Check if the featured image is a Google Drive link
-      setIsGDriveLink(isGoogleDriveLink(featuredImageUrl));
-      
-      // Set the Google Drive URL field if it's a Google Drive link
-      if (isGoogleDriveLink(featuredImageUrl)) {
-        setGoogleDriveUrl(featuredImageUrl); // Store the current URL (could be converted)
-      }
+      // Set image preview for existing image
+      setImagePreview(featuredImageUrl);
     } else {
       setEditingBlog(null);
       setFormData({
@@ -135,8 +130,8 @@ const ManageBlogs = () => {
         categories: '',
         featuredImage: ''
       });
-      setIsGDriveLink(false);
-      setGoogleDriveUrl('');
+      setSelectedImage(null);
+      setImagePreview('');
     }
     setOpenDialog(true);
   };
@@ -149,28 +144,54 @@ const ManageBlogs = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
-    
-    // Check if the field being changed is the featuredImage field
-    if (name === 'featuredImage') {
-      // Check if the URL is a Google Drive link
-      setIsGDriveLink(isGoogleDriveLink(value));
+  };
+  
+  
+
+  // Handle image selection
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      // Validate file type
+      if (!file.type.startsWith('image/')) {
+        showSnackbar('Please select a valid image file (JPEG, PNG, JPG)', 'error');
+        return;
+      }
+      
+      // Validate file size (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        showSnackbar('File size exceeds 5MB limit', 'error');
+        return;
+      }
+      
+      setSelectedImage(file);
+      
+      // Create preview URL
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result);
+        setFormData({ ...formData, featuredImage: reader.result }); // Temporarily set preview URL
+      };
+      reader.readAsDataURL(file);
     }
   };
   
-  // Handle Google Drive URL conversion
-  const handleConvertGoogleDriveLink = () => {
-    if (googleDriveUrl) {
-      const convertedUrl = convertGoogleDriveLinkToImage(googleDriveUrl);
-      if (convertedUrl) {
-        setFormData({ ...formData, featuredImage: convertedUrl });
-        setIsGDriveLink(true);
-        showSnackbar('Google Drive link converted successfully');
-      } else {
-        showSnackbar('Invalid Google Drive link', 'error');
-      }
+  // Upload image to server
+  const uploadImage = async () => {
+    if (!selectedImage) return null;
+    
+    const formData = new FormData();
+    formData.append('image', selectedImage);
+    
+    try {
+      const response = await adminAPI.uploadBlogImage(formData);
+      return response.data.imageUrl; // Return the actual server URL
+    } catch (error) {
+      showSnackbar('Error uploading image: ' + (error.response?.data?.message || error.message), 'error');
+      return null;
     }
   };
-
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
     
@@ -186,8 +207,19 @@ const ManageBlogs = () => {
     }
     
     try {
+      let imageUrl = formData.featuredImage;
+      
+      // Upload image if a new one was selected
+      if (selectedImage) {
+        imageUrl = await uploadImage();
+        if (!imageUrl) {
+          return; // Error already shown
+        }
+      }
+      
       const blogData = {
         ...formData,
+        featuredImage: imageUrl, // Use the uploaded image URL
         tags: formData.tags.split(',').map(tag => tag.trim()).filter(tag => tag),
         categories: formData.categories.split(',').map(category => category.trim()).filter(category => category)
       };
@@ -465,70 +497,36 @@ const ManageBlogs = () => {
               </Grid>
               
               <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  label="Featured Image URL"
-                  name="featuredImage"
-                  value={formData.featuredImage}
-                  onChange={handleChange}
-                  variant="outlined"
-                  helperText="Enter the full URL to your featured image"
-                  InputProps={
-                    {
-                      endAdornment: (
-                        <InputAdornment position="end">
-                          <MuiIconButton 
-                            onClick={() => setIsGDriveLink(!isGDriveLink)}
-                            title={isGDriveLink ? "Switch to direct URL" : "Use Google Drive link"}
-                          >
-                            <LinkIcon color={isGDriveLink ? "primary" : "disabled"} />
-                          </MuiIconButton>
-                        </InputAdornment>
-                      )
-                    }
-                  }
+                <input
+                  accept="image/*"
+                  id="featured-image-upload"
+                  type="file"
+                  hidden
+                  onChange={handleImageChange}
                 />
+                <label htmlFor="featured-image-upload">
+                  <Button 
+                    variant="outlined" 
+                    component="span" 
+                    fullWidth
+                    startIcon={<AddIcon />}
+                  >
+                    {imagePreview ? 'Change Featured Image' : 'Upload Featured Image'}
+                  </Button>
+                </label>
                 
-                {isGDriveLink && (
-                  <Box mt={2}>
-                    <TextField
-                      fullWidth
-                      label="Google Drive Sharing URL"
-                      value={googleDriveUrl}
-                      onChange={(e) => setGoogleDriveUrl(e.target.value)}
-                      variant="outlined"
-                      helperText="Paste your Google Drive sharing link here to convert to image URL"
-                      InputProps={
-                        {
-                          endAdornment: (
-                            <InputAdornment position="end">
-                              <Button 
-                                variant="contained" 
-                                size="small" 
-                                onClick={handleConvertGoogleDriveLink}
-                              >
-                                Convert
-                              </Button>
-                            </InputAdornment>
-                          )
-                        }
-                      }
-                    />
-                  </Box>
-                )}
-                
-                {formData.featuredImage && (
+                {imagePreview && (
                   <Box mt={2} textAlign="center">
                     <Typography variant="caption" display="block" gutterBottom>
-                      Featured Image Preview:
+                      Image Preview:
                     </Typography>
                     <img 
-                      src={getImagePreviewUrl(formData.featuredImage)} 
+                      src={imagePreview} 
                       alt="Featured preview" 
-                      style={{ maxWidth: '100%', maxHeight: '200px', borderRadius: '4px' }} 
+                      style={{ maxWidth: '100%', maxHeight: '200px', borderRadius: '4px', border: '1px solid #ddd' }} 
                       onError={(e) => { 
-                        e.target.style.display = 'none'; 
-                        showSnackbar('Error loading image preview. The URL might be incorrect or the image may not be publicly accessible.', 'error');
+                        console.error('Image preview failed to load:', imagePreview);
+                        showSnackbar('Error loading image preview.', 'error');
                       }}
                     />
                   </Box>

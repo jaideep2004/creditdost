@@ -184,7 +184,7 @@ const StatsSection = () => {
                 <Typography
                   sx={{ fontSize: "2.5rem", fontWeight: 800, lineHeight: 1 }}
                 >
-                  25
+                  11
                 </Typography>
                 <Typography sx={{ fontSize: "0.8rem", fontWeight: 500 }}>
                   Years Of
@@ -267,7 +267,7 @@ const StatsSection = () => {
               </Grid>
             </Grid> */}
 
-            <AboutButton endIcon={<AddIcon />}>About Us</AboutButton>
+            <AboutButton endIcon={<AddIcon />} href="/about">About Us</AboutButton>
           </Grid>
         </Grid>
       </Container>

@@ -45,12 +45,7 @@ const PrivacyPolicyPage = () => {
             </Typography>
             
             <Box sx={{ textAlign: 'center', mb: 4 }}>
-              <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-                <strong>Effective Date:</strong> November 2, 2025
-              </Typography>
-              <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-                <strong>Last Updated:</strong> November 2, 2025
-              </Typography>
+             
               <Typography variant="body2" color="text.secondary">
                 <strong>Website:</strong> www.creditdost.co.in
               </Typography>
@@ -283,7 +278,7 @@ const PrivacyPolicyPage = () => {
             
             <Box sx={{ textAlign: 'center', mt: 6 }}>
               <Typography variant="body2" color="text.secondary">
-                © 2025 Optimystic Auxiliary Services Private Limited. All Rights Reserved.
+                © 2026 Optimystic Auxiliary Services Private Limited. All Rights Reserved.
               </Typography>
             </Box>
           </Paper>

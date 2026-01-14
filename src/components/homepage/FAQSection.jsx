@@ -5,7 +5,7 @@ const faqs = [
     id: 1,
     question: "What is Credit Score?",
     answer:
-      "A credit score is a 3-digit numeric score that determines your credit worthiness. Your credit score typically falls between 350-900, and the higher your score the stronger is your credit worthiness.",
+      "A credit score is a 3-digit numeric score that determines your credit worthiness. Your credit score typically falls between 300-900, and the higher your score the stronger is your credit worthiness.",
   },
   {
     id: 2,

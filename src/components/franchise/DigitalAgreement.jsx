@@ -26,8 +26,6 @@ const DigitalAgreement = () => {
   const [openEsignDialog, setOpenEsignDialog] = useState(false);
   const [openSignDialog, setOpenSignDialog] = useState(false);
   const [initiatingEsign, setInitiatingEsign] = useState(false);
-  const [signing, setSigning] = useState(false);
-  const [transactionId, setTransactionId] = useState("");
   const [agreeToTerms, setAgreeToTerms] = useState(false);
   const [requireProfileUpdate, setRequireProfileUpdate] = useState(false);
   const [missingFields, setMissingFields] = useState([]);
@@ -166,8 +164,9 @@ const DigitalAgreement = () => {
       
       // Redirect user to Surepass eSign portal
       if (response.data.redirectUrl) {
-        // Open in the same window/tab instead of a new one
-        window.location.href = response.data.redirectUrl;
+        // Open in a new tab/window instead of the same tab
+        window.open(response.data.redirectUrl, '_blank');
+        setSuccess("eSign process opened in a new tab. The system will automatically track the signing status once completed.");
       } else {
         setError("Failed to get redirect URL from Surepass");
       }
@@ -187,32 +186,12 @@ const DigitalAgreement = () => {
 
   const handleCloseSignDialog = () => {
     setOpenSignDialog(false);
-    setTransactionId("");
-  };
-
-  const handleSubmitSignedPdf = async () => {
-    try {
-      setSigning(true);
-      setError("");
-
-      const response = await franchiseAPI.submitSignedDigitalAgreement({
-        transactionId,
-      });
-
-      setSuccess("Signed PDF submitted successfully!");
-      setAgreement(response.data.agreement);
-      handleCloseSignDialog();
-    } catch (err) {
-      setError("Failed to submit signed PDF");
-      console.error("Error submitting signed PDF:", err);
-    } finally {
-      setSigning(false);
-    }
   };
 
   const getStatusColor = (status) => {
     switch (status) {
       case "approved":
+      case "completed":
         return "success";
       case "rejected":
         return "error";
@@ -231,6 +210,8 @@ const DigitalAgreement = () => {
         return "Downloaded";
       case "signed":
         return "Signed";
+      case "completed":
+        return "Completed";
       case "submitted":
         return "Submitted for Review";
       case "approved":
@@ -341,9 +322,9 @@ const DigitalAgreement = () => {
               )}
 
               <Typography variant="body1" paragraph>
-                Please download the franchise agreement PDF, sign it
-                electronically using Surepass eSign, and submit the transaction
-                ID for admin review.
+                Please download the franchise agreement PDF and sign it
+                electronically using Surepass eSign. The system will automatically
+                track the signing status for admin review.
               </Typography>
 
               <Box sx={{ display: "flex", gap: 2, mt: 3, flexWrap: "wrap" }}>
@@ -365,11 +346,36 @@ const DigitalAgreement = () => {
                     >
                       eSign Agreement
                     </Button>
+                  </>
+                )}
+                
+                {(agreement.status === "signed" || agreement.status === "completed") && (
+                  <>
+                    <Button
+                      variant="outlined"
+                      onClick={handleOpenEsignDialog}
+                      disabled
+                    >
+                      eSign Agreement (In Progress)
+                    </Button>
+                  </>
+                )}
+                
+                {agreement.status === "submitted" && (
+                  <>
+                    <Button
+                      variant="outlined"
+                      onClick={handleOpenEsignDialog}
+                      disabled
+                    >
+                      eSign Agreement (Submitted)
+                    </Button>
                     <Button
                       variant="outlined"
                       onClick={handleOpenSignDialog}
+                      disabled
                     >
-                      Submit Signed Agreement
+                      Submit Signed Agreement (Submitted)
                     </Button>
                   </>
                 )}
@@ -457,42 +463,7 @@ const DigitalAgreement = () => {
         </DialogActions>
       </Dialog>
 
-      {/* Submit Signed Agreement Dialog */}
-      <Dialog
-        open={openSignDialog}
-        onClose={handleCloseSignDialog}
-        maxWidth="sm"
-        fullWidth
-      >
-        <DialogTitle>Submit Signed Agreement</DialogTitle>
-        <DialogContent>
-          <Typography variant="body1" paragraph>
-            After signing the agreement with Surepass eSign, please enter the
-            transaction ID below:
-          </Typography>
-          <TextField
-            autoFocus
-            margin="dense"
-            label="Transaction ID"
-            fullWidth
-            variant="outlined"
-            value={transactionId}
-            onChange={(e) => setTransactionId(e.target.value)}
-            helperText="Enter the transaction ID from Surepass eSign"
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCloseSignDialog}>Cancel</Button>
-          <Button
-            onClick={handleSubmitSignedPdf}
-            variant="contained"
-            disabled={signing || !transactionId.trim()}
-            startIcon={signing ? <CircularProgress size={20} /> : null}
-          >
-            {signing ? "Submitting..." : "Submit"} 
-          </Button>
-        </DialogActions>
-      </Dialog>
+      
     </Box>
   );
 };

@@ -14,7 +14,10 @@ import {
   DialogActions,
   Snackbar,
 } from "@mui/material";
-import { Download as DownloadIcon, Edit as EditIcon } from "@mui/icons-material";
+import {
+  Download as DownloadIcon,
+  Edit as EditIcon,
+} from "@mui/icons-material";
 import { franchiseAPI } from "../../services/api";
 import html2canvas from "html2canvas";
 
@@ -35,9 +38,9 @@ const Certificate = () => {
         setLoading(true);
         const [certificateResponse, profileResponse] = await Promise.all([
           franchiseAPI.getCertificateData(),
-          franchiseAPI.getProfile()
+          franchiseAPI.getProfile(),
         ]);
-        
+
         setCertificateData(certificateResponse.data);
         setUserData(profileResponse.data);
         setNewName(certificateResponse.data.franchiseName);
@@ -94,12 +97,12 @@ const Certificate = () => {
       const response = await franchiseAPI.requestCertificateNameUpdate({
         requestedName: newName,
       });
-      
+
       setCertificateData({
         ...certificateData,
         franchiseName: response.data.certificateName,
       });
-      
+
       setSuccess("Certificate name updated successfully!");
       setSnackbarOpen(true);
       handleCloseDialog();
@@ -115,10 +118,10 @@ const Certificate = () => {
 
   // Function to format date as dd/mm/yyyy
   const formatDate = (dateString) => {
-    if (!dateString) return '';
+    if (!dateString) return "";
     const date = new Date(dateString);
-    const day = String(date.getDate()).padStart(2, '0');
-    const month = String(date.getMonth() + 1).padStart(2, '0'); // Month is zero-indexed
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0"); // Month is zero-indexed
     const year = date.getFullYear();
     return `${day}/${month}/${year}`;
   };
@@ -190,7 +193,7 @@ const Certificate = () => {
               backgroundColor: "#f9f9f9",
               position: "relative",
               minHeight: "500px",
-              backgroundImage: "url(/images/credit-copy.jpg)",
+              backgroundImage: "url(/images/credit-copy.png)",
               backgroundSize: "contain",
               backgroundRepeat: "no-repeat",
               backgroundPosition: "center",

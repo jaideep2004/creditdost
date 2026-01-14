@@ -189,7 +189,7 @@ const AdminDashboard = () => {
       path: "/admin/franchises",
     },
     {
-      text: "Manage Packages",
+      text: "Manage Franchise Packages",
       icon: <BusinessIcon />,
       path: "/admin/packages",
     },

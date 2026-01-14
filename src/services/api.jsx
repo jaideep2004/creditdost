@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Create axios instance
 const api = axios.create({
-  baseURL: import.meta.env.VITE_REACT_APP_API_URL || 'https://reactbackend.creditdostlearning.com/api',
+  baseURL: import.meta.env.VITE_REACT_APP_API_URL || 'http://localhost:5000/api',
   withCredentials: true,
 });
 
@@ -170,6 +170,7 @@ export const adminAPI = {
   getLeadById: (id) => api.get(`/admin/leads/${id}`),
   createLead: (leadData) => api.post('/admin/leads', leadData),
   updateLead: (id, data) => api.put(`/admin/leads/${id}`, data),
+  deleteLead: (id) => api.delete(`/admin/leads/${id}`),
   bulkUploadLeads: (formData) => {
     const config = {
       headers: {
@@ -196,6 +197,14 @@ export const adminAPI = {
   createBlog: (blogData) => api.post('/blogs/admin', blogData),
   updateBlog: (id, blogData) => api.put(`/blogs/admin/${id}`, blogData),
   deleteBlog: (id) => api.delete(`/blogs/admin/${id}`),
+  uploadBlogImage: (formData) => {
+    const config = {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    };
+    return api.post('/blogs/admin/upload-image', formData, config);
+  },
   // Digital Agreement endpoints (Admin)
   getAllDigitalAgreements: () => api.get('/digital-agreements/admin'),
   getDigitalAgreementById: (id) => api.get(`/digital-agreements/admin/${id}`),

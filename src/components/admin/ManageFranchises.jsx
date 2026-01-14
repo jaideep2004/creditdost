@@ -332,6 +332,13 @@ const ManageFranchises = () => {
       totalCreditsPurchased: franchise.totalCreditsPurchased || 0,
       kycStatus: franchise.kycStatus || "pending",
       isActive: franchise.isActive !== undefined ? franchise.isActive : true,
+      // Handle both old structure (assignedPackages) and new structure (allPackages)
+      assignedPackages: franchise.assignedPackages || [],
+      allPackages: franchise.allPackages || {
+        assigned: franchise.assignedPackages || [],
+        purchased: [],
+        all: franchise.assignedPackages || []
+      }
     });
     setEditDialogOpen(true);
   };
@@ -1649,18 +1656,40 @@ const ManageFranchises = () => {
               <Divider sx={{ mb: 2 }} />
             </Grid>
             <Grid item xs={12}>
-              {editFranchiseData.assignedPackages && editFranchiseData.assignedPackages.length > 0 ? (
+              {/* Display both assigned and purchased packages */}
+              {(editFranchiseData.allPackages && editFranchiseData.allPackages.assigned && editFranchiseData.allPackages.assigned.length > 0) || 
+               (editFranchiseData.allPackages && editFranchiseData.allPackages.purchased && editFranchiseData.allPackages.purchased.length > 0) ? (
                 <Box>
-                  {editFranchiseData.assignedPackages.map((pkg, index) => (
-                    <Box key={pkg._id || index} sx={{ mb: 1, p: 2, bgcolor: 'grey.50', borderRadius: 1, border: '1px solid #e0e0e0' }}>
-                      <Typography variant="body1" fontWeight="bold" gutterBottom>{pkg.name}</Typography>
-                      <Typography variant="body2" color="textSecondary" gutterBottom>Price: ₹{pkg.price}</Typography>
-                      <Typography variant="body2" color="textSecondary">Credits Included: {pkg.creditsIncluded}</Typography>
+                  {/* Assigned Packages Section */}
+                  {editFranchiseData.allPackages && editFranchiseData.allPackages.assigned && editFranchiseData.allPackages.assigned.length > 0 && (
+                    <Box>
+                      <Typography variant="body1" fontWeight="bold" color="primary.main" gutterBottom>Assigned Packages:</Typography>
+                      {editFranchiseData.allPackages.assigned.map((pkg, index) => (
+                        <Box key={pkg._id || `assigned-${index}`} sx={{ mb: 1, p: 2, bgcolor: 'lightblue', borderRadius: 1, border: '1px solid #b3d9ff' }}>
+                          <Typography variant="body1" fontWeight="bold" gutterBottom>{pkg.name}</Typography>
+                          <Typography variant="body2" color="textSecondary" gutterBottom>Price: ₹{pkg.price}</Typography>
+                          <Typography variant="body2" color="textSecondary">Credits Included: {pkg.creditsIncluded}</Typography>
+                        </Box>
+                      ))}
                     </Box>
-                  ))}
+                  )}
+                  
+                  {/* Purchased Packages Section */}
+                  {editFranchiseData.allPackages && editFranchiseData.allPackages.purchased && editFranchiseData.allPackages.purchased.length > 0 && (
+                    <Box sx={{ mt: 2 }}>
+                      <Typography variant="body1" fontWeight="bold" color="secondary.main" gutterBottom>Purchased Packages:</Typography>
+                      {editFranchiseData.allPackages.purchased.map((pkg, index) => (
+                        <Box key={pkg._id || `purchased-${index}`} sx={{ mb: 1, p: 2, bgcolor: 'lightgreen', borderRadius: 1, border: '1px solid #90ee90' }}>
+                          <Typography variant="body1" fontWeight="bold" gutterBottom>{pkg.name}</Typography>
+                          <Typography variant="body2" color="textSecondary" gutterBottom>Price: ₹{pkg.price}</Typography>
+                          <Typography variant="body2" color="textSecondary">Credits Included: {pkg.creditsIncluded}</Typography>
+                        </Box>
+                      ))}
+                    </Box>
+                  )}
                 </Box>
               ) : (
-                <Typography variant="body2" color="textSecondary">No packages purchased</Typography>
+                <Typography variant="body2" color="textSecondary">No packages assigned or purchased</Typography>
               )}
             </Grid>
           </Grid>

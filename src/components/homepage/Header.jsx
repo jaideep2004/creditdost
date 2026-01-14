@@ -467,43 +467,7 @@ const Header = () => {
 
   return (
     <>
-      {!isMobile && (
-        <TopBar>
-          <Container maxWidth="xl">
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-              }}
-            >
-              <Box sx={{ display: "flex", alignItems: "center", gap: 3 }}>
-                <Typography
-                  variant="body2"
-                  sx={{ display: "flex", alignItems: "center", gap: 0.5 }}
-                >
-                  📍 6391 Elgin St. Celina, 10299
-                </Typography>
-              </Box>
-              <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                <SocialIcon size="small">
-                  <Facebook sx={{ fontSize: "1.1rem" }} />
-                </SocialIcon>
-                <SocialIcon size="small">
-                  <Twitter sx={{ fontSize: "1.1rem" }} />
-                </SocialIcon>
-                <SocialIcon size="small">
-                  <LinkedIn sx={{ fontSize: "1.1rem" }} />
-                </SocialIcon>
-                <SocialIcon size="small">
-                  <YouTube sx={{ fontSize: "1.1rem" }} />
-                </SocialIcon>
-              </Box>
-            </Box>
-          </Container>
-        </TopBar>
-      )}
-
+     
       <HeaderAppBar scrolled={scrolled} elevation={0}>
         <Container maxWidth="xl">
           <Toolbar
