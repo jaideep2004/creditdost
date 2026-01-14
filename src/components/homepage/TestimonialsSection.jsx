@@ -42,7 +42,7 @@ const TestimonialSection = () => {
     
     const interval = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % testimonials.length);
-    }, 5000);
+    }, 4000);
 
     return () => clearInterval(interval);
   }, [isAutoPlaying]);
@@ -163,12 +163,12 @@ const TestimonialSection = () => {
                 animation: 'slideIn 0.6s ease-out'
               }}>
                 {/* Avatar */}
-                <Avatar src={testimonial.avatar} sx={{
+                {/* <Avatar src={testimonial.avatar} sx={{
                   width: 160,
                   height: 160,
                   borderRadius: '12px',
                   flexShrink: 0
-                }} />
+                }} /> */}
 
                 {/* Content */}
                 <Box sx={{ flex: 1, position: 'relative' }}>

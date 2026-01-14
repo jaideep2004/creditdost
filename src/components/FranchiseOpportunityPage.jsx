@@ -36,7 +36,7 @@ import api from "../services/api";
 import RegistrationForm from "./common/RegistrationForm";
 import { useAuth } from "../hooks/useAuth.jsx";
 import { useNavigate } from "react-router-dom";
-import TestimonialSection from "./homepage/TestimonialsSection.jsx";
+import FranchiseSuccessStories from "./franchise/FranchiseSuccessStories.jsx";
 
 // Custom styled components for unique design
 const PageWrapper = styled(Box)(({ theme }) => ({
@@ -551,29 +551,10 @@ const FranchiseOpportunityPage = () => {
                     variant="contained"
                     size="large"
                     endIcon={<ArrowForward />}
+                    href="#franchise-form"
                   >
                     Become a Partner
                   </StyledButton>
-                  <Button
-                    variant="outlined"
-                    size="large"
-                    sx={{
-                      color: "white",
-                      borderColor: "rgba(255, 255, 255, 0.5)",
-                      borderRadius: "50px",
-                      padding: "12px 24px",
-                      fontWeight: 600,
-                      fontSize: "1rem",
-                      textTransform: "none",
-                      transition: "all 0.3s ease",
-                      "&:hover": {
-                        borderColor: "white",
-                        backgroundColor: "rgba(255, 255, 255, 0.1)",
-                      },
-                    }}
-                  >
-                    Download Brochure
-                  </Button>
                 </Box>
               </Grid>
 
@@ -1368,13 +1349,13 @@ const FranchiseOpportunityPage = () => {
                 </Typography>
               </Box>
 
-              <TestimonialSection />
+              <FranchiseSuccessStories />
             </CardContent>
           </SectionCard>
 
           {/* Contact Section */}
           <SectionCard>
-            <CardContent sx={{ p: 5 }}>
+            <CardContent sx={{ p: 5 }} id="franchise-form">
               <Box sx={{ textAlign: "center", mb: 6 }}>
                 <Box
                   sx={{ display: "inline-block", position: "relative", mb: 2 }}
@@ -1507,6 +1488,26 @@ const FranchiseOpportunityPage = () => {
                             Welcome to Credit Dost! You have been registered
                             successfully.
                           </Typography>
+                          <Typography sx={{ color: "#666", mb: 2 }}>
+                            Join our exclusive WhatsApp group for partners to
+                            connect with fellow franchisees and get instant
+                            support.
+                          </Typography>
+                          <Button
+                            variant="contained"
+                            href={
+                              "https://chat.whatsapp.com/BM7OdjpeVu23HZt3465c9L"
+                            }
+                            target="_blank"
+                            sx={{
+                              background:
+                                "linear-gradient(135deg, #25D366, #128C7E)",
+                              mb: 0,
+                              mr: 2,
+                            }}
+                          >
+                            Join WhatsApp Group
+                          </Button>
                           <Button
                             variant="contained"
                             onClick={() => {

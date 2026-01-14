@@ -180,10 +180,12 @@ const DashboardHome = () => {
       
       console.log('Filtered packages:', filteredPackages);
       
-      setAvailablePackages(filteredPackages);
+      // Sort packages by price in ascending order (lowest to highest)
+      const sortedPackages = [...filteredPackages].sort((a, b) => a.price - b.price);
+      setAvailablePackages(sortedPackages);
       
       // Show error if no packages available for upgrade
-      if (filteredPackages.length === 0) {
+      if (sortedPackages.length === 0) {
         setUpgradeError('No upgrade packages available at this time.');
       }
       

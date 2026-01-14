@@ -269,7 +269,7 @@ const HeroSection = () => {
                   },
                 }}
               >
-                Improve Your Credit Score Fast with Credit Dost
+                Download Your Credit Report
               </Typography>
 
               <Typography
@@ -565,7 +565,7 @@ const HeroSection = () => {
                   }}
                 >
                   <img
-                    src="/images/cred-hero.png"
+                    src="/images/MAIN BANNER.jpg"
                     alt="Business team collaboration"
                     style={{
                       width: "100%",

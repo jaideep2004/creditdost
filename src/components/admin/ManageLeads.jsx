@@ -39,7 +39,8 @@ import {
   Pending, 
   AssignmentInd,
   Add as AddIcon,
-  Upload as UploadIcon
+  Upload as UploadIcon,
+  Delete as DeleteIcon
 } from '@mui/icons-material';
 import { adminAPI } from '../../services/api';
 
@@ -53,6 +54,7 @@ const ManageLeads = () => {
   const [assignDialogOpen, setAssignDialogOpen] = useState(false);
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
   const [bulkUploadDialogOpen, setBulkUploadDialogOpen] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [selectedLead, setSelectedLead] = useState(null);
   const [selectedFranchise, setSelectedFranchise] = useState('');
   const [filteredLeads, setFilteredLeads] = useState([]);
@@ -71,6 +73,7 @@ const ManageLeads = () => {
     creditScore: '',
     notes: ''
   });
+  const [leadToDelete, setLeadToDelete] = useState(null);
 
   // Fetch all leads and franchises on component mount
   useEffect(() => {
@@ -226,6 +229,37 @@ const ManageLeads = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleDeleteLead = (lead) => {
+    setLeadToDelete(lead);
+    setDeleteDialogOpen(true);
+  };
+
+  const confirmDeleteLead = async () => {
+    if (!leadToDelete) return;
+    
+    setLoading(true);
+    setError('');
+    setSuccess('');
+    
+    try {
+      await adminAPI.deleteLead(leadToDelete._id);
+      setSuccess('Lead deleted successfully!');
+      setDeleteDialogOpen(false);
+      setLeadToDelete(null);
+      fetchLeads();
+    } catch (err) {
+      setError('Failed to delete lead. Please try again.');
+      console.error('Error deleting lead:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const cancelDeleteLead = () => {
+    setDeleteDialogOpen(false);
+    setLeadToDelete(null);
   };
 
   const getStatusChip = (status) => {
@@ -463,6 +497,13 @@ const ManageLeads = () => {
                         >
                           <Close />
                         </IconButton>
+                        <IconButton 
+                          size="small" 
+                          onClick={() => handleDeleteLead(lead)}
+                          sx={{ color: 'error.main' }}
+                        >
+                          <DeleteIcon />
+                        </IconButton>
                       </TableCell>
                     </TableRow>
                   ))}
@@ -683,6 +724,50 @@ const ManageLeads = () => {
             disabled={loading || !csvFile}
           >
             {loading ? <CircularProgress size={24} /> : 'Upload Leads'}
+          </Button>
+        </DialogActions>
+      </Dialog>
+      
+      {/* Delete Lead Confirmation Dialog */}
+      <Dialog open={deleteDialogOpen} onClose={cancelDeleteLead}>
+        <DialogTitle>Confirm Delete</DialogTitle>
+        <DialogContent>
+          <Typography>
+            Are you sure you want to delete the lead '<strong>{leadToDelete?.name}</strong>'?
+            This action cannot be undone.
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={cancelDeleteLead}>Cancel</Button>
+          <Button 
+            onClick={confirmDeleteLead} 
+            variant="contained" 
+            color="error"
+            disabled={loading}
+          >
+            {loading ? <CircularProgress size={24} /> : 'Delete'}
+          </Button>
+        </DialogActions>
+      </Dialog>
+      
+      {/* Delete Lead Confirmation Dialog */}
+      <Dialog open={deleteDialogOpen} onClose={cancelDeleteLead}>
+        <DialogTitle>Confirm Delete</DialogTitle>
+        <DialogContent>
+          <Typography>
+            Are you sure you want to delete the lead '<strong>{leadToDelete?.name}</strong>'?
+            This action cannot be undone.
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={cancelDeleteLead}>Cancel</Button>
+          <Button 
+            onClick={confirmDeleteLead} 
+            variant="contained" 
+            color="error"
+            disabled={loading}
+          >
+            {loading ? <CircularProgress size={24} /> : 'Delete'}
           </Button>
         </DialogActions>
       </Dialog>

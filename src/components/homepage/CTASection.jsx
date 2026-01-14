@@ -18,7 +18,7 @@ const CTASection = () => {
         const formattedBlogs = response.data.blogs.map(blog => ({
           id: blog._id,
           slug: blog.slug,
-          image: blog.image || 'https://images.unsplash.com/photo-1573164713714-d95e436ab8d6?w=800&h=600&fit=crop',
+          image: blog.featuredImage,
           date: new Date(blog.createdAt).getDate(),
           month: new Date(blog.createdAt).toLocaleString('default', { month: 'short' }),
           author: blog.author?.name || 'admin',

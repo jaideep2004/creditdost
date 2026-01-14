@@ -149,10 +149,10 @@ const CreditCheckPage = () => {
                 <Box sx={{ mb: 3 }}>
                   <CheckCircle sx={{ fontSize: 60, color: 'success.main' }} />
                 </Box>
-                <Typography variant="h4" sx={{ mb: 2, fontWeight: 600 }}>
+                <Typography variant="h4" sx={{ mb: 2, fontWeight: 600, color: 'white' }}>
                   Report Generated Successfully!
                 </Typography>
-                <Typography sx={{ mb: 3, color: 'text.secondary' }}>
+                <Typography sx={{ mb: 3, color: 'white' }}>
                   Your Experian credit report has been generated and sent to your email. 
                   Please check your inbox (and spam folder) for the report.
                 </Typography>

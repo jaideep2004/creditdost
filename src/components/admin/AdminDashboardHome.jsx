@@ -114,6 +114,8 @@ const AdminDashboardHome = () => {
     totalLeads: 0,
     totalTransactions: 0,
     totalRevenue: 0,
+    franchisePackageRevenue: 0,
+    customerPackageRevenue: 0,
   });
   const [recentActivities, setRecentActivities] = useState([]);
   const [performanceData, setPerformanceData] = useState({
@@ -170,14 +172,14 @@ const AdminDashboardHome = () => {
       trend: "+12%",
       trendDirection: "up",
     },
-    {
-      title: "Active Franchises",
-      value: stats.activeFranchises,
-      icon: <BusinessIcon sx={{ fontSize: 30 }} />,
-      color: "#03dac6",
-      trend: "+8%",
-      trendDirection: "up",
-    },
+    // {
+    //   title: "Active Franchises",
+    //   value: stats.activeFranchises,
+    //   icon: <BusinessIcon sx={{ fontSize: 30 }} />,
+    //   color: "#03dac6",
+    //   trend: "+8%",
+    //   trendDirection: "up",
+    // },
     {
       title: "Pending KYC",
       value: stats.pendingKycFranchises,
@@ -202,11 +204,27 @@ const AdminDashboardHome = () => {
       trend: "+24%",
       trendDirection: "up",
     },
+    // {
+    //   title: "Total Revenue",
+    //   value: `₹${stats.totalRevenue.toLocaleString()}`,
+    //   icon: <AccountBalanceIcon sx={{ fontSize: 30 }} />,
+    //   color: "#6200ea",
+    //   trend: "+15%",
+    //   trendDirection: "up",
+    // },
     {
-      title: "Total Revenue",
-      value: `₹${stats.totalRevenue.toLocaleString()}`,
-      icon: <AccountBalanceIcon sx={{ fontSize: 30 }} />,
+      title: "Revenue from Franchise Packages",
+      value: `₹${stats.franchisePackageRevenue.toLocaleString()}`,
+      icon: <BusinessIcon sx={{ fontSize: 30 }} />,
       color: "#6200ea",
+      trend: "+15%",
+      trendDirection: "up",
+    },
+    {
+      title: "Revenue from Customer Packages",
+      value: `₹${stats.customerPackageRevenue.toLocaleString()}`,
+      icon: <AccountBalanceIcon sx={{ fontSize: 30 }} />,
+      color: "#03dac6",
       trend: "+15%",
       trendDirection: "up",
     },
@@ -295,7 +313,7 @@ const AdminDashboardHome = () => {
 
       <Grid container spacing={3} mb={4}>
         {statCards.map((card, index) => (
-          <Grid item xs={12} sm={6} md={4} key={index} style={{ flex: " 1" }}>
+          <Grid item xs={12} sm={6} md={4} lg={3} key={index} style={{ flex: " 1" }}>
             <StatCard>
               <CardContent sx={{ flexGrow: 1, p: 3 }}>
                 <Box
