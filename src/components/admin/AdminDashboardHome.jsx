@@ -30,6 +30,9 @@ import ArrowUpwardIcon from "@mui/icons-material/ArrowUpward";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import ErrorIcon from "@mui/icons-material/Error";
 import AssessmentIcon from "@mui/icons-material/Assessment";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import EqualizerIcon from "@mui/icons-material/Equalizer";
+import InsightsIcon from "@mui/icons-material/Insights";
 import { styled } from "@mui/material/styles";
 import { adminAPI } from "../../services/api"; // Import the admin API
 
@@ -117,6 +120,17 @@ const AdminDashboardHome = () => {
     franchisePackageRevenue: 0,
     customerPackageRevenue: 0,
   });
+  
+  const [visitorStats, setVisitorStats] = useState({
+    realTimeVisitors: 0,
+    totalUsers: 0,
+    pageViews: 0,
+    sessions: 0,
+    bounceRate: 0,
+    avgSessionDuration: 0,
+    loading: true,
+    error: null
+  });
   const [recentActivities, setRecentActivities] = useState([]);
   const [performanceData, setPerformanceData] = useState({
     chartData: [],
@@ -152,6 +166,26 @@ const AdminDashboardHome = () => {
           period: selectedPeriod,
         });
         setPerformanceData(performanceResponse.data);
+
+        // Fetch visitor statistics
+        try {
+          const visitorResponse = await adminAPI.getVisitorStats({ period: '30daysAgo' });
+          setVisitorStats({
+            ...visitorResponse.data.totalStats,
+            realTimeVisitors: visitorResponse.data.realTimeVisitors,
+            loading: false,
+            error: null
+          });
+        } catch (visitorErr) {
+          console.warn("Failed to fetch visitor statistics:", visitorErr);
+          setVisitorStats(prev => ({
+            ...prev,
+            loading: false,
+            error: visitorErr.response?.status === 500 ? 
+              "Google Analytics not configured. Check server logs." : 
+              "Unable to load visitor data"
+          }));
+        }
       } catch (err) {
         console.error("Error fetching dashboard data:", err);
         setError("Failed to load dashboard data. Please try again later.");
@@ -228,6 +262,46 @@ const AdminDashboardHome = () => {
       trend: "+15%",
       trendDirection: "up",
     },
+    // Visitor Statistics Cards
+    {
+      title: "Real-Time Visitors",
+      value: visitorStats.error ? "--" : visitorStats.realTimeVisitors,
+      icon: <VisibilityIcon sx={{ fontSize: 30 }} />,
+      color: "#00bcd4",
+      trend: "+5%",
+      trendDirection: "up",
+    },
+    {
+      title: "Total Users (30d)",
+      value: visitorStats.error ? "--" : visitorStats.totalUsers,
+      icon: <GroupIcon sx={{ fontSize: 30 }} />,
+      color: "#ff9800",
+      trend: "+18%",
+      trendDirection: "up",
+    },
+    {
+      title: "Page Views (30d)",
+      value: visitorStats.error ? "--" : visitorStats.pageViews,
+      icon: <EqualizerIcon sx={{ fontSize: 30 }} />,
+      color: "#9c27b0",
+      trend: "+22%",
+      trendDirection: "up",
+    },
+    // Google Analytics Configuration Warning
+    ...(!visitorStats.error ? [] : [{
+      title: "Analytics Not Configured",
+      value: (
+        <Box sx={{ textAlign: 'center' }}>
+          <Typography variant="body2" color="text.secondary">
+            Configure Google Analytics
+          </Typography>
+        </Box>
+      ),
+      icon: <InsightsIcon sx={{ fontSize: 30 }} />,
+      color: "#9e9e9e",
+      trend: "Setup",
+      trendDirection: "neutral",
+    }])
   ];
 
   const handlePeriodChange = async (period) => {

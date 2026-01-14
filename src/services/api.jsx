@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Create axios instance
 const api = axios.create({
-  baseURL: import.meta.env.VITE_REACT_APP_API_URL || 'https://reactbackend.creditdostlearning.com/api',
+  baseURL: import.meta.env.VITE_REACT_APP_API_URL || 'http://localhost:5000/api',
   withCredentials: true,
 });
 
@@ -129,6 +129,10 @@ export const adminAPI = {
   getDashboardStats: () => api.get('/admin/dashboard'),
   getRecentActivities: () => api.get('/admin/dashboard/activities'),
   getPerformanceOverview: (params) => api.get('/admin/dashboard/performance', { params }),
+  // Analytics functions
+  getVisitorStats: (params) => api.get('/analytics/visitors', { params }),
+  getRealTimeVisitors: () => api.get('/analytics/visitors/realtime'),
+  getVisitorTrends: (params) => api.get('/analytics/visitors/trends', { params }),
   // Franchise management
   getAllFranchises: () => api.get('/franchises'),
   getFranchiseById: (id) => api.get(`/franchises/${id}`),

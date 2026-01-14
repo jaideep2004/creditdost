@@ -82,7 +82,7 @@ const fs = require('fs');
 const uploadsDir = path.join(__dirname, '../uploads');
 
 if (!fs.existsSync(uploadsDir)) {
-  fs.mkdirSync(uploadsDir, { recursive: true });
+  fs.mkdirSync(uploadsDir, { recursive: true }); 
   console.log('Uploads directory created');
 } else {
   console.log('Uploads directory already exists');
@@ -111,7 +111,7 @@ const corsOptions = {
     const allowedOrigins = [
       process.env.FRONTEND_URL || "http://localhost:5173",
       "https://creditdost.onrender.com",
-      "https://reactbackend.creditdostlearning.com",
+      "http://localhost:5000",
       // Add more origins here as needed
       
     ];
@@ -150,6 +150,7 @@ app.use("/api/forms", require("./routes/forms"));
 app.use("/api/digital-agreements", require("./routes/digitalAgreements"));
 app.use("/api/careers", require("./routes/careers"));
 app.use("/api/ai-analysis", require("./routes/aiAnalysis"));
+app.use("/api/analytics", require("./routes/analytics"));
 
 // Error handling middleware
 app.use(require("./middleware/errorHandler"));
