@@ -575,12 +575,16 @@ const CreditScoreRepairPage = () => {
                 >
                   Get Free Consultation
                 </StyledButton>
-                
               </Box>
 
               {/* Stats Row */}
-              <Grid container spacing={3} sx={{ mt: 8 }}>
-                <Grid item xs={12} md={4} style={{ flex: "1" }}>
+              <Grid
+                container
+                spacing={3}
+                sx={{ mt: 8, flexDirection: { xs: "column", sm: "row" } }}
+                style={{ justifyContent: "center" }}
+              >
+                <Grid item xs={12} sm={6} md={4} style={{ flex: "1" }}>
                   <StatsCard elevation={0}>
                     <Typography
                       variant="h3"
@@ -596,7 +600,7 @@ const CreditScoreRepairPage = () => {
                     </Typography>
                   </StatsCard>
                 </Grid>
-                <Grid item xs={12} md={4} style={{ flex: "1" }}>
+                <Grid item xs={12} sm={6} md={4} style={{ flex: "1" }}>
                   <StatsCard elevation={0}>
                     <Typography
                       variant="h3"
@@ -612,7 +616,7 @@ const CreditScoreRepairPage = () => {
                     </Typography>
                   </StatsCard>
                 </Grid>
-                <Grid item xs={12} md={4} style={{ flex: "1" }}>
+                <Grid item xs={12} sm={6} md={4} style={{ flex: "1" }}>
                   <StatsCard elevation={0}>
                     <Typography
                       variant="h3"
@@ -644,7 +648,11 @@ const CreditScoreRepairPage = () => {
               </SectionSubtitle>
             </Box>
 
-            <Grid container spacing={4} style={{ flexWrap: "nowrap" }}>
+            <Grid
+              container
+              spacing={4}
+              sx={{ flexWrap: { xs: "wrap", sm: "nowrap" } }}
+            >
               {[
                 {
                   title: "Loan Approvals",
@@ -667,14 +675,7 @@ const CreditScoreRepairPage = () => {
                   color: "#10b981",
                 },
               ].map((item, index) => (
-                <Grid
-                  item
-                  xs={12}
-                  sm={6}
-                  md={3}
-                  key={index}
-                  style={{ flex: "1" }}
-                >
+                <Grid item xs={12} sm={6} md={3} key={index}>
                   <ProcessCard elevation={0}>
                     <Box
                       sx={{
@@ -722,9 +723,13 @@ const CreditScoreRepairPage = () => {
               </SectionSubtitle>
             </Box>
 
-            <Grid container spacing={4} style={{ flexWrap: "nowrap" }}>
+            <Grid
+              container
+              spacing={4}
+              sx={{ flexWrap: { xs: "wrap", sm: "nowrap" } }}
+            >
               {processSteps.map((step, index) => (
-                <Grid item xs={12} md={6} key={index} style={{ flex: "1" }}>
+                <Grid item xs={12} md={6} key={index}>
                   <ProcessCard elevation={0}>
                     <Box
                       sx={{
@@ -807,7 +812,11 @@ const CreditScoreRepairPage = () => {
               </SectionSubtitle>
             </Box>
 
-            <Grid container spacing={4} style={{ justifyContent: "center" }}>
+            <Grid
+              container
+              spacing={4}
+              sx={{ flexWrap: { xs: "wrap", sm: "nowrap" } }}
+            >
               {[
                 {
                   title: "One-to-one expert guidance",
@@ -830,7 +839,14 @@ const CreditScoreRepairPage = () => {
                   color: "#10b981",
                 },
               ].map((feature, index) => (
-                <Grid item xs={12} md={6} key={index} style={{ flex: "1" }}>
+                <Grid
+                  item
+                  xs={12}
+                  sm={6}
+                  md={6}
+                  key={index}
+                  sx={{ flex: { xs: "auto", sm: "1" } }}
+                >
                   <PlanCard>
                     <CardContent sx={{ p: 4, textAlign: "center" }}>
                       <Box
@@ -878,7 +894,11 @@ const CreditScoreRepairPage = () => {
               </SectionSubtitle>
             </Box>
 
-            <Grid container spacing={4} style={{ flexWrap: "nowrap" }}>
+            <Grid
+              container
+              spacing={4}
+              sx={{ flexWrap: { xs: "wrap", sm: "nowrap" } }}
+            >
               {whyChooseUs.map((item, index) => (
                 <Grid item xs={12} sm={6} md={3} key={index}>
                   <Box sx={{ textAlign: "center" }}>
@@ -955,166 +975,136 @@ const CreditScoreRepairPage = () => {
 
                     <Box component="form" onSubmit={handleSubmit}>
                       <Grid container spacing={3}>
-                        {/* Full Name and Mobile Number in one row */}
-                        <div
-                          style={{
-                            display: "flex",
-                            justifyContent: "center",
-                            alignItems: "center",
-                            gap: "12px",
-                            width: "100%",
-                          }}
-                        >
-                          <Grid item xs={12} md={6} style={{ flex: "1" }}>
-                            <TextField
-                              fullWidth
-                              label="Full Name"
-                              name="fullName"
-                              value={formData.fullName}
+                        {/* Full Name and Mobile Number - Stacked on mobile, side-by-side on desktop */}
+                        <Grid item xs={12} md={6}>
+                          <TextField
+                            fullWidth
+                            label="Full Name"
+                            name="fullName"
+                            value={formData.fullName}
+                            onChange={handleChange}
+                            required
+                            variant="outlined"
+                            sx={{
+                              "& .MuiOutlinedInput-root": {
+                                borderRadius: 2,
+                                "&:hover fieldset": {
+                                  borderColor: "#0ea5e9",
+                                },
+                              },
+                            }}
+                          />
+                        </Grid>
+
+                        <Grid item xs={12} md={6}>
+                          <TextField
+                            fullWidth
+                            label="Mobile Number"
+                            name="mobileNumber"
+                            value={formData.mobileNumber}
+                            onChange={handleChange}
+                            required
+                            variant="outlined"
+                            type="tel"
+                            inputProps={{ maxLength: 10 }}
+                            sx={{
+                              "& .MuiOutlinedInput-root": {
+                                borderRadius: 2,
+                                "&:hover fieldset": {
+                                  borderColor: "#0ea5e9",
+                                },
+                              },
+                            }}
+                          />
+                        </Grid>
+
+                        {/* Email ID and Current Credit Score - Stacked on mobile, side-by-side on desktop */}
+                        <Grid item xs={12} md={6}>
+                          <TextField
+                            fullWidth
+                            label="Email ID"
+                            name="email"
+                            value={formData.email}
+                            onChange={handleChange}
+                            required
+                            variant="outlined"
+                            type="email"
+                            sx={{
+                              "& .MuiOutlinedInput-root": {
+                                borderRadius: 2,
+                                "&:hover fieldset": {
+                                  borderColor: "#0ea5e9",
+                                },
+                              },
+                            }}
+                          />
+                        </Grid>
+
+                        <Grid item xs={12} md={6}>
+                          <TextField
+                            fullWidth
+                            label="Current Credit Score (Optional)"
+                            name="creditScore"
+                            value={formData.creditScore}
+                            onChange={handleChange}
+                            variant="outlined"
+                            type="number"
+                            sx={{
+                              "& .MuiOutlinedInput-root": {
+                                borderRadius: 2,
+                                "&:hover fieldset": {
+                                  borderColor: "#0ea5e9",
+                                },
+                              },
+                            }}
+                          />
+                        </Grid>
+
+                        {/* City and State - Stacked on mobile, side-by-side on desktop */}
+                        <Grid item xs={12} md={6}>
+                          <TextField
+                            fullWidth
+                            label="City"
+                            name="city"
+                            value={formData.city}
+                            onChange={handleChange}
+                            required
+                            variant="outlined"
+                            sx={{
+                              "& .MuiOutlinedInput-root": {
+                                borderRadius: 2,
+                                "&:hover fieldset": {
+                                  borderColor: "#0ea5e9",
+                                },
+                              },
+                            }}
+                          />
+                        </Grid>
+
+                        <Grid item xs={12} md={6} style={{minWidth:"200px"}}>
+                          <FormControl fullWidth>
+                            <InputLabel>State</InputLabel>
+                            <Select
+                              name="state"
+                              value={formData.state}
                               onChange={handleChange}
                               required
-                              variant="outlined"
                               sx={{
-                                "& .MuiOutlinedInput-root": {
-                                  borderRadius: 2,
-                                  "&:hover fieldset": {
-                                    borderColor: "#0ea5e9",
-                                  },
+                                borderRadius: 2,
+                                "&:hover .MuiOutlinedInput-notchedOutline": {
+                                  borderColor: "#0ea5e9",
                                 },
                               }}
-                            />
-                          </Grid>
-
-                          <Grid item xs={12} md={6} style={{ flex: "1" }}>
-                            <TextField
-                              fullWidth
-                              label="Mobile Number"
-                              name="mobileNumber"
-                              value={formData.mobileNumber}
-                              onChange={handleChange}
-                              required
-                              variant="outlined"
-                              type="tel"
-                              inputProps={{ maxLength: 10 }}
-                              sx={{
-                                "& .MuiOutlinedInput-root": {
-                                  borderRadius: 2,
-                                  "&:hover fieldset": {
-                                    borderColor: "#0ea5e9",
-                                  },
-                                },
-                              }}
-                            />
-                          </Grid>
-                        </div>
-
-                        <div
-                          style={{
-                            display: "flex",
-                            justifyContent: "center",
-                            alignItems: "center",
-                            gap: "12px",
-                            width: "100%",
-                          }}
-                        >
-                          {/* Email ID and Current Credit Score in one row */}
-                          <Grid item xs={12} md={6} style={{ flex: "1" }}>
-                            <TextField
-                              fullWidth
-                              label="Email ID"
-                              name="email"
-                              value={formData.email}
-                              onChange={handleChange}
-                              required
-                              variant="outlined"
-                              type="email"
-                              sx={{
-                                "& .MuiOutlinedInput-root": {
-                                  borderRadius: 2,
-                                  "&:hover fieldset": {
-                                    borderColor: "#0ea5e9",
-                                  },
-                                },
-                              }}
-                            />
-                          </Grid>
-
-                          <Grid item xs={12} md={6} style={{ flex: "1" }}>
-                            <TextField
-                              fullWidth
-                              label="Current Credit Score (Optional)"
-                              name="creditScore"
-                              value={formData.creditScore}
-                              onChange={handleChange}
-                              variant="outlined"
-                              type="number"
-                              sx={{
-                                "& .MuiOutlinedInput-root": {
-                                  borderRadius: 2,
-                                  "&:hover fieldset": {
-                                    borderColor: "#0ea5e9",
-                                  },
-                                },
-                              }}
-                            />
-                          </Grid>
-                        </div>
-
-                        <div
-                          style={{
-                            display: "flex",
-                            justifyContent: "center",
-                            alignItems: "center",
-                            gap: "12px",
-                            width: "100%",
-                          }}
-                        >
-                          {/* City and State in one row */}
-                          <Grid item xs={12} md={6} style={{ flex: "1" }}>
-                            <TextField
-                              fullWidth
-                              label="City"
-                              name="city"
-                              value={formData.city}
-                              onChange={handleChange}
-                              required
-                              variant="outlined"
-                              sx={{
-                                "& .MuiOutlinedInput-root": {
-                                  borderRadius: 2,
-                                  "&:hover fieldset": {
-                                    borderColor: "#0ea5e9",
-                                  },
-                                },
-                              }}
-                            />
-                          </Grid>
-
-                          <Grid item xs={12} md={6} style={{ flex: "1" }}>
-                            <FormControl fullWidth>
-                              <InputLabel>State</InputLabel>
-                              <Select
-                                name="state"
-                                value={formData.state}
-                                onChange={handleChange}
-                                required
-                                sx={{
-                                  borderRadius: 2,
-                                  "&:hover .MuiOutlinedInput-notchedOutline": {
-                                    borderColor: "#0ea5e9",
-                                  },
-                                }}
-                              >
-                                <MenuItem value="">Select State</MenuItem>
-                                {indianStates.map((state) => (
-                                  <MenuItem key={state} value={state}>
-                                    {state}
-                                  </MenuItem>
-                                ))}
-                              </Select>
-                            </FormControl>
-                          </Grid>
-                        </div>
+                            >
+                              <MenuItem value="">Select State</MenuItem>
+                              {indianStates.map((state) => (
+                                <MenuItem key={state} value={state}>
+                                  {state}
+                                </MenuItem>
+                              ))}
+                            </Select>
+                          </FormControl>
+                        </Grid>
 
                         {/* Problem Type (full width) */}
                         <Grid item xs={12} style={{ width: "100%" }}>
@@ -1164,74 +1154,64 @@ const CreditScoreRepairPage = () => {
                           />
                         </Grid>
 
-                        {/* Language, Occupation, and Income fields in one row */}
-                        <div
-                          style={{
-                            display: "flex",
-                            justifyContent: "center",
-                            alignItems: "center",
-                            gap: "12px",
-                            width: "100%",
-                          }}
-                        >
-                          <Grid item xs={12} md={4} style={{ flex: "1" }}>
-                            <TextField
-                              fullWidth
-                              label="Language"
-                              name="language"
-                              value={formData.language}
-                              onChange={handleChange}
-                              variant="outlined"
-                              sx={{
-                                "& .MuiOutlinedInput-root": {
-                                  borderRadius: 2,
-                                  "&:hover fieldset": {
-                                    borderColor: "#0ea5e9",
-                                  },
+                        {/* Language, Occupation, and Income - Stacked on mobile, side-by-side on desktop */}
+                        <Grid item xs={12} sm={6} md={4}>
+                          <TextField
+                            fullWidth
+                            label="Language"
+                            name="language"
+                            value={formData.language}
+                            onChange={handleChange}
+                            variant="outlined"
+                            sx={{
+                              "& .MuiOutlinedInput-root": {
+                                borderRadius: 2,
+                                "&:hover fieldset": {
+                                  borderColor: "#0ea5e9",
                                 },
-                              }}
-                            />
-                          </Grid>
+                              },
+                            }}
+                          />
+                        </Grid>
 
-                          <Grid item xs={12} md={4} style={{ flex: "1" }}>
-                            <TextField
-                              fullWidth
-                              label="Occupation"
-                              name="occupation"
-                              value={formData.occupation}
-                              onChange={handleChange}
-                              variant="outlined"
-                              sx={{
-                                "& .MuiOutlinedInput-root": {
-                                  borderRadius: 2,
-                                  "&:hover fieldset": {
-                                    borderColor: "#0ea5e9",
-                                  },
+                        <Grid item xs={12} sm={6} md={4}>
+                          <TextField
+                            fullWidth
+                            label="Occupation"
+                            name="occupation"
+                            value={formData.occupation}
+                            onChange={handleChange}
+                            variant="outlined"
+                            sx={{
+                              "& .MuiOutlinedInput-root": {
+                                borderRadius: 2,
+                                "&:hover fieldset": {
+                                  borderColor: "#0ea5e9",
                                 },
-                              }}
-                            />
-                          </Grid>
+                              },
+                            }}
+                          />
+                        </Grid>
 
-                          <Grid item xs={12} md={4} style={{ flex: "1" }}>
-                            <TextField
-                              fullWidth
-                              label="Monthly Income"
-                              name="income"
-                              value={formData.income}
-                              onChange={handleChange}
-                              variant="outlined"
-                              placeholder="Enter amount"
-                              sx={{
-                                "& .MuiOutlinedInput-root": {
-                                  borderRadius: 2,
-                                  "&:hover fieldset": {
-                                    borderColor: "#0ea5e9",
-                                  },
+                        <Grid item xs={12} sm={6} md={4}>
+                          <TextField
+                            fullWidth
+                            label="Monthly Income"
+                            name="income"
+                            value={formData.income}
+                            onChange={handleChange}
+                            variant="outlined"
+                            placeholder="Enter amount"
+                            sx={{
+                              "& .MuiOutlinedInput-root": {
+                                borderRadius: 2,
+                                "&:hover fieldset": {
+                                  borderColor: "#0ea5e9",
                                 },
-                              }}
-                            />
-                          </Grid>
-                        </div>
+                              },
+                            }}
+                          />
+                        </Grid>
 
                         {/* Authorization checkbox */}
                         <Grid item xs={12}>
@@ -1317,7 +1297,7 @@ const CreditScoreRepairPage = () => {
                 "Hard inquiries from rejected applications",
                 "Identity theft or fraud reporting",
               ].map((problem, index) => (
-                <Grid item xs={12} sm={6} key={index} style={{ width: "47%" }}>
+                <Grid item xs={12} sm={6} key={index}>
                   <Paper
                     sx={{
                       p: 2.5,
@@ -1382,8 +1362,8 @@ const CreditScoreRepairPage = () => {
                   Need Help? We're Here For You
                 </Typography>
 
-                <Grid container spacing={3} sx={{ mb: 4 }}>
-                  <Grid item xs={12} md={4} style={{ flex: "1" }}>
+                <Grid container spacing={3} sx={{ mb: 4 }} >
+                  <Grid item xs={12} sm={6} md={4}>
                     <Box>
                       <Typography
                         variant="h6"
@@ -1396,7 +1376,7 @@ const CreditScoreRepairPage = () => {
                       </Typography>
                     </Box>
                   </Grid>
-                  <Grid item xs={12} md={4} style={{ flex: "1" }}>
+                  <Grid item xs={12} sm={6} md={4}>
                     <Box>
                       <Typography
                         variant="h6"
@@ -1409,7 +1389,7 @@ const CreditScoreRepairPage = () => {
                       </Typography>
                     </Box>
                   </Grid>
-                  <Grid item xs={12} md={4} style={{ flex: "1" }}>
+                  <Grid item xs={12} sm={6} md={4}>
                     <Box>
                       <Typography
                         variant="h6"

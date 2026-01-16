@@ -433,7 +433,7 @@ const CTASection = () => {
           }
 
           .slider-container {
-            padding: 0 40px;
+            padding: 0px;
           }
 
           .nav-button {

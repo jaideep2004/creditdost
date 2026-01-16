@@ -22,6 +22,7 @@ import {
 } from "@mui/material";
 import { useAuth } from "../../hooks/useAuth.jsx";
 import { authAPI } from "../../services/api.jsx";
+import { trackEvent, trackException } from "../../hooks/useAnalytics";
 import Header from "../homepage/Header.jsx";
 import {
   Email as EmailIcon,
@@ -166,7 +167,14 @@ const Login = () => {
     }
 
     try {
+      // Track login attempt
+      trackEvent("User Authentication", "Login Attempt", "Login Page");
+
       const response = await login({ email, password });
+
+      // Track successful login
+      trackEvent("User Authentication", "Login Successful", "Login Page");
+
       // Redirect based on user role from the response
       if (response.user?.role === "admin") {
         navigate("/admin");
@@ -178,6 +186,14 @@ const Login = () => {
       }
     } catch (err) {
       console.error("Login component error:", err);
+
+      // Track login failure
+      trackException(
+        `Login failed: ${err.response?.data?.message || err.message}`,
+        false
+      );
+      trackEvent("User Authentication", "Login Failed", "Login Page");
+
       if (err.response) {
         // Server responded with error status
         setError(
@@ -277,14 +293,18 @@ const Login = () => {
         </style>
         <Container maxWidth="lg">
           <StyledCard>
-            <Grid container style={{ flexWrap: "nowrap", minHeight: "60vh" }}>
+            <Grid
+              container
+              style={{ flexWrap: "nowrap", minHeight: "60vh" }}
+              sx={{ flexDirection: { xs: "column", md: "row" } }}
+            >
               <Grid item xs={12} md={5} flex={1}>
                 <IllustrationSection>
                   <LogoBox>
                     <img
                       src="/images/cred.png"
                       alt="Logo"
-                      style={{ width: "292px" }}
+                      style={{ width: "290px" }}
                     />
                   </LogoBox>
                   <Typography
@@ -292,7 +312,11 @@ const Login = () => {
                     fontWeight="700"
                     textAlign="center"
                     mb={2}
-                    sx={{ position: "relative", zIndex: 1 }}
+                    sx={{
+                      position: "relative",
+                      zIndex: 1,
+                      fontSize: { xs: "1.9rem", md: "2.2rem" },
+                    }}
                   >
                     Welcome Back
                   </Typography>
@@ -325,18 +349,19 @@ const Login = () => {
                     align="center"
                     mb={3}
                     fontWeight="700"
+                    sx={{ fontSize: { xs: "1.9rem", md: "2.1rem" } }}
                   >
                     Login to Your Account
                   </Typography>
 
                   {selectedPackage && (
-                    <Alert 
-                      severity="info" 
+                    <Alert
+                      severity="info"
                       sx={{ mb: 2, borderRadius: 2 }}
                       action={
-                        <Chip 
-                          label={`${selectedPackage.creditsIncluded} Credits - ₹${selectedPackage.price}`} 
-                          color="primary" 
+                        <Chip
+                          label={`${selectedPackage.creditsIncluded} Credits - ₹${selectedPackage.price}`}
+                          color="primary"
                           size="small"
                         />
                       }

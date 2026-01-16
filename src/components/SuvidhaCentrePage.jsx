@@ -281,7 +281,7 @@ const SuvidhaCentrePage = () => {
             <Typography
               variant="h1"
               sx={{
-                fontSize: { xs: "3rem", md: "3.5rem" },
+                fontSize: { xs: "2.5rem", md: "3.5rem" },
                 fontWeight: 700,
                 background: "linear-gradient(to right, #67e8f9, #fde047)",
                 WebkitBackgroundClip: "text",
@@ -331,11 +331,11 @@ const SuvidhaCentrePage = () => {
                 sx={{
                   bgcolor: "white",
                   color: "#2563eb",
-                  px: 4,
-                  py: 2,
+                  px: { xs: 3, md: 4 },
+                  py: { xs: 1.5, md: 2 },
                   borderRadius: 50,
                   fontWeight: 700,
-                  fontSize: "1.125rem",
+                  fontSize: { xs: "1rem", md: "1.125rem" },
                   boxShadow: "0 20px 25px -5px rgba(0,0,0,0.3)",
                   "&:hover": {
                     bgcolor: "white",
@@ -370,11 +370,17 @@ const SuvidhaCentrePage = () => {
                 spacing={4}
                 justifyContent="space-around"
                 alignItems="center"
+                sx={{ flexDirection: { xs: "column", md: "row" } }}
               >
                 <Grid item xs={6} md={3} sx={{ textAlign: "center" }}>
                   <Typography
                     variant="h3"
-                    sx={{ fontWeight: 700, color: "#2563eb", mb: 1 }}
+                    sx={{
+                      fontWeight: 700,
+                      color: "#2563eb",
+                      mb: 1,
+                      fontSize: { xs: "2rem", md: "3rem" },
+                    }}
                   >
                     10,000+
                   </Typography>
@@ -385,7 +391,12 @@ const SuvidhaCentrePage = () => {
                 <Grid item xs={6} md={3} sx={{ textAlign: "center" }}>
                   <Typography
                     variant="h3"
-                    sx={{ fontWeight: 700, color: "#9333ea", mb: 1 }}
+                    sx={{
+                      fontWeight: 700,
+                      color: "#9333ea",
+                      mb: 1,
+                      fontSize: { xs: "2rem", md: "3rem" },
+                    }}
                   >
                     500+
                   </Typography>
@@ -396,7 +407,12 @@ const SuvidhaCentrePage = () => {
                 <Grid item xs={6} md={3} sx={{ textAlign: "center" }}>
                   <Typography
                     variant="h3"
-                    sx={{ fontWeight: 700, color: "#0891b2", mb: 1 }}
+                    sx={{
+                      fontWeight: 700,
+                      color: "#0891b2",
+                      mb: 1,
+                      fontSize: { xs: "2rem", md: "3rem" },
+                    }}
                   >
                     95%
                   </Typography>
@@ -407,7 +423,12 @@ const SuvidhaCentrePage = () => {
                 <Grid item xs={6} md={3} sx={{ textAlign: "center" }}>
                   <Typography
                     variant="h3"
-                    sx={{ fontWeight: 700, color: "#16a34a", mb: 1 }}
+                    sx={{
+                      fontWeight: 700,
+                      color: "#16a34a",
+                      mb: 1,
+                      fontSize: { xs: "2rem", md: "3rem" },
+                    }}
                   >
                     ₹2.5L
                   </Typography>
@@ -421,12 +442,12 @@ const SuvidhaCentrePage = () => {
         </Container>
 
         {/* Welcome Section */}
-        <Container maxWidth="lg" sx={{ py: 10 }}>
+        <Container maxWidth="lg" sx={{ py: { 5: 10, md: 7 } }}>
           <Box sx={{ textAlign: "center", mb: 8 }}>
             <Typography
               variant="h2"
               sx={{
-                fontSize: { xs: "2.5rem", md: "3rem" },
+                fontSize: { xs: "2.5rem", md: "2.6rem" },
                 fontWeight: 700,
                 color: "#111827",
                 mb: 3,
@@ -472,7 +493,11 @@ const SuvidhaCentrePage = () => {
             </Typography>
           </Box>
 
-          <Grid container spacing={4} style={{ flexWrap: "nowrap" }}>
+          <Grid
+            container
+            spacing={4}
+            sx={{ flexWrap: { xs: "wrap", md: "nowrap" } }}
+          >
             <Grid item xs={12} md={4}>
               <Card
                 sx={{
@@ -584,13 +609,13 @@ const SuvidhaCentrePage = () => {
               <Typography
                 variant="h2"
                 sx={{
-                  fontSize: { xs: "2.5rem", md: "3rem" },
+                  fontSize: { xs: "2rem", md: "2.6rem" },
                   fontWeight: 700,
                   color: "#111827",
                   mb: 3,
                 }}
               >
-                Why Become a
+                Why Choose a
                 <Box
                   component="span"
                   sx={{
@@ -613,7 +638,11 @@ const SuvidhaCentrePage = () => {
               />
             </Box>
 
-            <Grid container spacing={4}>
+            <Grid
+              container
+              spacing={4}
+              sx={{ flexWrap: { xs: "wrap", md: "nowrap" } }}
+            >
               {[
                 {
                   icon: <AttachMoney sx={{ fontSize: 48 }} />,
@@ -695,7 +724,12 @@ const SuvidhaCentrePage = () => {
                       </Box>
                       <Typography
                         variant="h5"
-                        sx={{ fontWeight: 700, color: "#111827", mb: 3 }}
+                        sx={{
+                          fontWeight: 700,
+                          color: "#111827",
+                          mb: 3,
+                          fontSize: { xs: "1.4rem", md: "1.8rem" },
+                        }}
                       >
                         {item.title}
                       </Typography>
@@ -732,7 +766,7 @@ const SuvidhaCentrePage = () => {
               <Typography
                 variant="h2"
                 sx={{
-                  fontSize: { xs: "2.5rem", md: "3rem" },
+                  fontSize: { xs: "2rem", md: "2.6rem" },
                   fontWeight: 700,
                   color: "#111827",
                   mb: 3,
@@ -761,7 +795,7 @@ const SuvidhaCentrePage = () => {
               />
             </Box>
 
-            <Grid container spacing={3}>
+            <Grid container spacing={3} style={{ justifyContent: "center" }}>
               {[
                 {
                   icon: <School sx={{ fontSize: 40 }} />,
@@ -819,7 +853,11 @@ const SuvidhaCentrePage = () => {
                       </Box>
                       <Typography
                         variant="body1"
-                        sx={{ fontWeight: 700, color: "#111827" }}
+                        sx={{
+                          fontWeight: 700,
+                          color: "#111827",
+                          fontSize: { xs: "1rem", md: "1.1rem" },
+                        }}
                       >
                         {item.title}
                       </Typography>
@@ -838,7 +876,7 @@ const SuvidhaCentrePage = () => {
               <Typography
                 variant="h2"
                 sx={{
-                  fontSize: { xs: "2.5rem", md: "3rem" },
+                  fontSize: { xs: "2rem", md: "2.6rem" },
                   fontWeight: 700,
                   color: "#111827",
                   mb: 3,
@@ -922,12 +960,13 @@ const SuvidhaCentrePage = () => {
             >
               <CardContent sx={{ p: 4 }}>
                 <Typography
-                  variant="h5"
+                  variant="h6"
                   sx={{
-                    fontSize: { xs: "1rem", md: "1.3rem" },
-                    fontWeight: 600,
+                    fontSize: { xs: "0.9rem", md: "1.1rem" },
+                    fontWeight: 500,
                     color: "#1f2937",
                     fontStyle: "italic",
+                    lineHeight: 1.6,
                   }}
                 >
                   If you can understand people’s financial challenges and guide
@@ -953,7 +992,7 @@ const SuvidhaCentrePage = () => {
             <Typography
               variant="h2"
               sx={{
-                fontSize: { xs: "2.5rem", md: "3rem" },
+                fontSize: { xs: "2rem", md: "2.6rem" },
                 fontWeight: 700,
                 color: "#111827",
                 mb: 3,
@@ -985,8 +1024,7 @@ const SuvidhaCentrePage = () => {
             <Grid
               container
               spacing={4}
-              sx={{ mb: 4 }}
-              style={{ flexWrap: "nowrap" }}
+              sx={{ mb: 4, justifyContent: "center" }}
             >
               <Grid item xs={12} md={6}>
                 <Card
@@ -1020,7 +1058,7 @@ const SuvidhaCentrePage = () => {
                         fontWeight: 700,
                         color: "#111827",
                         mb: 1,
-                        fontSize: "3rem",
+                        fontSize: { xs: "2rem", md: "2.6rem" },
                       }}
                     >
                       ₹30K - ₹90K
@@ -1069,7 +1107,11 @@ const SuvidhaCentrePage = () => {
                     </Typography>
                     <Typography
                       variant="h2"
-                      sx={{ fontWeight: 700, mb: 1, fontSize: "3rem" }}
+                      sx={{
+                        fontWeight: 700,
+                        mb: 1,
+                        fontSize: { xs: "2rem", md: "2.6rem" },
+                      }}
                     >
                       ₹1L - ₹2.5L
                     </Typography>
@@ -1106,7 +1148,7 @@ const SuvidhaCentrePage = () => {
               <Typography
                 variant="h2"
                 sx={{
-                  fontSize: { xs: "2.5rem", md: "3rem" },
+                  fontSize: { xs: "2rem", md: "2.6rem" },
                   fontWeight: 700,
                   color: "#111827",
                   mb: 3,
@@ -1135,7 +1177,7 @@ const SuvidhaCentrePage = () => {
               />
             </Box>
 
-            <Grid container spacing={4}>
+            <Grid container spacing={4} sx={{ flexDirection: { xs: "column", md: "row" } }}>
               {[
                 {
                   step: "01",
@@ -1274,8 +1316,8 @@ const SuvidhaCentrePage = () => {
                     <Divider sx={{ mb: 3 }} />
                   </Grid>
 
-                  <div style={{ display: "flex", gap: "15px" }}>
-                    <Grid item xs={12} md={6} style={{ width: "100%" }}>
+                  <Grid container spacing={2}>
+                    <Grid item xs={12} md={6} style={{ flex: "1" }}>
                       <TextField
                         fullWidth
                         required
@@ -1288,7 +1330,7 @@ const SuvidhaCentrePage = () => {
                       />
                     </Grid>
 
-                    <Grid item xs={12} md={6} style={{ width: "100%" }}>
+                    <Grid item xs={12} md={6} style={{ flex: "1" }}>
                       <TextField
                         fullWidth
                         required
@@ -1301,10 +1343,10 @@ const SuvidhaCentrePage = () => {
                         size="medium"
                       />
                     </Grid>
-                  </div>
+                  </Grid>
 
-                  <div style={{ display: "flex", gap: "15px" }}>
-                    <Grid item xs={12} md={6} style={{ width: "100%" }}>
+                  <Grid container spacing={2}>
+                    <Grid item xs={12} md={6} style={{ flex: "1" }}>
                       <TextField
                         fullWidth
                         required
@@ -1317,7 +1359,7 @@ const SuvidhaCentrePage = () => {
                       />
                     </Grid>
 
-                    <Grid item xs={12} md={6} style={{ width: "100%" }}>
+                    <Grid item xs={12} md={6} style={{ flex: "1" }}>
                       <TextField
                         fullWidth
                         label="WhatsApp Number"
@@ -1328,7 +1370,7 @@ const SuvidhaCentrePage = () => {
                         size="medium"
                       />
                     </Grid>
-                  </div>
+                  </Grid>
 
                   {/* Location Details Section */}
                   <Grid item xs={12}>
@@ -1347,8 +1389,8 @@ const SuvidhaCentrePage = () => {
                     <Divider sx={{ mb: 3 }} />
                   </Grid>
 
-                  <div style={{ display: "flex", gap: "15px" }}>
-                    <Grid item xs={12} md={6} style={{ width: "100%" }}>
+                  <Grid container spacing={2}>
+                    <Grid item xs={12} md={6} style={{ flex: "1" }}>
                       <TextField
                         fullWidth
                         required
@@ -1361,7 +1403,7 @@ const SuvidhaCentrePage = () => {
                       />
                     </Grid>
 
-                    <Grid item xs={12} md={6} style={{ width: "100%" }}>
+                    <Grid item xs={12} md={6} style={{ flex: "1" }}>
                       <TextField
                         fullWidth
                         required
@@ -1373,9 +1415,9 @@ const SuvidhaCentrePage = () => {
                         size="medium"
                       />
                     </Grid>
-                  </div>
+                  </Grid>
 
-                  <Grid item xs={12} md={6}>
+                  <Grid item xs={12} md={6} style={{ flex: "1" }}>
                     <TextField
                       fullWidth
                       required
@@ -1412,8 +1454,8 @@ const SuvidhaCentrePage = () => {
                     <Divider sx={{ mb: 3 }} />
                   </Grid>
 
-                  <div style={{ display: "flex", gap: "15px" }}>
-                    <Grid item xs={12} md={6} style={{ width: "100%" }}>
+                  <Grid container spacing={2}>
+                    <Grid item xs={12} md={6} style={{ flex: "1" }}>
                       <FormControl fullWidth required>
                         <InputLabel>Current Occupation</InputLabel>
                         <Select
@@ -1444,7 +1486,7 @@ const SuvidhaCentrePage = () => {
                       </FormControl>
                     </Grid>
 
-                    <Grid item xs={12} md={6} style={{ width: "100%" }}>
+                    <Grid item xs={12} md={6} style={{ flex: "1" }}>
                       <FormControl fullWidth required>
                         <InputLabel>
                           Do you have experience in finance / loans / sales?
@@ -1464,7 +1506,7 @@ const SuvidhaCentrePage = () => {
                         </Select>
                       </FormControl>
                     </Grid>
-                  </div>
+                  </Grid>
 
                   {/* Infrastructure Check Section */}
                   <Grid item xs={12}>
@@ -1483,8 +1525,8 @@ const SuvidhaCentrePage = () => {
                     <Divider sx={{ mb: 3 }} />
                   </Grid>
 
-                  <div style={{ display: "flex", gap: "15px" }}>
-                    <Grid item xs={12} md={6} style={{ width: "100%" }}>
+                  <Grid container spacing={2}>
+                    <Grid item xs={12} md={6} style={{ flex: "1" }}>
                       <FormControl fullWidth required>
                         <InputLabel>
                           Do you have a smartphone/laptop with internet?
@@ -1505,7 +1547,7 @@ const SuvidhaCentrePage = () => {
                       </FormControl>
                     </Grid>
 
-                    <Grid item xs={12} md={6} style={{ width: "100%" }}>
+                    <Grid item xs={12} md={6} style={{ flex: "1" }}>
                       <FormControl fullWidth required>
                         <InputLabel>
                           Can you communicate confidently with customers in
@@ -1527,7 +1569,7 @@ const SuvidhaCentrePage = () => {
                         </Select>
                       </FormControl>
                     </Grid>
-                  </div>
+                  </Grid>
 
                   {/* Investment Readiness Section */}
                   <Grid item xs={12}>
@@ -1546,7 +1588,7 @@ const SuvidhaCentrePage = () => {
                     <Divider sx={{ mb: 3 }} />
                   </Grid>
 
-                  <Grid item xs={12} md={6}>
+                  <Grid item xs={12} md={6} style={{ flex: "1" }}>
                     <FormControl fullWidth required>
                       <InputLabel>
                         Are you ready to invest in training & setup to start
@@ -1572,7 +1614,7 @@ const SuvidhaCentrePage = () => {
                   </Grid>
 
                   {/* Consent Checkbox */}
-                  <Grid item xs={12}>
+                  <Grid item xs={12} style={{ flex: "1" }}>
                     <FormControlLabel
                       control={
                         <Checkbox
@@ -1605,6 +1647,10 @@ const SuvidhaCentrePage = () => {
                       fullWidth
                       endIcon={<ArrowForward />}
                       disabled={isSubmitting}
+                      sx={{
+                        py: 1.5, // More touch-friendly padding
+                        fontSize: { xs: "1rem", md: "1.1rem" },
+                      }}
                     >
                       {isSubmitting ? (
                         <>
@@ -1661,7 +1707,7 @@ const SuvidhaCentrePage = () => {
             <Typography
               variant="h2"
               sx={{
-                fontSize: { xs: "2.5rem", md: "3.5rem" },
+                fontSize: { xs: "2rem", md: "3.5rem" },
                 fontWeight: 700,
                 color: "white",
                 mb: 3,
@@ -1689,11 +1735,11 @@ const SuvidhaCentrePage = () => {
                 sx={{
                   bgcolor: "white",
                   color: "#2563eb",
-                  px: 5,
-                  py: 2.5,
+                  px: { xs: 3, md: 5 },
+                  py: { xs: 1.5, md: 2.5 },
                   borderRadius: 50,
                   fontWeight: 700,
-                  fontSize: "1.125rem",
+                  fontSize: { xs: "1rem", md: "1.125rem" },
                   boxShadow: "0 20px 25px -5px rgba(0,0,0,0.3)",
                   "&:hover": {
                     bgcolor: "white",

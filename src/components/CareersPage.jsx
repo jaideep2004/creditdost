@@ -177,7 +177,7 @@ const CareersPage = () => {
         sx={{
           background: "linear-gradient(135deg, #1e3a5f 0%, #2c5282 100%)",
           color: "white",
-          py: 8,
+          py: { xs: 4, md: 8 },
           position: "relative",
           overflow: "hidden",
           "&::before": {
@@ -198,14 +198,14 @@ const CareersPage = () => {
             container
             alignItems="center"
             justifyContent="space-between"
-            style={{ flexWrap: "nowrap", gap: "50px" }}
+            style={{ flexWrap: "wrap", gap: "50px" }}
           >
             <Grid item xs={12} md={8} style={{ flex: "1" }}>
               <Typography
                 variant="h2"
                 sx={{
                   fontWeight: 700,
-                  fontSize: { xs: "2.5rem", md: "3.5rem" },
+                  fontSize: { xs: "2rem", md: "3.5rem" },
                   mb: 2,
                   textAlign: { xs: "center", md: "left" },
                 }}
@@ -289,7 +289,7 @@ const CareersPage = () => {
       </Box>
 
       {/* Why Work at Credit Dost */}
-      <Container sx={{ py: 8 }} style={{ maxWidth: "1300px" }}>
+      <Container sx={{ py: { xs: 4, md: 8 } }} style={{ maxWidth: "1300px" }}>
         <Box sx={{ textAlign: "center", mb: 6 }}>
           <Typography
             variant="h3"
@@ -300,6 +300,7 @@ const CareersPage = () => {
               position: "relative",
               pb: 2,
               display: "inline-block",
+              fontSize: { xs: "1.8rem", md: "2.2rem" },
               "&::after": {
                 content: '""',
                 position: "absolute",
@@ -317,8 +318,12 @@ const CareersPage = () => {
           </Typography>
         </Box>
 
-        <Grid container spacing={4} style={{flexWrap:"nowrap"}}>
-          <Grid item xs={12} md={4}>
+        <Grid
+          container
+          spacing={4}
+          sx={{ flexWrap: { xs: "wrap", md: "nowrap" } }}
+        >
+          <Grid item xs={12} md={4} sx={{ mb: { xs: 3, md: 0 } }}>
             <Box
               sx={{
                 background: "white",
@@ -364,7 +369,7 @@ const CareersPage = () => {
             </Box>
           </Grid>
 
-          <Grid item xs={12} md={4}>
+          <Grid item xs={12} md={4} sx={{ mb: { xs: 3, md: 0 } }}>
             <Box
               sx={{
                 background: "white",
@@ -467,6 +472,7 @@ const CareersPage = () => {
                 position: "relative",
                 pb: 2,
                 display: "inline-block",
+                fontSize: { xs: "1.8rem", md: "2.2rem" },
                 "&::after": {
                   content: '""',
                   position: "absolute",
@@ -487,7 +493,7 @@ const CareersPage = () => {
 
           <Grid container spacing={4}>
             {positions.map((position) => (
-              <Grid item xs={12} key={position.id} style={{width:"100%"}}>
+              <Grid item xs={12} key={position.id} style={{ width: "100%" }}>
                 <Card
                   sx={{
                     borderRadius: "16px",
@@ -500,7 +506,7 @@ const CareersPage = () => {
                     },
                   }}
                 >
-                  <CardContent sx={{ p: 4 }}>
+                  <CardContent sx={{ p: { xs: 2, sm: 3, md: 4 } }}>
                     <Box
                       sx={{
                         display: "flex",
@@ -513,7 +519,12 @@ const CareersPage = () => {
                       <Box>
                         <Typography
                           variant="h4"
-                          sx={{ fontWeight: 700, mb: 1, color: "#1e3a5f" }}
+                          sx={{
+                            fontWeight: 700,
+                            mb: 1,
+                            color: "#1e3a5f",
+                            fontSize: { xs: "1.5rem", md: "inherit" },
+                          }}
                         >
                           {position.title}
                         </Typography>
@@ -561,7 +572,12 @@ const CareersPage = () => {
 
                     <Typography
                       variant="h6"
-                      sx={{ fontWeight: 600, mb: 1, color: "#1e3a5f" }}
+                      sx={{
+                        fontWeight: 600,
+                        mb: 1,
+                        color: "#1e3a5f",
+                        fontSize: { xs: "1.2rem", md: "inherit" },
+                      }}
                     >
                       About the Role
                     </Typography>
@@ -574,7 +590,12 @@ const CareersPage = () => {
 
                     <Typography
                       variant="h6"
-                      sx={{ fontWeight: 600, mb: 1, color: "#1e3a5f" }}
+                      sx={{
+                        fontWeight: 600,
+                        mb: 1,
+                        color: "#1e3a5f",
+                        fontSize: { xs: "1.2rem", md: "inherit" },
+                      }}
                     >
                       Responsibilities
                     </Typography>
@@ -593,7 +614,12 @@ const CareersPage = () => {
 
                     <Typography
                       variant="h6"
-                      sx={{ fontWeight: 600, mb: 1, color: "#1e3a5f" }}
+                      sx={{
+                        fontWeight: 600,
+                        mb: 1,
+                        color: "#1e3a5f",
+                        fontSize: { xs: "1.2rem", md: "inherit" },
+                      }}
                     >
                       Requirements
                     </Typography>
@@ -610,7 +636,9 @@ const CareersPage = () => {
                       ))}
                     </Box>
                   </CardContent>
-                  <CardActions sx={{ px: 4, pb: 3, pt: 0 }}>
+                  <CardActions
+                    sx={{ px: { xs: 2, sm: 3, md: 4 }, pb: 3, pt: 0 }}
+                  >
                     <Button
                       variant="contained"
                       size="large"
@@ -655,6 +683,7 @@ const CareersPage = () => {
                 position: "relative",
                 pb: 2,
                 display: "inline-block",
+                fontSize: { xs: "1.8rem", md: "2.2rem" },
                 "&::after": {
                   content: '""',
                   position: "absolute",
@@ -673,14 +702,25 @@ const CareersPage = () => {
             </Typography>
           </Box>
 
-          <Grid container spacing={4}>
+          <Grid
+            container
+            spacing={4}
+            sx={{ flexDirection: { xs: "column", md: "row" } }}
+          >
             {hiringSteps.map((step, index) => (
-              <Grid item xs={12} sm={6} md={3} key={index} style={{flex:"1"}}>
+              <Grid
+                item
+                xs={12}
+                sm={6}
+                md={3}
+                key={index}
+                style={{ flex: "1" }}
+              >
                 <Box
                   sx={{
                     background: "white",
                     borderRadius: "16px",
-                    p: 4,
+                    p: { xs: 2, sm: 3, md: 4 },
                     height: "100%",
                     boxShadow: "0 4px 20px rgba(0,0,0,0.08)",
                     textAlign: "center",
@@ -713,7 +753,12 @@ const CareersPage = () => {
                 >
                   <Typography
                     variant="h5"
-                    sx={{ fontWeight: 700, mb: 2, color: "#1e3a5f" }}
+                    sx={{
+                      fontWeight: 700,
+                      mb: 2,
+                      color: "#1e3a5f",
+                      fontSize: { xs: "1.3rem", md: "inherit" },
+                    }}
                   >
                     {step.title}
                   </Typography>
@@ -735,6 +780,7 @@ const CareersPage = () => {
         onClose={handleCloseModal}
         maxWidth="sm"
         fullWidth
+        fullScreen={{ xs: true, sm: false }}
       >
         <DialogTitle sx={{ pb: 1 }}>
           <Box
@@ -757,7 +803,7 @@ const CareersPage = () => {
         </DialogTitle>
         <DialogContent>
           <Box component="form" sx={{ mt: 2 }}>
-            <Grid container spacing={3}>
+            <Grid container spacing={2}>
               <Grid item xs={12}>
                 <TextField
                   fullWidth
@@ -800,7 +846,7 @@ const CareersPage = () => {
                   sx={{
                     justifyContent: "flex-start",
                     textTransform: "none",
-                    padding: "15px",
+                    padding: { xs: "12px", sm: "15px" },
                     borderColor: "#e2e8f0",
                     color: "#64748b",
                     "&:hover": {
@@ -827,7 +873,7 @@ const CareersPage = () => {
             </Grid>
           </Box>
         </DialogContent>
-        <DialogActions sx={{ px: 3, pb: 3 }}>
+        <DialogActions sx={{ px: { xs: 2, sm: 3 }, pb: 3 }}>
           <Button onClick={handleCloseModal} sx={{ color: "#64748b" }}>
             Cancel
           </Button>

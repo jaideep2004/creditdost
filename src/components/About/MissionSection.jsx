@@ -1,6 +1,19 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 
 const MissionSection = () => {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
   const values = [
     {
       icon: "🔍",
@@ -38,21 +51,21 @@ const MissionSection = () => {
     <div
       style={{
         backgroundColor: "#f8f9fa",
-        padding: "80px 0",
+        padding: isMobile ? "40px 0" : "80px 0",
       }}
     >
       <div
         style={{
           maxWidth: "1400px",
           margin: "0 auto",
-          padding: "0 24px",
+          padding: isMobile ? "0 16px" : "0 24px",
         }}
       >
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "40% 60%",
-            gap: "48px",
+            gridTemplateColumns: isMobile ? "1fr" : "40% 60%",
+            gap: isMobile ? "40px" : "48px",
           }}
         >
           {/* Left Side - Mission & Vision */}
@@ -60,11 +73,12 @@ const MissionSection = () => {
             <div
               style={{
                 color: "#0891b2",
-                fontSize: "14px",
+                fontSize: isMobile ? "12px" : "14px",
                 fontWeight: 600,
-                letterSpacing: "3px",
+                letterSpacing: isMobile ? "2px" : "3px",
                 textTransform: "uppercase",
-                marginBottom: "16px",
+                marginBottom: isMobile ? "12px" : "16px",
+                textAlign: isMobile ? "center" : "left",
               }}
             >
               OUR MISSION & VISION
@@ -73,11 +87,12 @@ const MissionSection = () => {
             <h2
               style={{
                 color: "#1e293b",
-                fontSize: "42px",
+                fontSize: isMobile ? "1.75rem" : "42px",
                 fontWeight: 700,
                 lineHeight: 1.2,
-                marginBottom: "48px",
+                marginBottom: isMobile ? "32px" : "48px",
                 marginTop: 0,
+                textAlign: isMobile ? "center" : "left",
               }}
             >
               Building Financial Confidence
@@ -86,8 +101,8 @@ const MissionSection = () => {
             {/* Mission */}
             <div
               style={{
-                marginBottom: "40px",
-                padding: "30px",
+                marginBottom: isMobile ? "24px" : "40px",
+                padding: isMobile ? "20px" : "30px",
                 backgroundColor: "white",
                 borderRadius: "12px",
                 boxShadow: "0 5px 20px rgba(0, 0, 0, 0.08)",
@@ -96,12 +111,13 @@ const MissionSection = () => {
               <h3
                 style={{
                   color: "#0891b2",
-                  fontSize: "1.25rem",
+                  fontSize: isMobile ? "1.125rem" : "1.25rem",
                   fontWeight: 600,
-                  marginBottom: "12px",
+                  marginBottom: isMobile ? "8px" : "12px",
                   display: "flex",
                   alignItems: "center",
                   gap: "10px",
+                  justifyContent: isMobile ? "center" : "flex-start",
                 }}
               >
                 <span>🎯</span> Our Mission
@@ -109,9 +125,10 @@ const MissionSection = () => {
               <p
                 style={{
                   color: "#475569",
-                  fontSize: "1rem",
+                  fontSize: isMobile ? "0.95rem" : "1rem",
                   lineHeight: 1.7,
                   margin: 0,
+                  textAlign: isMobile ? "justify" : "left",
                 }}
               >
                 To help individuals build financial credibility and access fair
@@ -123,7 +140,7 @@ const MissionSection = () => {
             {/* Vision */}
             <div
               style={{
-                padding: "30px",
+                padding: isMobile ? "20px" : "30px",
                 backgroundColor: "white",
                 borderRadius: "12px",
                 boxShadow: "0 5px 20px rgba(0, 0, 0, 0.08)",
@@ -132,12 +149,13 @@ const MissionSection = () => {
               <h3
                 style={{
                   color: "#0891b2",
-                  fontSize: "1.25rem",
+                  fontSize: isMobile ? "1.125rem" : "1.25rem",
                   fontWeight: 600,
-                  marginBottom: "12px",
+                  marginBottom: isMobile ? "8px" : "12px",
                   display: "flex",
                   alignItems: "center",
                   gap: "10px",
+                  justifyContent: isMobile ? "center" : "flex-start",
                 }}
               >
                 <span>🌟</span> Our Vision
@@ -145,12 +163,13 @@ const MissionSection = () => {
               <p
                 style={{
                   color: "#475569",
-                  fontSize: "1rem",
+                  fontSize: isMobile ? "0.95rem" : "1rem",
                   lineHeight: 1.7,
                   margin: 0,
+                  textAlign: isMobile ? "justify" : "left",
                 }}
               >
-                To become one of India’s most trusted names in credit score
+                To become one of India's most trusted names in credit score
                 improvement, empowering individuals with knowledge, ethical
                 solutions, and long-term financial confidence.
               </p>
@@ -162,11 +181,12 @@ const MissionSection = () => {
             <div
               style={{
                 color: "#0891b2",
-                fontSize: "14px",
+                fontSize: isMobile ? "12px" : "14px",
                 fontWeight: 600,
-                letterSpacing: "3px",
+                letterSpacing: isMobile ? "2px" : "3px",
                 textTransform: "uppercase",
-                marginBottom: "16px",
+                marginBottom: isMobile ? "12px" : "16px",
+                textAlign: isMobile ? "center" : "left",
               }}
             >
               OUR VALUES
@@ -175,62 +195,91 @@ const MissionSection = () => {
             <h3
               style={{
                 color: "#1e293b",
-                fontSize: "1.75rem",
+                fontSize: isMobile ? "1.5rem" : "1.75rem",
                 fontWeight: 600,
-                marginBottom: "32px",
+                marginBottom: isMobile ? "24px" : "32px",
+                textAlign: isMobile ? "center" : "left",
               }}
             >
               The Principles That Guide Us
             </h3>
 
             <div
-              style={{ display: "flex", flexDirection: "column", gap: "24px" }}
+              style={{ 
+                display: "flex", 
+                flexDirection: "column", 
+                gap: isMobile ? "16px" : "24px" 
+              }}
             >
               {values.map((value, index) => (
                 <div
                   key={index}
                   style={{
                     display: "flex",
-                    gap: "20px",
-                    alignItems: "flex-start",
-                    padding: "24px",
+                    gap: isMobile ? "16px" : "20px",
+                    alignItems: isMobile ? "flex-start" : "flex-start",
+                    padding: isMobile ? "20px" : "24px",
                     backgroundColor: "white",
                     borderRadius: "12px",
                     boxShadow: "0 3px 15px rgba(0, 0, 0, 0.08)",
-                    transition: "transform 0.3s ease",
+                    transition: isMobile ? "none" : "transform 0.3s ease",
+                    ...(isMobile && {
+                      flexDirection: "row",
+                      width: "100%",
+                    }),
                   }}
                   onMouseOver={(e) => {
-                    e.currentTarget.style.transform = "translateX(8px)";
+                    if (!isMobile) {
+                      e.currentTarget.style.transform = "translateX(8px)";
+                    }
                   }}
                   onMouseOut={(e) => {
-                    e.currentTarget.style.transform = "translateX(0)";
+                    if (!isMobile) {
+                      e.currentTarget.style.transform = "translateX(0)";
+                    }
+                  }}
+                  onClick={(e) => {
+                    if (isMobile) {
+                      // Toggle active state on mobile
+                      const isActive = e.currentTarget.style.boxShadow === "0 5px 20px rgba(8, 145, 178, 0.15)";
+                      e.currentTarget.style.boxShadow = isActive 
+                        ? "0 3px 15px rgba(0, 0, 0, 0.08)" 
+                        : "0 5px 20px rgba(8, 145, 178, 0.15)";
+                      e.currentTarget.style.borderLeft = isActive 
+                        ? "none" 
+                        : "3px solid #0891b2";
+                    }
                   }}
                 >
                   {/* Icon */}
                   <div
                     style={{
-                      minWidth: "50px",
-                      width: "50px",
-                      height: "50px",
+                      minWidth: isMobile ? "40px" : "50px",
+                      width: isMobile ? "40px" : "50px",
+                      height: isMobile ? "40px" : "50px",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
                       backgroundColor: "#e0f2fe",
-                      borderRadius: "12px",
-                      fontSize: "1.5rem",
+                      borderRadius: isMobile ? "10px" : "12px",
+                      fontSize: isMobile ? "1.25rem" : "1.5rem",
+                      flexShrink: 0,
                     }}
                   >
                     {value.icon}
                   </div>
 
                   {/* Content */}
-                  <div>
+                  <div style={{
+                    flex: 1,
+                    minWidth: 0, // Prevent text overflow
+                  }}>
                     <h4
                       style={{
                         color: "#1e293b",
-                        fontSize: "1.1rem",
+                        fontSize: isMobile ? "1rem" : "1.1rem",
                         fontWeight: 600,
-                        marginBottom: "8px",
+                        marginBottom: isMobile ? "6px" : "8px",
                         marginTop: 0,
                       }}
                     >
@@ -239,7 +288,7 @@ const MissionSection = () => {
                     <p
                       style={{
                         color: "#64748b",
-                        fontSize: "0.95rem",
+                        fontSize: isMobile ? "0.875rem" : "0.95rem",
                         lineHeight: 1.6,
                         margin: 0,
                       }}

@@ -1,51 +1,68 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 
 const HistorySection = () => {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
   return (
     <div
       style={{
-        padding: "80px 20px",
+        padding: isMobile ? "40px 16px" : "80px 20px",
         backgroundColor: "#f8f9fa",
         position: "relative",
         overflow: "hidden",
       }}
     >
-      {/* Animated Background Elements */}
-      <div
-        style={{
-          position: "absolute",
-          top: "10%",
-          left: "5%",
-          width: "300px",
-          height: "300px",
-          background:
-            "radial-gradient(circle, rgba(8, 145, 178, 0.05) 0%, transparent 70%)",
-          borderRadius: "50%",
-          animation: "float 8s ease-in-out infinite",
-        }}
-      />
+      {/* Animated Background Elements - Hide on mobile */}
+      {!isMobile && (
+        <>
+          <div
+            style={{
+              position: "absolute",
+              top: "10%",
+              left: "5%",
+              width: "300px",
+              height: "300px",
+              background:
+                "radial-gradient(circle, rgba(8, 145, 178, 0.05) 0%, transparent 70%)",
+              borderRadius: "50%",
+              animation: "float 8s ease-in-out infinite",
+            }}
+          />
 
-      <div
-        style={{
-          position: "absolute",
-          bottom: "15%",
-          right: "10%",
-          width: "400px",
-          height: "400px",
-          background:
-            "radial-gradient(circle, rgba(6, 182, 212, 0.04) 0%, transparent 70%)",
-          borderRadius: "50%",
-          animation: "float 10s ease-in-out infinite reverse",
-        }}
-      />
+          <div
+            style={{
+              position: "absolute",
+              bottom: "15%",
+              right: "10%",
+              width: "400px",
+              height: "400px",
+              background:
+                "radial-gradient(circle, rgba(6, 182, 212, 0.04) 0%, transparent 70%)",
+              borderRadius: "50%",
+              animation: "float 10s ease-in-out infinite reverse",
+            }}
+          />
+        </>
+      )}
 
       <div
         style={{
           maxWidth: "1400px",
           margin: "0 auto",
           display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
-          gap: "60px",
+          gridTemplateColumns: isMobile ? "1fr" : "repeat(auto-fit, minmax(300px, 1fr))",
+          gap: isMobile ? "40px" : "60px",
           alignItems: "start",
           position: "relative",
           zIndex: 1,
@@ -54,16 +71,17 @@ const HistorySection = () => {
         {/* Left Side - Content */}
         <div
           style={{
-            padding: "20px",
+            padding: isMobile ? "0" : "20px",
           }}
         >
           <div
             style={{
               color: "#0891b2",
-              fontSize: "0.9rem",
+              fontSize: isMobile ? "0.8rem" : "0.9rem",
               fontWeight: "600",
               letterSpacing: "2px",
-              marginBottom: "12px",
+              marginBottom: isMobile ? "8px" : "12px",
+              textAlign: isMobile ? "center" : "left",
             }}
           >
             OUR JOURNEY
@@ -71,11 +89,12 @@ const HistorySection = () => {
 
           <h2
             style={{
-              fontSize: "clamp(2rem, 4vw, 2.75rem)",
+              fontSize: isMobile ? "1.75rem" : "clamp(2rem, 4vw, 2.75rem)",
               fontWeight: "700",
               color: "#0f172a",
-              marginBottom: "24px",
+              marginBottom: isMobile ? "16px" : "24px",
               lineHeight: 1.2,
+              textAlign: isMobile ? "center" : "left",
             }}
           >
             Empowering Financial Futures
@@ -84,9 +103,10 @@ const HistorySection = () => {
           <p
             style={{
               color: "#64748b",
-              fontSize: "1rem",
+              fontSize: isMobile ? "0.95rem" : "1rem",
               lineHeight: 1.7,
-              marginBottom: "24px",
+              marginBottom: isMobile ? "20px" : "24px",
+              textAlign: isMobile ? "justify" : "left",
             }}
           >
             <strong>
@@ -100,9 +120,10 @@ const HistorySection = () => {
           <p
             style={{
               color: "#64748b",
-              fontSize: "1rem",
+              fontSize: isMobile ? "0.95rem" : "1rem",
               lineHeight: 1.7,
-              marginBottom: "24px",
+              marginBottom: isMobile ? "20px" : "24px",
+              textAlign: isMobile ? "justify" : "left",
             }}
           >
             With extensive experience working alongside lenders, financial
@@ -116,9 +137,10 @@ const HistorySection = () => {
           <p
             style={{
               color: "#64748b",
-              fontSize: "1rem",
+              fontSize: isMobile ? "0.95rem" : "1rem",
               lineHeight: 1.7,
-              marginBottom: "24px",
+              marginBottom: isMobile ? "20px" : "24px",
+              textAlign: isMobile ? "justify" : "left",
             }}
           >
             To address this challenge, <b>CreditDost</b> was established in 2020
@@ -133,19 +155,20 @@ const HistorySection = () => {
           <div
             style={{
               backgroundColor: "white",
-              padding: "30px",
+              padding: isMobile ? "20px" : "30px",
               borderRadius: "12px",
               boxShadow: "0 5px 20px rgba(0, 0, 0, 0.08)",
               borderLeft: "4px solid #0891b2",
-              marginBottom: "24px",
+              marginBottom: isMobile ? "30px" : "24px",
             }}
           >
             <h3
               style={{
                 color: "#0f172a",
-                fontSize: "1.5rem",
+                fontSize: isMobile ? "1.25rem" : "1.5rem",
                 fontWeight: "600",
-                marginBottom: "16px",
+                marginBottom: isMobile ? "12px" : "16px",
+                textAlign: isMobile ? "center" : "left",
               }}
             >
               Our Mission
@@ -153,8 +176,9 @@ const HistorySection = () => {
             <p
               style={{
                 color: "#475569",
-                fontSize: "1rem",
+                fontSize: isMobile ? "0.95rem" : "1rem",
                 lineHeight: 1.6,
+                textAlign: isMobile ? "justify" : "left",
               }}
             >
               To enable individuals and aspiring professionals to achieve
@@ -166,160 +190,308 @@ const HistorySection = () => {
         </div>
 
         {/* Right Side - Images and Founder's Message */}
-        <div
-          style={{
-            position: "relative",
-            height: "600px",
-            padding: "20px",
-          }}
-        >
-          {/* Main Image */}
+        {isMobile ? (
+          // Mobile Layout - Stacked vertically
           <div
             style={{
-              position: "absolute",
-              top: "25px",
-              right: "0",
-              width: "68%",
-              height: "400px",
-              borderRadius: "12px",
-              overflow: "hidden",
-              boxShadow: "0 15px 40px rgba(0, 0, 0, 0.15)",
-              backgroundColor: "#e2e8f0",
-              zIndex: 3,
+              position: "relative",
+              padding: "0",
             }}
           >
+            {/* Experience Badge - Mobile */}
+            <div
+              style={{
+                backgroundColor: "#0891b2",
+                color: "white",
+                padding: "20px",
+                borderRadius: "12px",
+                textAlign: "center",
+                boxShadow: "0 10px 30px rgba(8, 145, 178, 0.4)",
+                margin: "0 auto 30px",
+                maxWidth: "200px",
+              }}
+            >
+              <div
+                style={{
+                  fontSize: "2.5rem",
+                  fontWeight: "700",
+                  lineHeight: 1,
+                }}
+              >
+                2020
+              </div>
+              <div
+                style={{
+                  fontSize: "0.9rem",
+                  fontWeight: "500",
+                  marginTop: "8px",
+                  lineHeight: 1.3,
+                }}
+              >
+                Founded with
+                <br />a Vision
+              </div>
+            </div>
+
+            {/* Main Image - Mobile */}
             <div
               style={{
                 width: "100%",
-                height: "100%",
-                background: "linear-gradient(135deg, #94a3b8 0%, #cbd5e1 100%)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                color: "#64748b",
-                fontSize: "1.1rem",
+                height: "300px",
+                borderRadius: "12px",
+                overflow: "hidden",
+                boxShadow: "0 10px 30px rgba(0, 0, 0, 0.15)",
+                backgroundColor: "#e2e8f0",
+                marginBottom: "30px",
               }}
             >
-              Founder & Team Image
+              <div
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  background: "linear-gradient(135deg, #94a3b8 0%, #cbd5e1 100%)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  color: "#64748b",
+                  fontSize: "1rem",
+                }}
+              >
+                Founder & Team Image
+              </div>
             </div>
-          </div>
 
-          {/* Secondary Image */}
-          <div
-            style={{
-              position: "absolute",
-              bottom: "-25px",
-              left: "0",
-              width: "60%",
-              height: "300px",
-              borderRadius: "12px",
-              overflow: "hidden",
-              boxShadow: "0 15px 40px rgba(0, 0, 0, 0.15)",
-              backgroundColor: "#e2e8f0",
-              zIndex: 2,
-            }}
-          >
+            {/* Secondary Image - Mobile */}
             <div
               style={{
                 width: "100%",
-                height: "100%",
-                background: "linear-gradient(135deg, #cbd5e1 0%, #e2e8f0 100%)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                color: "#64748b",
-                fontSize: "1.1rem",
+                height: "250px",
+                borderRadius: "12px",
+                overflow: "hidden",
+                boxShadow: "0 10px 30px rgba(0, 0, 0, 0.15)",
+                backgroundColor: "#e2e8f0",
+                marginBottom: "30px",
               }}
             >
-              Company Journey
+              <div
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  background: "linear-gradient(135deg, #cbd5e1 0%, #e2e8f0 100%)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  color: "#64748b",
+                  fontSize: "1rem",
+                }}
+              >
+                Company Journey
+              </div>
+            </div>
+
+            {/* Founder's Message - Mobile */}
+            <div
+              style={{
+                backgroundColor: "white",
+                padding: "25px",
+                borderRadius: "12px",
+                boxShadow: "0 5px 20px rgba(0, 0, 0, 0.08)",
+                borderLeft: "4px solid #0891b2",
+              }}
+            >
+              <h3
+                style={{
+                  color: "#0f172a",
+                  fontSize: "1.25rem",
+                  fontWeight: "600",
+                  marginBottom: "16px",
+                  textAlign: "center",
+                }}
+              >
+                Founder's Message
+              </h3>
+              <p
+                style={{
+                  color: "#475569",
+                  fontSize: "1rem",
+                  lineHeight: 1.6,
+                  fontStyle: "italic",
+                  marginBottom: "16px",
+                  textAlign: "justify",
+                }}
+              >
+                "Everyone deserves a financial comeback. At Credit Dost, our
+                mission is to make credit-worthiness achievable through awareness,
+                technology, and responsible human guidance."
+              </p>
+              <div
+                style={{
+                  color: "#0891b2",
+                  fontWeight: "600",
+                  textAlign: "center",
+                }}
+              >
+                — Nitin Verma, Founder & Director
+              </div>
             </div>
           </div>
-
-          {/* Experience Badge */}
+        ) : (
+          // Desktop Layout - Original with overlapped elements
           <div
             style={{
-              position: "absolute",
-              top: "30%",
-              left: "10%",
-              backgroundColor: "#0891b2",
-              color: "white",
-              padding: "20px 30px",
-              borderRadius: "12px",
-              textAlign: "center",
-              boxShadow: "0 15px 40px rgba(8, 145, 178, 0.4)",
-              zIndex: 10,
+              position: "relative",
+              height: "600px",
+              padding: "20px",
             }}
           >
+            {/* Main Image */}
             <div
               style={{
-                fontSize: "2.5rem",
-                fontWeight: "700",
-                lineHeight: 1,
+                position: "absolute",
+                top: "25px",
+                right: "0",
+                width: "68%",
+                height: "400px",
+                borderRadius: "12px",
+                overflow: "hidden",
+                boxShadow: "0 15px 40px rgba(0, 0, 0, 0.15)",
+                backgroundColor: "#e2e8f0",
+                zIndex: 3,
               }}
             >
-              2020
+              <div
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  background: "linear-gradient(135deg, #94a3b8 0%, #cbd5e1 100%)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  color: "#64748b",
+                  fontSize: "1.1rem",
+                }}
+              >
+                Founder & Team Image
+              </div>
             </div>
-            <div
-              style={{
-                fontSize: "0.9rem",
-                fontWeight: "500",
-                marginTop: "8px",
-                lineHeight: 1.3,
-              }}
-            >
-              Founded with
-              <br />a Vision
-            </div>
-          </div>
 
-          {/* Founder's Message - Now on the right side */}
-          <div
-            style={{
-              position: "absolute",
-              bottom: "-299px",
-              right: "20px",
-              width: "75%",
-              backgroundColor: "white",
-              padding: "30px",
-              borderRadius: "12px",
-              boxShadow: "0 5px 20px rgba(0, 0, 0, 0.08)",
-              borderLeft: "4px solid #0891b2",
-              zIndex: 4,
-            }}
-          >
-            <h3
-              style={{
-                color: "#0f172a",
-                fontSize: "1.5rem",
-                fontWeight: "600",
-                marginBottom: "16px",
-              }}
-            >
-              Founder's Message
-            </h3>
-            <p
-              style={{
-                color: "#475569",
-                fontSize: "1.1rem",
-                lineHeight: 1.6,
-                fontStyle: "italic",
-                marginBottom: "16px",
-              }}
-            >
-              "Everyone deserves a financial comeback. At Credit Dost, our
-              mission is to make credit-worthiness achievable through awareness,
-              technology, and responsible human guidance."
-            </p>
+            {/* Secondary Image */}
             <div
               style={{
-                color: "#0891b2",
-                fontWeight: "600",
+                position: "absolute",
+                bottom: "-25px",
+                left: "0",
+                width: "60%",
+                height: "300px",
+                borderRadius: "12px",
+                overflow: "hidden",
+                boxShadow: "0 15px 40px rgba(0, 0, 0, 0.15)",
+                backgroundColor: "#e2e8f0",
+                zIndex: 2,
               }}
             >
-              — Nitin Verma, Founder & Director
+              <div
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  background: "linear-gradient(135deg, #cbd5e1 0%, #e2e8f0 100%)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  color: "#64748b",
+                  fontSize: "1.1rem",
+                }}
+              >
+                Company Journey
+              </div>
+            </div>
+
+            {/* Experience Badge */}
+            <div
+              style={{
+                position: "absolute",
+                top: "30%",
+                left: "10%",
+                backgroundColor: "#0891b2",
+                color: "white",
+                padding: "20px 30px",
+                borderRadius: "12px",
+                textAlign: "center",
+                boxShadow: "0 15px 40px rgba(8, 145, 178, 0.4)",
+                zIndex: 10,
+              }}
+            >
+              <div
+                style={{
+                  fontSize: "2.5rem",
+                  fontWeight: "700",
+                  lineHeight: 1,
+                }}
+              >
+                2020
+              </div>
+              <div
+                style={{
+                  fontSize: "0.9rem",
+                  fontWeight: "500",
+                  marginTop: "8px",
+                  lineHeight: 1.3,
+                }}
+              >
+                Founded with
+                <br />a Vision
+              </div>
+            </div>
+
+            {/* Founder's Message - Desktop */}
+            <div
+              style={{
+                position: "absolute",
+                bottom: "-299px",
+                right: "20px",
+                width: "75%",
+                backgroundColor: "white",
+                padding: "30px",
+                borderRadius: "12px",
+                boxShadow: "0 5px 20px rgba(0, 0, 0, 0.08)",
+                borderLeft: "4px solid #0891b2",
+                zIndex: 4,
+              }}
+            >
+              <h3
+                style={{
+                  color: "#0f172a",
+                  fontSize: "1.5rem",
+                  fontWeight: "600",
+                  marginBottom: "16px",
+                }}
+              >
+                Founder's Message
+              </h3>
+              <p
+                style={{
+                  color: "#475569",
+                  fontSize: "1.1rem",
+                  lineHeight: 1.6,
+                  fontStyle: "italic",
+                  marginBottom: "16px",
+                }}
+              >
+                "Everyone deserves a financial comeback. At Credit Dost, our
+                mission is to make credit-worthiness achievable through awareness,
+                technology, and responsible human guidance."
+              </p>
+              <div
+                style={{
+                  color: "#0891b2",
+                  fontWeight: "600",
+                }}
+              >
+                — Nitin Verma, Founder & Director
+              </div>
             </div>
           </div>
-        </div>
+        )}
       </div>
 
       <style>{`

@@ -6,6 +6,7 @@ import {
   Box,
   styled,
   Button,
+  useTheme,
 } from "@mui/material";
 import CircleIcon from "@mui/icons-material/Circle";
 import AddIcon from "@mui/icons-material/Add";
@@ -15,9 +16,15 @@ const AboutSection = styled(Box)(({ theme }) => ({
 
   overflow: "hidden",
   backgroundColor: "#fff",
+  [theme.breakpoints.down("md")]: {
+    paddingTop: "40px !important",
+  },
+  [theme.breakpoints.down("sm")]: {
+    paddingTop: "32px !important",
+  },
 }));
 
-const FloatingDots = styled(Box)({
+const FloatingDots = styled(Box)(({ theme }) => ({
   position: "absolute",
   left: "8%",
   top: "53%",
@@ -29,9 +36,12 @@ const FloatingDots = styled(Box)({
     "0%, 100%": { transform: "translateY(0px)" },
     "50%": { transform: "translateY(-20px)" },
   },
-});
+  [theme.breakpoints.down("md")]: {
+    display: "none",
+  },
+}));
 
-const WaveLines = styled(Box)({
+const WaveLines = styled(Box)(({ theme }) => ({
   position: "absolute",
   left: "46%",
   top: "15%",
@@ -41,9 +51,12 @@ const WaveLines = styled(Box)({
     "0%, 100%": { transform: "translateX(0px)" },
     "50%": { transform: "translateX(10px)" },
   },
-});
+  [theme.breakpoints.down("md")]: {
+    display: "none",
+  },
+}));
 
-const FloatingCircles = styled(Box)({
+const FloatingCircles = styled(Box)(({ theme }) => ({
   position: "absolute",
   right: "8%",
   bottom: "25%",
@@ -55,15 +68,29 @@ const FloatingCircles = styled(Box)({
     "0%, 100%": { opacity: 0.4, transform: "scale(1)" },
     "50%": { opacity: 0.7, transform: "scale(1.05)" },
   },
-});
+  [theme.breakpoints.down("md")]: {
+    display: "none",
+  },
+}));
 
-const ImageContainer = styled(Box)({
+const ImageContainer = styled(Box)(({ theme }) => ({
   position: "relative",
   height: "600px",
   maxWidth: "550px",
-});
+  [theme.breakpoints.down("md")]: {
+    height: "500px",
+    maxWidth: "100%",
+    margin: "0 auto",
+  },
+  [theme.breakpoints.down("sm")]: {
+    height: "400px",
+  },
+  [theme.breakpoints.down("xs")]: {
+    height: "350px",
+  },
+}));
 
-const Badge = styled(Box)({
+const Badge = styled(Box)(({ theme }) => ({
   position: "absolute",
   top: "40px",
   right: "-10px",
@@ -74,9 +101,28 @@ const Badge = styled(Box)({
   fontWeight: "bold",
   zIndex: 3,
   boxShadow: "0 4px 16px rgba(0,119,182,0.4)",
-});
+  [theme.breakpoints.down("md")]: {
+    top: "20px",
+    right: "-5px",
+    padding: "12px 20px",
+    "& h1": {
+      fontSize: "2rem !important",
+    },
+  },
+  [theme.breakpoints.down("sm")]: {
+    top: "15px",
+    right: "0px",
+    padding: "10px 16px",
+    "& h1": {
+      fontSize: "1.5rem !important",
+    },
+    "& p": {
+      fontSize: "0.7rem !important",
+    },
+  },
+}));
 
-const TopImage = styled("img")({
+const TopImage = styled("img")(({ theme }) => ({
   position: "absolute",
   top: 0,
   left: 0,
@@ -90,9 +136,18 @@ const TopImage = styled("img")({
   "&:hover": {
     transform: "scale(1.02)",
   },
-});
+  [theme.breakpoints.down("md")]: {
+    height: "270px",
+  },
+  [theme.breakpoints.down("sm")]: {
+    height: "220px",
+  },
+  [theme.breakpoints.down("xs")]: {
+    height: "180px",
+  },
+}));
 
-const BottomImage = styled("img")({
+const BottomImage = styled("img")(({ theme }) => ({
   position: "absolute",
   bottom: "88px",
   right: "-25px",
@@ -106,7 +161,22 @@ const BottomImage = styled("img")({
   "&:hover": {
     transform: "scale(1.02)",
   },
-});
+  [theme.breakpoints.down("md")]: {
+    bottom: "70px",
+    height: "240px",
+  },
+  [theme.breakpoints.down("sm")]: {
+    bottom: "50px",
+    height: "200px",
+    right: "-15px",
+  },
+  [theme.breakpoints.down("xs")]: {
+    bottom: "40px",
+    height: "160px",
+    width: "80%",
+    right: "-10px",
+  },
+}));
 
 const ListItem = styled(Box)({
   display: "flex",
@@ -117,7 +187,7 @@ const ListItem = styled(Box)({
   fontSize: "0.95rem",
 });
 
-const AboutButton = styled(Button)({
+const AboutButton = styled(Button)(({ theme }) => ({
   backgroundColor: "#0077B6",
   color: "white",
   padding: "14px 32px",
@@ -132,9 +202,16 @@ const AboutButton = styled(Button)({
     boxShadow: "0 6px 20px rgba(0,119,182,0.4)",
   },
   transition: "all 0.3s ease",
-});
+  [theme.breakpoints.down("sm")]: {
+    width: "100%",
+    maxWidth: "280px",
+    padding: "12px 24px",
+    fontSize: "0.9rem",
+  },
+}));
 
 const StatsSection = () => {
+  const theme = useTheme();
   return (
     <AboutSection style={{ paddingTop: "56px" }}>
       <FloatingDots>
@@ -174,11 +251,32 @@ const StatsSection = () => {
       <Container style={{ maxWidth: "1400px" }}>
         <Grid
           container
-          spacing={6}
+          // spacing={6}
           alignItems="center"
           style={{ flexWrap: "nowrap" }}
+          sx={{
+            [theme.breakpoints.down("md")]: {
+              spacing: 4,
+            },
+            [theme.breakpoints.down("sm")]: {
+              spacing: 0,
+              flexDirection: "column-reverse",
+              alignItems: "center",
+            },
+          }}
         >
-          <Grid item xs={12} md={6} style={{ flex: "1" }}>
+          <Grid
+            item
+            xs={12}
+            md={6}
+            style={{ flex: "1", width: "100%" }}
+            sx={{
+              [theme.breakpoints.down("sm")]: {
+                order: 2,
+                textAlign: "center",
+              },
+            }}
+          >
             <ImageContainer>
               <Badge>
                 <Typography
@@ -204,7 +302,19 @@ const StatsSection = () => {
             </ImageContainer>
           </Grid>
 
-          <Grid item xs={12} md={6} style={{ flex: "1" }}>
+          <Grid
+            item
+            xs={12}
+            md={6}
+            style={{ flex: "1" }}
+            sx={{
+              [theme.breakpoints.down("sm")]: {
+                order: 1,
+                textAlign: "center",
+                mb: 3,
+              },
+            }}
+          >
             <Typography
               variant="overline"
               sx={{
@@ -212,6 +322,10 @@ const StatsSection = () => {
                 fontWeight: 700,
                 fontSize: "0.9rem",
                 letterSpacing: 2,
+                [theme.breakpoints.down("sm")]: {
+                  display: "block",
+                  textAlign: "center",
+                },
               }}
             >
               ABOUT US
@@ -221,10 +335,17 @@ const StatsSection = () => {
               sx={{
                 fontWeight: 800,
                 color: "#1a1a1a",
-                marginTop: 2,
-                marginBottom: 3,
+                mt: 2,
+                mb: 3,
                 lineHeight: 1.2,
                 fontSize: { xs: "2rem", md: "2.5rem" },
+                [theme.breakpoints.down("sm")]: {
+                  fontSize: "1.75rem !important",
+                  textAlign: "center",
+                },
+                [theme.breakpoints.down("xs")]: {
+                  fontSize: "1.5rem !important",
+                },
               }}
             >
               Solutions That Make a Difference
@@ -232,16 +353,20 @@ const StatsSection = () => {
             <Typography
               sx={{
                 color: "#666",
-                marginBottom: 3,
+                mb: 3,
                 lineHeight: 1.8,
                 fontSize: "0.95rem",
+                [theme.breakpoints.down("sm")]: {
+                  textAlign: "center",
+                  fontSize: "0.9rem !important",
+                },
               }}
             >
-              At <b>Credit Dost</b>, we believe everyone deserves a second chance to
-              rebuild their credit and financial confidence. We are India's
-              dedicated Credit Score Improvement and Dispute Resolution Company,
-              helping individuals repair, rebuild, and manage their credit
-              health with transparency, accuracy, and trust.
+              At <b>Credit Dost</b>, we believe everyone deserves a second
+              chance to rebuild their credit and financial confidence. We are
+              India's dedicated Credit Score Improvement and Dispute Resolution
+              Company, helping individuals repair, rebuild, and manage their
+              credit health with transparency, accuracy, and trust.
             </Typography>
 
             {/* <Grid container spacing={3}>
@@ -267,7 +392,18 @@ const StatsSection = () => {
               </Grid>
             </Grid> */}
 
-            <AboutButton endIcon={<AddIcon />} href="/about">About Us</AboutButton>
+            <Box
+              sx={{
+                [theme.breakpoints.down("sm")]: {
+                  display: "flex",
+                  justifyContent: "center",
+                },
+              }}
+            >
+              <AboutButton endIcon={<AddIcon />} href="/about">
+                About Us
+              </AboutButton>
+            </Box>
           </Grid>
         </Grid>
       </Container>

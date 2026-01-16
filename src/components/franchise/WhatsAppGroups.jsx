@@ -243,7 +243,7 @@ const WhatsAppGroups = () => {
           <Typography variant="body2">
             For immediate assistance, you can also reach us via WhatsApp at{" "}
             <Chip
-              label={"+91 98213-89400 "}
+              label={"+91  92174-69202 "}
               size="small"
               sx={{ ml: 1, fontWeight: "bold" }}
             />

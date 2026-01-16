@@ -233,7 +233,13 @@ const HeroSection = () => {
           container
           spacing={6}
           alignItems="center"
-          style={{ flexWrap: "nowrap" }}
+          sx={{
+            display: "flex",
+            flexDirection: {
+              xs: "column", // mobile
+              md: "row", // laptop & desktop
+            },
+          }}
         >
           <Grid item xs={12} md={6} style={{ flex: "1" }}>
             <ContentWrapper isVisible={isVisible}>
@@ -407,13 +413,13 @@ const HeroSection = () => {
                         },
                       }}
                     >
-                      +91 98213-89400
+                      +91  92174-69202
                     </Typography>
                   </Box>
                 </Box>
               </Box>
             </ContentWrapper>
-          </Grid> 
+          </Grid>
 
           <Grid item xs={12} md={6} style={{ flex: "1" }}>
             <ImageWrapper isVisible={isVisible}>
@@ -427,10 +433,11 @@ const HeroSection = () => {
                 <Box
                   sx={{
                     position: "absolute",
-                    top: "-89px",
+                    top: { xs: "-66px", md: "-89px" },
                     right: "-65px",
-                    width: "280px",
-                    height: "280px",
+                    width: { xs: "219px", md: "280px" },
+
+                    height: { xs: "180px", md: "280px" },
                     background: "#06b6d4",
                     borderRadius: "0 0 0 100%",
                     zIndex: 2,

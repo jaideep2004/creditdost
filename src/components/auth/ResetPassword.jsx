@@ -33,7 +33,6 @@ const GradientBackground = styled(Box)(({ theme }) => ({
 
 const StyledCard = styled(Card)(({ theme }) => ({
   width: "100%",
-  maxWidth: 450,
   borderRadius: theme.shape.borderRadius * 3,
   boxShadow: theme.shadows[15],
   overflow: "visible",

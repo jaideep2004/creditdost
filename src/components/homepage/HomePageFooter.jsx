@@ -7,6 +7,8 @@ import {
   Link,
   IconButton,
   styled,
+  useTheme,
+  useMediaQuery,
 } from "@mui/material";
 import {
   Facebook as FacebookIcon,
@@ -91,154 +93,395 @@ const ContactInfo = styled(Box)(({ theme }) => ({
   },
 }));
 
+// Mobile-specific components (hidden on desktop)
+const MobileFooterSection = styled(Box)(({ theme }) => ({
+  marginBottom: theme.spacing(3),
+}));
+
+const MobileAccordion = styled(Box)(({ theme }) => ({
+  borderBottom: `1px solid rgba(255, 255, 255, 0.1)`,
+  paddingBottom: theme.spacing(2),
+  marginBottom: theme.spacing(2),
+}));
+
+const MobileAccordionHeader = styled(Box)(({ theme }) => ({
+  display: "flex",
+  justifyContent: "space-between",
+  alignItems: "center",
+  cursor: "pointer",
+  padding: theme.spacing(2, 0),
+}));
+
+const MobileAccordionContent = styled(Box)(({ theme, open }) => ({
+  maxHeight: open ? "500px" : "0",
+  overflow: "hidden",
+  transition: "max-height 0.3s ease",
+  paddingLeft: theme.spacing(1),
+}));
+
 const HomePageFooter = () => {
-  return (
-    <FooterBackground component="footer">
-      <Container maxWidth="lg">
-        <Grid container spacing={4}>
-          <Grid item xs={12} md={4} style={{ flex: "1" }}>
-            <img
-              src="/images/cred.png"
-              alt="CreditDost Logo"
-              style={{ width: "200px", marginBottom: "20px" }}
-            />
-            <Typography
-              variant="body2"
-              color="grey.300"
-              mb={3}
-              lineHeight={1.6}
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+  
+  // Mobile accordion state
+  const [openSections, setOpenSections] = React.useState({
+    services: false,
+    tools: false,
+    links: false,
+    legal: false,
+  });
+
+  const toggleSection = (section) => {
+    setOpenSections(prev => ({
+      ...prev,
+      [section]: !prev[section]
+    }));
+  };
+
+  // Desktop Footer (unchanged)
+  const DesktopFooter = () => (
+    <Container maxWidth="lg">
+      <Grid container spacing={4}>
+        <Grid item xs={12} md={4} style={{ flex: "1" }}>
+          <img
+            src="/images/white-logo.png"
+            alt="CreditDost Logo"
+            style={{ width: "200px", marginBottom: "20px" }}
+          />
+          <Typography
+            variant="body2"
+            color="grey.300"
+            mb={3}
+            lineHeight={1.6}
+          >
+            Credit Dost Suvidha Centre is a dedicated financial service point
+            offering credit score repair, loan assistance, and financial
+            support services.
+          </Typography>
+          <Box mb={2}>
+            <ContactInfo>
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+              >
+                <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z" />
+              </svg>
+              <Typography variant="body2" color="grey.300">
+                info@creditdost.co.in
+              </Typography>
+            </ContactInfo>
+            <ContactInfo>
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+              >
+                <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z" />
+              </svg>
+              <Typography variant="body2" color="grey.300">
+                +91 98765 43210
+              </Typography>
+            </ContactInfo>
+          </Box>
+          <Box>
+            <a
+              href="https://www.facebook.com/creditdost/"
+              style={{ color: "white" }}
             >
-              Credit Dost Suvidha Centre is a dedicated financial service point
-              offering credit score repair, loan assistance, and financial
-              support services.
-            </Typography>
-            <Box mb={2}>
-              <ContactInfo>
-                <svg
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="currentColor"
-                >
-                  <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z" />
-                </svg>
-                <Typography variant="body2" color="grey.300">
-                  info@creditdost.co.in
-                </Typography>
-              </ContactInfo>
-              <ContactInfo>
-                <svg
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="currentColor"
-                >
-                  <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z" />
-                </svg>
-                <Typography variant="body2" color="grey.300">
-                  +91 98765 43210
-                </Typography>
-              </ContactInfo>
-            </Box>
-            <Box>
-              <a
-                href="https://www.facebook.com/creditdost/"
-                style={{ color: "white" }}
-              >
-                <SocialIcon size="small">
-                  <FacebookIcon />
-                </SocialIcon>
-              </a>
-              <a
-                href="https://www.youtube.com/@CreditDostLearning"
-                style={{ color: "white" }}
-              >
-                <SocialIcon size="small">
-                  <YouTubeIcon />
-                </SocialIcon>
-              </a>
-              <a href="https://www.linkedin.com/company/creditdost/">
-                <SocialIcon size="small">
-                  <LinkedInIcon />
-                </SocialIcon>
-              </a>
-              <a href="https://www.instagram.com/credit.dost/">
-                <SocialIcon size="small">
-                  <InstagramIcon />
-                </SocialIcon>
-              </a>
-            </Box>
-          </Grid>
-
-          <Grid item xs={6} md={2} style={{ flex: "1", marginLeft: "40px" }}>
-            <FooterHeading variant="h6" gutterBottom>
-              Services
-            </FooterHeading>
-            <FooterLink href="/credit-score-repair">
-              Credit Score Repair
-            </FooterLink>
-            <FooterLink href="/franchise-opportunity">
-              Franchise Opportunity
-            </FooterLink>
-            <FooterLink href="/apply-for-loan">
-              Apply for Loan
-            </FooterLink>
-            <FooterLink href="/credit-check">
-              Free Credit Report
-            </FooterLink>
-            <FooterLink href="/suvidha-centre">
-              Suvidha Centre
-            </FooterLink>
-            
-          </Grid>
-
-          <Grid item xs={6} md={2} style={{ flex: "1" }}>
-            <FooterHeading variant="h6" gutterBottom>
-              Financial Tools
-            </FooterHeading>
-            <FooterLink href="/credit-check">Free Credit Report</FooterLink>
-            <FooterLink href="/emi-calculator">EMI Calculator</FooterLink>
-            <FooterLink href="/ifsc-finder">IFSC Finder</FooterLink>
-          </Grid>
-
-          <Grid item xs={6} md={2} style={{ flex: "1" }}>
-            <FooterHeading variant="h6" gutterBottom>
-              Quick Links
-            </FooterHeading>
-            <FooterLink href="/about">About Us</FooterLink>
-            <FooterLink href="/contact">Contact Us</FooterLink>
-            <FooterLink href="/careers">Careers</FooterLink>
-            <FooterLink href="/suvidha-centre">Suvidha Centre</FooterLink>
-            <FooterLink href="/blogs">Blog</FooterLink>
-          </Grid>
-
-          <Grid item xs={6} md={2} style={{ flex: "1" }}>
-            <FooterHeading variant="h6" gutterBottom>
-              Legal
-            </FooterHeading>
-            <FooterLink href="/privacy-policy">Privacy Policy</FooterLink>
-            <FooterLink href="/terms-and-conditions">
-              Terms of Service
-            </FooterLink>
-            <FooterLink href="/disclaimer">Disclaimer</FooterLink>
-            <FooterLink href="/refund-policy">Refund Policy</FooterLink>
-          </Grid>
+              <SocialIcon size="small">
+                <FacebookIcon />
+              </SocialIcon>
+            </a>
+            <a
+              href="https://www.youtube.com/@CreditDostLearning"
+              style={{ color: "white" }}
+            >
+              <SocialIcon size="small">
+                <YouTubeIcon />
+              </SocialIcon>
+            </a>
+            <a href="https://www.linkedin.com/company/creditdost/">
+              <SocialIcon size="small">
+                <LinkedInIcon />
+              </SocialIcon>
+            </a>
+            <a href="https://www.instagram.com/credit.dost/">
+              <SocialIcon size="small">
+                <InstagramIcon />
+              </SocialIcon>
+            </a>
+          </Box>
         </Grid>
 
-        <Box
-          mt={8}
-          pt={4}
-          borderTop={`1px solid rgba(255, 255, 255, 0.1)`}
-          textAlign="center"
+        <Grid item xs={6} md={2} style={{ flex: "1", marginLeft: "40px" }}>
+          <FooterHeading variant="h6" gutterBottom>
+            Services
+          </FooterHeading>
+          <FooterLink href="/credit-score-repair">
+            Credit Score Repair
+          </FooterLink>
+          <FooterLink href="/franchise-opportunity">
+            Franchise Opportunity
+          </FooterLink>
+          <FooterLink href="/apply-for-loan">
+            Apply for Loan
+          </FooterLink>
+          <FooterLink href="/credit-check">
+            Free Credit Report
+          </FooterLink>
+          <FooterLink href="/suvidha-centre">
+            Suvidha Centre
+          </FooterLink>
+        </Grid>
+
+        <Grid item xs={6} md={2} style={{ flex: "1" }}>
+          <FooterHeading variant="h6" gutterBottom>
+            Financial Tools
+          </FooterHeading>
+          <FooterLink href="/credit-check">Free Credit Report</FooterLink>
+          <FooterLink href="/emi-calculator">EMI Calculator</FooterLink>
+          <FooterLink href="/ifsc-finder">IFSC Finder</FooterLink>
+        </Grid>
+
+        <Grid item xs={6} md={2} style={{ flex: "1" }}>
+          <FooterHeading variant="h6" gutterBottom>
+            Quick Links
+          </FooterHeading>
+          <FooterLink href="/about">About Us</FooterLink>
+          <FooterLink href="/contact">Contact Us</FooterLink>
+          <FooterLink href="/careers">Careers</FooterLink>
+          <FooterLink href="/suvidha-centre">Suvidha Centre</FooterLink>
+          <FooterLink href="/blogs">Blog</FooterLink>
+        </Grid>
+
+        <Grid item xs={6} md={2} style={{ flex: "1" }}>
+          <FooterHeading variant="h6" gutterBottom>
+            Legal
+          </FooterHeading>
+          <FooterLink href="/privacy-policy">Privacy Policy</FooterLink>
+          <FooterLink href="/terms-and-conditions">
+            Terms of Service
+          </FooterLink>
+          <FooterLink href="/disclaimer">Disclaimer</FooterLink>
+          <FooterLink href="/refund-policy">Refund Policy</FooterLink>
+        </Grid>
+      </Grid>
+
+      <Box
+        mt={8}
+        pt={4}
+        borderTop={`1px solid rgba(255, 255, 255, 0.1)`}
+        textAlign="center"
+      >
+        <Typography variant="body2" color="grey.400">
+          © {new Date().getFullYear()} CreditDost. All rights reserved.
+        </Typography>
+        <Typography variant="caption" display="block" color="grey.500" mt={1}>
+          Optimystic Auxiliary Services Private Limited
+        </Typography>
+      </Box>
+    </Container>
+  );
+
+  // Mobile Footer (new responsive version)
+  const MobileFooter = () => (
+    <Container maxWidth="lg">
+      {/* Company Info Section */}
+      <MobileFooterSection>
+        <img
+          src="/images/white-logo.png"
+          alt="CreditDost Logo"
+          style={{ width: "180px", marginBottom: "16px" }}
+        />
+        <Typography
+          variant="body2"
+          color="grey.300"
+          mb={3}
+          lineHeight={1.6}
+          fontSize="0.9rem"
         >
-          <Typography variant="body2" color="grey.400">
-            © {new Date().getFullYear()} CreditDost. All rights reserved.
-          </Typography>
-          <Typography variant="caption" display="block" color="grey.500" mt={1}>
-            Optimystic Auxiliary Services Private Limited
-          </Typography>
+          Credit Dost Suvidha Centre is a dedicated financial service point
+          offering credit score repair, loan assistance, and financial
+          support services.
+        </Typography>
+        
+        <Box mb={2}>
+          <ContactInfo>
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+            >
+              <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z" />
+            </svg>
+            <Typography variant="body2" color="grey.300" fontSize="0.9rem">
+              info@creditdost.co.in
+            </Typography>
+          </ContactInfo>
+          <ContactInfo>
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+            >
+              <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z" />
+            </svg>
+            <Typography variant="body2" color="grey.300" fontSize="0.9rem">
+              +91 98765 43210
+            </Typography>
+          </ContactInfo>
         </Box>
-      </Container>
+        
+        {/* Social Icons */}
+        <Box display="flex" justifyContent="center" mb={4}>
+          <a
+            href="https://www.facebook.com/creditdost/"
+            style={{ color: "white" }}
+          >
+            <SocialIcon size="small">
+              <FacebookIcon />
+            </SocialIcon>
+          </a>
+          <a
+            href="https://www.youtube.com/@CreditDostLearning"
+            style={{ color: "white" }}
+          >
+            <SocialIcon size="small">
+              <YouTubeIcon />
+            </SocialIcon>
+          </a>
+          <a href="https://www.linkedin.com/company/creditdost/">
+            <SocialIcon size="small">
+              <LinkedInIcon />
+            </SocialIcon>
+          </a>
+          <a href="https://www.instagram.com/credit.dost/">
+            <SocialIcon size="small">
+              <InstagramIcon />
+            </SocialIcon>
+          </a>
+        </Box>
+      </MobileFooterSection>
+
+      {/* Two-column grid for accordions */}
+      <Grid container spacing={2}>
+        {/* First column */}
+        <Grid item xs={6}>
+          {/* Services Accordion */}
+          <MobileAccordion>
+            <MobileAccordionHeader onClick={() => toggleSection("services")}>
+              <FooterHeading variant="h6" style={{ fontSize: "1rem", margin: 0 }}>
+                Services
+              </FooterHeading>
+              <Typography color="grey.300">
+                {openSections.services ? "−" : "+"}
+              </Typography>
+            </MobileAccordionHeader>
+            <MobileAccordionContent open={openSections.services}>
+              <FooterLink href="/credit-score-repair">
+                Credit Score Repair
+              </FooterLink>
+              <FooterLink href="/franchise-opportunity">
+                Franchise Opportunity
+              </FooterLink>
+              <FooterLink href="/apply-for-loan">
+                Apply for Loan
+              </FooterLink>
+              <FooterLink href="/credit-check">
+                Free Credit Report
+              </FooterLink>
+              <FooterLink href="/suvidha-centre">
+                Suvidha Centre
+              </FooterLink>
+            </MobileAccordionContent>
+          </MobileAccordion>
+
+          {/* Financial Tools Accordion */}
+          <MobileAccordion>
+            <MobileAccordionHeader onClick={() => toggleSection("tools")}>
+              <FooterHeading variant="h6" style={{ fontSize: "1rem", margin: 0 }}>
+                Financial Tools
+              </FooterHeading>
+              <Typography color="grey.300">
+                {openSections.tools ? "−" : "+"}
+              </Typography>
+            </MobileAccordionHeader>
+            <MobileAccordionContent open={openSections.tools}>
+              <FooterLink href="/credit-check">Free Credit Report</FooterLink>
+              <FooterLink href="/emi-calculator">EMI Calculator</FooterLink>
+              <FooterLink href="/ifsc-finder">IFSC Finder</FooterLink>
+            </MobileAccordionContent>
+          </MobileAccordion>
+        </Grid>
+
+        {/* Second column */}
+        <Grid item xs={6}>
+          {/* Quick Links Accordion */}
+          <MobileAccordion>
+            <MobileAccordionHeader onClick={() => toggleSection("links")}>
+              <FooterHeading variant="h6" style={{ fontSize: "1rem", margin: 0 }}>
+                Quick Links
+              </FooterHeading>
+              <Typography color="grey.300">
+                {openSections.links ? "−" : "+"}
+              </Typography>
+            </MobileAccordionHeader>
+            <MobileAccordionContent open={openSections.links}>
+              <FooterLink href="/about">About Us</FooterLink>
+              <FooterLink href="/contact">Contact Us</FooterLink>
+              <FooterLink href="/careers">Careers</FooterLink>
+              <FooterLink href="/suvidha-centre">Suvidha Centre</FooterLink>
+              <FooterLink href="/blogs">Blog</FooterLink>
+            </MobileAccordionContent>
+          </MobileAccordion>
+
+          {/* Legal Accordion */}
+          <MobileAccordion>
+            <MobileAccordionHeader onClick={() => toggleSection("legal")}>
+              <FooterHeading variant="h6" style={{ fontSize: "1rem", margin: 0 }}>
+                Legal
+              </FooterHeading>
+              <Typography color="grey.300">
+                {openSections.legal ? "−" : "+"}
+              </Typography>
+            </MobileAccordionHeader>
+            <MobileAccordionContent open={openSections.legal}>
+              <FooterLink href="/privacy-policy">Privacy Policy</FooterLink>
+              <FooterLink href="/terms-and-conditions">
+                Terms of Service
+              </FooterLink>
+              <FooterLink href="/disclaimer">Disclaimer</FooterLink>
+              <FooterLink href="/refund-policy">Refund Policy</FooterLink>
+            </MobileAccordionContent>
+          </MobileAccordion>
+        </Grid>
+      </Grid>
+
+      {/* Copyright Section */}
+      <Box
+        mt={4}
+        pt={3}
+        borderTop={`1px solid rgba(255, 255, 255, 0.1)`}
+        textAlign="center"
+      >
+        <Typography variant="body2" color="grey.400" fontSize="0.85rem">
+          © {new Date().getFullYear()} CreditDost. All rights reserved.
+        </Typography>
+        <Typography variant="caption" display="block" color="grey.500" mt={1} fontSize="0.75rem">
+          Optimystic Auxiliary Services Private Limited
+        </Typography>
+      </Box>
+    </Container>
+  );
+
+  return (
+    <FooterBackground component="footer">
+      {isMobile ? <MobileFooter /> : <DesktopFooter />}
     </FooterBackground>
   );
 };

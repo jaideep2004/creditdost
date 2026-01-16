@@ -83,19 +83,25 @@ const Business = () => {
         (pkg) => pkg._id
       );
 
-      // Get packages purchased through transactions
+      // Get packages purchased through transactions (only the most recent paid transaction)
       const transactionsResponse = await franchiseAPI.getTransactions();
-      const paidTransactions = transactionsResponse.data.filter(
-        (tx) => tx.status === "paid"
-      );
-      const purchasedPackageIds = paidTransactions
-        .filter((tx) => tx.packageId) // Only transactions with package
-        .map((tx) => tx.packageId._id);
-
-      // Combine both sets of package IDs
-      const allAccessiblePackageIds = [
-        ...new Set([...assignedPackageIds, ...purchasedPackageIds]),
-      ];
+      const paidTransactions = transactionsResponse.data
+        .filter((tx) => tx.status === "paid")
+        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)); // Sort by most recent first
+      
+      // Find the most recent transaction with a package
+      const latestTransaction = paidTransactions.find(tx => tx.packageId);
+      
+      let accessiblePackageIds = [];
+      
+      // Use either the purchased package (if exists) or fall back to assigned packages
+      if (latestTransaction && latestTransaction.packageId) {
+        // Use only the most recently purchased package
+        accessiblePackageIds = [latestTransaction.packageId._id];
+      } else {
+        // Fall back to assigned packages if no purchase history
+        accessiblePackageIds = assignedPackageIds;
+      }
 
       // Filter customer packages based on availableForPackages
       const filtered = allPackages.filter((pkg) => {
@@ -109,7 +115,7 @@ const Business = () => {
 
         // Check if any of the accessible packages match the allowed packages
         return pkg.availableForPackages.some((allowedPackageId) =>
-          allAccessiblePackageIds.includes(allowedPackageId)
+          accessiblePackageIds.includes(allowedPackageId)
         );
       });
 

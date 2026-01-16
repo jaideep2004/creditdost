@@ -5,6 +5,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 import { AuthProvider } from './hooks/useAuth.jsx';
 import ProtectedRoute from './components/common/ProtectedRoute';
 import ScrollToTop from './components/common/ScrollToTop';
+import AnalyticsTracker from './components/common/AnalyticsTracker';
 import './App.css'
 // Import components
 import Home from './components/homepage/HomePage';
@@ -149,6 +150,7 @@ function App() {
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <Router>
+          <AnalyticsTracker />
           <ScrollToTop />
           <Routes>
             <Route path="/" element={<Home />} />

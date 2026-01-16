@@ -347,10 +347,7 @@ const IndianStates = [
   "Puducherry",
 ];
 
-const OccupationOptions = [
-  "Salaried",
-  "Self Employed",
-];
+const OccupationOptions = ["Salaried", "Self Employed"];
 
 const LoanAmountOptions = [
   "Below ₹10,000",
@@ -436,11 +433,21 @@ const ApplyForLoanPage = () => {
       setError("Please enter a valid 10-character PAN number");
       return false;
     }
-    if (!formData.panNumber || formData.panNumber.length !== 10 || !/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(formData.panNumber)) {
-      setError("Please enter a valid 10-character PAN number (e.g., ABCDE1234F)");
+    if (
+      !formData.panNumber ||
+      formData.panNumber.length !== 10 ||
+      !/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(formData.panNumber)
+    ) {
+      setError(
+        "Please enter a valid 10-character PAN number (e.g., ABCDE1234F)"
+      );
       return false;
     }
-    if (!formData.aadharNumber || formData.aadharNumber.length !== 12 || !/^[0-9]{12}$/.test(formData.aadharNumber)) {
+    if (
+      !formData.aadharNumber ||
+      formData.aadharNumber.length !== 12 ||
+      !/^[0-9]{12}$/.test(formData.aadharNumber)
+    ) {
       setError("Please enter a valid 12-digit Aadhar number");
       return false;
     }
@@ -607,7 +614,10 @@ const ApplyForLoanPage = () => {
                   container
                   spacing={4}
                   alignItems="center"
-                  style={{ flexWrap: "nowrap" }}
+                  sx={{
+                    flexWrap: { xs: "wrap", md: "nowrap" },
+                    flexDirection: { xs: "column", md: "row" },
+                  }}
                 >
                   <Grid item xs={12} md={6} style={{ flex: "1" }}>
                     <Box sx={{ pr: { md: 4 } }}>
@@ -617,6 +627,8 @@ const ApplyForLoanPage = () => {
                           fontWeight: 700,
                           color: "#0c4a6e",
                           mb: 3,
+                          fontSize: { xs: "1.7rem", md: "2rem" },
+                          textAlign: { xs: "center", md: "left" },
                         }}
                       >
                         Struggling to Get a Loan Because of a Low Credit Score?
@@ -755,7 +767,14 @@ const ApplyForLoanPage = () => {
               </Typography>
             </SectionHeader>
 
-            <Grid container spacing={4} style={{ flexWrap: "nowrap" }}>
+            <Grid
+              container
+              spacing={4}
+              sx={{
+                flexWrap: { xs: "wrap", md: "nowrap" },
+                flexDirection: { xs: "column", md: "row" },
+              }}
+            >
               {[
                 {
                   icon: <CreditScore sx={{ fontSize: 40 }} />,
@@ -1033,7 +1052,7 @@ const ApplyForLoanPage = () => {
                   sm={6}
                   md={4}
                   key={index}
-                  style={{ width: "31%" }}
+                  sx={{ width: { xs: "100%", md: "31%" } }}
                 >
                   <FeatureCard>
                     <Box
@@ -1632,7 +1651,11 @@ const ApplyForLoanPage = () => {
             </SectionHeader>
 
             <ContactCard>
-              <Grid container spacing={4}>
+              <Grid
+                container
+                spacing={4}
+                sx={{ flexDirection: { xs: "column", md: "row" } }}
+              >
                 <Grid item xs={12} md={6} style={{ flex: "1" }}>
                   <Box
                     sx={{

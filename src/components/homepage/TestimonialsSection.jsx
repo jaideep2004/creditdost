@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Container, Typography, Avatar, IconButton } from '@mui/material';
+import { Box, Container, Typography, Avatar, IconButton, useTheme } from '@mui/material';
 import { ArrowBackIos, ArrowForwardIos, Star, StarBorder } from '@mui/icons-material';
 
 const testimonials = [
@@ -34,6 +34,7 @@ const testimonials = [
 ];
 
 const TestimonialSection = () => {
+  const theme = useTheme();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(true);
 
@@ -125,7 +126,13 @@ const TestimonialSection = () => {
             fontWeight: 600,
             letterSpacing: '2px',
             textTransform: 'uppercase',
-            mb: 2
+            mb: 2,
+            textAlign: 'left',
+            [theme.breakpoints.down('sm')]: {
+              fontSize: '12px',
+              letterSpacing: '1.5px',
+              textAlign: 'center',
+            }
           }}>
             TESTIMONIALS
           </Typography>
@@ -135,7 +142,14 @@ const TestimonialSection = () => {
             color: '#1e293b',
             lineHeight: 1.2,
             maxWidth: '600px',
-            textAlign: 'center'
+            textAlign: 'center',
+            [theme.breakpoints.down('sm')]: {
+              fontSize: '1.75rem',
+              textAlign: 'center',
+            },
+            [theme.breakpoints.down('xs')]: {
+              fontSize: '1.5rem',
+            }
           }}>
             Real people. Real journeys. Real results.
           </Typography>

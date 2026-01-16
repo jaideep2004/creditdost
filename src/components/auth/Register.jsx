@@ -26,6 +26,7 @@ import {
   CircularProgress, // Add CircularProgress for loading indicator
 } from "@mui/material";
 import { useAuth } from "../../hooks/useAuth.jsx";
+import { trackEvent, trackException } from "../../hooks/useAnalytics";
        // Import Header                              
 import Header from "../../components/homepage/Header.jsx";
 import {
@@ -192,10 +193,14 @@ const Register = () => {
     setError("");
     setSuccess(false);
     setLoading(true); // Set loading to true when submitting
+    
+    // Track registration attempt
+    trackEvent('User Registration', 'Registration Started', 'Registration Form');
 
     // Validation
     if (!name || !email || !phone || !state || !pincode || !language) {
       setError("Please fill in all required fields");
+      trackEvent('User Registration', 'Validation Failed', 'Registration Form');
       setLoading(false); // Set loading to false on validation error
       return;
     }
@@ -251,6 +256,9 @@ const Register = () => {
 
       const result = await register(registrationData);
 
+      // Track successful registration
+      trackEvent('User Registration', 'Registration Successful', 'Registration Form');
+      
       setSuccess(true);
       // Show success toast
       setToast({
@@ -262,6 +270,11 @@ const Register = () => {
       setError(
         err.response?.data?.message || "Registration failed. Please try again."
       );
+      
+      // Track registration failure
+      trackException(`Registration failed: ${err.response?.data?.message || err.message}`, false);
+      trackEvent('User Registration', 'Registration Failed', 'Registration Form');
+      
       // Show error toast
       setToast({
         open: true,
