@@ -468,7 +468,11 @@ const FranchiseOpportunityPage = () => {
               container
               spacing={6}
               alignItems="center"
-              sx={{ position: "relative", zIndex: 1 }}
+              sx={{
+                position: "relative",
+                zIndex: 1,
+                flexDirection: { xs: "column", md: "row" },
+              }}
             >
               <Grid item xs={12} md={7} style={{ flex: "1" }}>
                 <Box
@@ -479,7 +483,7 @@ const FranchiseOpportunityPage = () => {
                     sx={{
                       color: "#4caf50",
                       fontWeight: 700,
-                      fontSize: "1.2rem",
+                      fontSize: { xs: "1rem", md: "1.2rem" },
                       textTransform: "uppercase",
                       letterSpacing: "2px",
                       position: "relative",
@@ -508,7 +512,7 @@ const FranchiseOpportunityPage = () => {
                   sx={{
                     color: "white",
                     fontWeight: 800,
-                    fontSize: { xs: "2.5rem", md: "3rem" },
+                    fontSize: { xs: "2rem", md: "3rem" },
                     lineHeight: 1.2,
                     mb: 3,
                     textShadow: "0 2px 10px rgba(0, 0, 0, 0.2)",
@@ -522,7 +526,7 @@ const FranchiseOpportunityPage = () => {
                   sx={{
                     color: "#bbdefb",
                     fontWeight: 600,
-                    fontSize: { xs: "1.5rem", md: "2rem" },
+                    fontSize: { xs: "1.2rem", md: "2rem" },
                     mb: 4,
                   }}
                 >
@@ -552,6 +556,10 @@ const FranchiseOpportunityPage = () => {
                     size="large"
                     endIcon={<ArrowForward />}
                     href="#franchise-form"
+                    sx={{
+                      py: 1.5,
+                      fontSize: { xs: "1rem", md: "1.1rem" },
+                    }}
                   >
                     Become a Partner
                   </StyledButton>
@@ -799,6 +807,7 @@ const FranchiseOpportunityPage = () => {
                     fontWeight: 800,
                     color: "#1a237e",
                     mb: 3,
+                    fontSize: { xs: "2rem", md: "3rem" },
                   }}
                 >
                   Why Partner with Credit Dost?
@@ -807,7 +816,7 @@ const FranchiseOpportunityPage = () => {
                   sx={{
                     textAlign: "center",
                     color: "#666",
-                    fontSize: "1.2rem",
+                    fontSize: { xs: "1rem", md: "1.2rem" },
                     maxWidth: "800px",
                     mx: "auto",
                     lineHeight: 1.7,
@@ -819,7 +828,11 @@ const FranchiseOpportunityPage = () => {
                 </Typography>
               </Box>
 
-              <Grid container spacing={4} style={{ flexWrap: "nowrap" }}>
+              <Grid
+                container
+                spacing={4}
+                sx={{ flexDirection: { xs: "column", md: "row" } }}
+              >
                 {benefits.map((benefit, index) => (
                   <Grid
                     item
@@ -905,6 +918,7 @@ const FranchiseOpportunityPage = () => {
                     fontWeight: 800,
                     color: "#1a237e",
                     mb: 3,
+                    fontSize: { xs: "2rem", md: "3rem" },
                   }}
                 >
                   Who Can Become a Credit Dost Partner?
@@ -913,7 +927,7 @@ const FranchiseOpportunityPage = () => {
                   sx={{
                     textAlign: "center",
                     color: "#666",
-                    fontSize: "1.2rem",
+                    fontSize: { xs: "1rem", md: "1.2rem" },
                     maxWidth: "800px",
                     mx: "auto",
                     lineHeight: 1.7,
@@ -932,13 +946,7 @@ const FranchiseOpportunityPage = () => {
                   "A self-motivated individual wanting to start an ethical home-based business",
                   "A trainer, coach, or educator interested in financial empowerment",
                 ].map((item, index) => (
-                  <Grid
-                    item
-                    xs={12}
-                    md={6}
-                    key={index}
-                    style={{ width: "49%" }}
-                  >
+                  <Grid item xs={12} md={6} key={index}>
                     <Box
                       sx={{
                         display: "flex",
@@ -1013,6 +1021,7 @@ const FranchiseOpportunityPage = () => {
                     fontWeight: 800,
                     color: "#1a237e",
                     mb: 3,
+                    fontSize: { xs: "2rem", md: "3rem" },
                   }}
                 >
                   What You Get as a Partner
@@ -1021,7 +1030,7 @@ const FranchiseOpportunityPage = () => {
                   sx={{
                     textAlign: "center",
                     color: "#666",
-                    fontSize: "1.2rem",
+                    fontSize: { xs: "1rem", md: "1.2rem" },
                     maxWidth: "800px",
                     mx: "auto",
                     lineHeight: 1.7,
@@ -1033,7 +1042,14 @@ const FranchiseOpportunityPage = () => {
                 </Typography>
               </Box>
 
-              <Grid container spacing={3}>
+              <Grid
+                container
+                spacing={3}
+                sx={{
+                  flexDirection: { xs: "column", md: "row" },
+                  flexWrap: { xs: "wrap", md: "nowrap" },
+                }}
+              >
                 {[
                   {
                     area: "Training & Certification",
@@ -1061,13 +1077,7 @@ const FranchiseOpportunityPage = () => {
                       "Benefit from ongoing mentoring, business review calls, and operational support from the Credit Dost core team to help you grow sustainably.",
                   },
                 ].map((item, index) => (
-                  <Grid
-                    item
-                    xs={12}
-                    md={6}
-                    key={index}
-                    style={{ width: "49%" }}
-                  >
+                  <Grid item xs={12} md={6} key={index}>
                     <Box
                       sx={{
                         p: 3,
@@ -1131,6 +1141,7 @@ const FranchiseOpportunityPage = () => {
                     fontWeight: 800,
                     color: "#1a237e",
                     mb: 3,
+                    fontSize: { xs: "2rem", md: "3rem" },
                   }}
                 >
                   How It Works – Step by Step
@@ -1139,7 +1150,7 @@ const FranchiseOpportunityPage = () => {
                   sx={{
                     textAlign: "center",
                     color: "#666",
-                    fontSize: "1.2rem",
+                    fontSize: { xs: "1rem", md: "1.2rem" },
                     maxWidth: "800px",
                     mx: "auto",
                     lineHeight: 1.7,
@@ -1150,7 +1161,11 @@ const FranchiseOpportunityPage = () => {
                 </Typography>
               </Box>
 
-              <Grid container spacing={4} style={{ flexWrap: "nowrap" }}>
+              <Grid
+                container
+                spacing={4}
+                sx={{ flexDirection: { xs: "column", md: "row" } }}
+              >
                 {steps.map((step, index) => (
                   <Grid
                     item
@@ -1233,6 +1248,7 @@ const FranchiseOpportunityPage = () => {
                     fontWeight: 800,
                     color: "#1a237e",
                     mb: 3,
+                    fontSize: { xs: "2rem", md: "3rem" },
                   }}
                 >
                   Support You Can Count On
@@ -1241,7 +1257,7 @@ const FranchiseOpportunityPage = () => {
                   sx={{
                     textAlign: "center",
                     color: "#666",
-                    fontSize: "1.2rem",
+                    fontSize: { xs: "1rem", md: "1.2rem" },
                     maxWidth: "800px",
                     mx: "auto",
                     lineHeight: 1.7,
@@ -1254,13 +1270,7 @@ const FranchiseOpportunityPage = () => {
 
               <Grid container spacing={2} justifyContent="center">
                 {supportFeatures.map((feature, index) => (
-                  <Grid
-                    item
-                    xs={12}
-                    md={10}
-                    key={index}
-                    style={{ width: "49%" }}
-                  >
+                  <Grid item xs={12} md={10} key={index}>
                     <Box
                       sx={{
                         display: "flex",
@@ -1331,6 +1341,7 @@ const FranchiseOpportunityPage = () => {
                     fontWeight: 800,
                     color: "#1a237e",
                     mb: 3,
+                    fontSize: { xs: "2rem", md: "3rem" },
                   }}
                 >
                   Success Stories
@@ -1355,7 +1366,7 @@ const FranchiseOpportunityPage = () => {
 
           {/* Contact Section */}
           <SectionCard>
-            <CardContent sx={{ p: 5 }} id="franchise-form">
+            <CardContent sx={{ p: { xs: 2, md: 5 } }} id="franchise-form">
               <Box sx={{ textAlign: "center", mb: 6 }}>
                 <Box
                   sx={{ display: "inline-block", position: "relative", mb: 2 }}
@@ -1391,6 +1402,7 @@ const FranchiseOpportunityPage = () => {
                     fontWeight: 800,
                     color: "#1a237e",
                     mb: 3,
+                    fontSize: { xs: "2rem", md: "3rem" },
                   }}
                 >
                   Join the Credit Dost Network
@@ -1412,7 +1424,11 @@ const FranchiseOpportunityPage = () => {
                 </Typography>
               </Box>
 
-              <Grid container spacing={6} style={{ flexWrap: "nowrap" }}>
+              <Grid
+                container
+                spacing={6}
+                sx={{ flexDirection: { xs: "column", md: "row" } }}
+              >
                 <Grid item xs={12} md={5} style={{ flex: "1" }}>
                   <Box
                     sx={{
@@ -1504,6 +1520,8 @@ const FranchiseOpportunityPage = () => {
                                 "linear-gradient(135deg, #25D366, #128C7E)",
                               mb: 0,
                               mr: 2,
+                              py: 1.2,
+                              fontSize: { xs: "0.9rem", md: "1rem" },
                             }}
                           >
                             Join WhatsApp Group
@@ -1517,6 +1535,8 @@ const FranchiseOpportunityPage = () => {
                             sx={{
                               background:
                                 "linear-gradient(135deg, #4caf50, #2196f3)",
+                              py: 1.2,
+                              fontSize: { xs: "0.9rem", md: "1rem" },
                             }}
                           >
                             Go to Home

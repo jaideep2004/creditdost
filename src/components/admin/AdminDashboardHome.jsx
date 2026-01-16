@@ -120,7 +120,7 @@ const AdminDashboardHome = () => {
     franchisePackageRevenue: 0,
     customerPackageRevenue: 0,
   });
-  
+
   const [visitorStats, setVisitorStats] = useState({
     realTimeVisitors: 0,
     totalUsers: 0,
@@ -128,8 +128,13 @@ const AdminDashboardHome = () => {
     sessions: 0,
     bounceRate: 0,
     avgSessionDuration: 0,
+    chartData: [],
+    topPages: [],
+    trafficSources: [],
+    period: "",
+    lastUpdated: null,
     loading: true,
-    error: null
+    error: null,
   });
   const [recentActivities, setRecentActivities] = useState([]);
   const [performanceData, setPerformanceData] = useState({
@@ -169,21 +174,57 @@ const AdminDashboardHome = () => {
 
         // Fetch visitor statistics
         try {
-          const visitorResponse = await adminAPI.getVisitorStats({ period: '30daysAgo' });
-          setVisitorStats({
-            ...visitorResponse.data.totalStats,
-            realTimeVisitors: visitorResponse.data.realTimeVisitors,
+          const visitorResponse = await adminAPI.getVisitorStats({
+            period: "7daysAgo",
+          }); // Changed to 7 days for more recent data
+          console.log("Visitor response received:", visitorResponse.data);
+          console.log("Full visitor response:", visitorResponse);
+          console.log(
+            "visitorResponse.data.totalStats:",
+            visitorResponse.data?.totalStats
+          );
+
+          // Add defensive checks
+          const totalStats = visitorResponse.data?.totalStats || {};
+
+          const newVisitorStats = {
+            realTimeVisitors: visitorResponse.data?.realTimeVisitors || 0,
+            totalUsers: totalStats.totalUsers || 0,
+            pageViews: totalStats.pageViews || 0,
+            sessions: totalStats.sessions || 0,
+            bounceRate: totalStats.bounceRate || 0,
+            avgSessionDuration: totalStats.avgSessionDuration || 0,
+            chartData: visitorResponse.data?.chartData || [],
+            topPages: visitorResponse.data?.topPages || [],
+            trafficSources: visitorResponse.data?.trafficSources || [],
+            period: visitorResponse.data?.period || "",
+            lastUpdated: visitorResponse.data?.lastUpdated || null,
             loading: false,
-            error: null
+            error: null,
+          };
+
+          console.log("Setting visitor stats to:", newVisitorStats);
+
+          setVisitorStats(newVisitorStats);
+
+          console.log("Visitor stats set:", {
+            realTimeVisitors: visitorResponse.data?.realTimeVisitors || 0,
+            totalUsers: totalStats.totalUsers || 0,
+            pageViews: totalStats.pageViews || 0,
+            sessions: totalStats.sessions || 0,
+            bounceRate: totalStats.bounceRate || 0,
+            avgSessionDuration: totalStats.avgSessionDuration || 0,
           });
         } catch (visitorErr) {
-          console.warn("Failed to fetch visitor statistics:", visitorErr);
-          setVisitorStats(prev => ({
+          console.error("Failed to fetch visitor statistics:", visitorErr);
+          console.error("Visitor error details:", visitorErr.response);
+          setVisitorStats((prev) => ({
             ...prev,
             loading: false,
-            error: visitorErr.response?.status === 500 ? 
-              "Google Analytics not configured. Check server logs." : 
-              "Unable to load visitor data"
+            error:
+              visitorErr.response?.status === 500
+                ? "Google Analytics not configured. Check server logs."
+                : "Unable to load visitor data",
           }));
         }
       } catch (err) {
@@ -196,6 +237,50 @@ const AdminDashboardHome = () => {
 
     fetchData();
   }, [selectedPeriod]);
+
+  // Auto-refresh visitor statistics every 30 seconds
+  useEffect(() => {
+    const refreshVisitorStats = async () => {
+      if (!visitorStats.error) {
+        // Only refresh if there's no error
+        try {
+          const visitorResponse = await adminAPI.getVisitorStats({
+            period: "7daysAgo",
+          });
+
+          // Add defensive checks
+          // const totalStats = visitorResponse.data?.totalStats || {};
+
+          const analyticsData = visitorResponse.data?.data || {};
+          const totalStats = analyticsData.totalStats || {};
+
+          const newVisitorStats = {
+            realTimeVisitors: analyticsData.realTimeVisitors || 0,
+            totalUsers: totalStats.totalUsers || 0,
+            pageViews: totalStats.pageViews || 0,
+            sessions: totalStats.sessions || 0,
+            bounceRate: totalStats.bounceRate || 0,
+            avgSessionDuration: totalStats.avgSessionDuration || 0,
+            chartData: analyticsData.chartData || [],
+            topPages: analyticsData.topPages || [],
+            trafficSources: analyticsData.trafficSources || [],
+            period: analyticsData.period || "",
+            lastUpdated: analyticsData.lastUpdated || null,
+            loading: false,
+            error: null,
+          };
+
+          setVisitorStats(newVisitorStats);
+        } catch (visitorErr) {
+          console.warn("Failed to refresh visitor statistics:", visitorErr);
+        }
+      }
+    };
+
+    const interval = setInterval(refreshVisitorStats, 30000); // Refresh every 30 seconds
+
+    return () => clearInterval(interval); // Cleanup on unmount
+  }, []); // Empty dependency array means this runs once when component mounts
 
   const statCards = [
     {
@@ -262,47 +347,107 @@ const AdminDashboardHome = () => {
       trend: "+15%",
       trendDirection: "up",
     },
-    // Visitor Statistics Cards
+  ];
+
+  const getVisitorStatCards = () => [
     {
       title: "Real-Time Visitors",
-      value: visitorStats.error ? "--" : visitorStats.realTimeVisitors,
+      value:
+        visitorStats.loading || visitorStats.error
+          ? "--"
+          : visitorStats.realTimeVisitors,
       icon: <VisibilityIcon sx={{ fontSize: 30 }} />,
       color: "#00bcd4",
       trend: "+5%",
       trendDirection: "up",
     },
     {
-      title: "Total Users (30d)",
-      value: visitorStats.error ? "--" : visitorStats.totalUsers,
+      title: "Total Users (7d)",
+      value:
+        visitorStats.loading || visitorStats.error
+          ? "--"
+          : visitorStats.totalUsers,
       icon: <GroupIcon sx={{ fontSize: 30 }} />,
       color: "#ff9800",
       trend: "+18%",
       trendDirection: "up",
     },
     {
-      title: "Page Views (30d)",
-      value: visitorStats.error ? "--" : visitorStats.pageViews,
+      title: "Page Views (7d)",
+      value:
+        visitorStats.loading || visitorStats.error
+          ? "--"
+          : visitorStats.pageViews,
       icon: <EqualizerIcon sx={{ fontSize: 30 }} />,
       color: "#9c27b0",
       trend: "+22%",
       trendDirection: "up",
     },
-    // Google Analytics Configuration Warning
-    ...(!visitorStats.error ? [] : [{
-      title: "Analytics Not Configured",
-      value: (
-        <Box sx={{ textAlign: 'center' }}>
-          <Typography variant="body2" color="text.secondary">
-            Configure Google Analytics
-          </Typography>
-        </Box>
-      ),
-      icon: <InsightsIcon sx={{ fontSize: 30 }} />,
-      color: "#9e9e9e",
-      trend: "Setup",
-      trendDirection: "neutral",
-    }])
+    {
+      title: "Sessions (7d)",
+      value:
+        visitorStats.loading || visitorStats.error
+          ? "--"
+          : visitorStats.sessions,
+      icon: <TrendingUpIcon sx={{ fontSize: 30 }} />,
+      color: "#4caf50",
+      trend: "+15%",
+      trendDirection: "up",
+    },
+    {
+      title: "Bounce Rate",
+      value:
+        visitorStats.loading || visitorStats.error
+          ? "--"
+          : `${(visitorStats.bounceRate * 100).toFixed(2)}%`,
+      icon: <ErrorIcon sx={{ fontSize: 30 }} />,
+      color: "#f44336",
+      trend: "-5%",
+      trendDirection: "down",
+    },
+    {
+      title: "Avg Session Duration",
+      value:
+        visitorStats.loading || visitorStats.error
+          ? "--"
+          : `${Math.round(visitorStats.avgSessionDuration)}s`,
+      icon: <AccessTimeIcon sx={{ fontSize: 30 }} />,
+      color: "#2196f3",
+      trend: "+10%",
+      trendDirection: "up",
+    },
   ];
+
+  const visitorStatCards = [
+    ...getVisitorStatCards(),
+    // Google Analytics Configuration Warning
+    ...(!visitorStats.error
+      ? []
+      : [
+          {
+            title: "Analytics Not Configured",
+            value: (
+              <Box sx={{ textAlign: "center" }}>
+                <Typography variant="body2" color="text.secondary">
+                  Configure Google Analytics
+                </Typography>
+              </Box>
+            ),
+            icon: <InsightsIcon sx={{ fontSize: 30 }} />,
+            color: "#9e9e9e",
+            trend: "Setup",
+            trendDirection: "neutral",
+          },
+        ]),
+  ];
+
+  console.log("Current visitorStats state:", visitorStats);
+  const tempVisitorStatCards = getVisitorStatCards();
+  console.log(
+    "Temp visitorStatCards created from current state:",
+    tempVisitorStatCards
+  );
+  console.log("Final visitorStatCards created:", visitorStatCards);
 
   const handlePeriodChange = async (period) => {
     try {
@@ -387,7 +532,15 @@ const AdminDashboardHome = () => {
 
       <Grid container spacing={3} mb={4}>
         {statCards.map((card, index) => (
-          <Grid item xs={12} sm={6} md={4} lg={3} key={index} style={{ flex: " 1" }}>
+          <Grid
+            item
+            xs={12}
+            sm={6}
+            md={4}
+            lg={3}
+            key={index}
+            style={{ flex: " 1" }}
+          >
             <StatCard>
               <CardContent sx={{ flexGrow: 1, p: 3 }}>
                 <Box
@@ -591,8 +744,8 @@ const AdminDashboardHome = () => {
         </Grid>
       </Grid>
 
-      <Grid container spacing={3}>
-        <Grid item xs={12}>
+      <Grid container spacing={3} style={{flexWrap: "nowrap"}}>
+        <Grid item xs={12} md={8}>
           <Card
             sx={{
               borderRadius: 3,
@@ -749,6 +902,300 @@ const AdminDashboardHome = () => {
                   </Box>
                 )}
               </Box>
+            </CardContent>
+          </Card>
+        </Grid>
+        <Grid item xs={12} md={4}>
+          <Card
+            sx={{
+              borderRadius: 3,
+              boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
+              border: "1px solid rgba(0,0,0,0.08)",
+              height: "100%",
+            }}
+          >
+            <CardContent sx={{ p: 3 }}>
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  mb: 3,
+                }}
+              >
+                <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                  Visitor Analytics
+                </Typography>
+              </Box>
+              <Grid container spacing={2}>
+                {console.log("Rendering visitorStatCards:", visitorStatCards)}
+                {visitorStats.loading ? (
+                  <Grid item xs={12}>
+                    <Box
+                      display="flex"
+                      justifyContent="center"
+                      alignItems="center"
+                      minHeight="100px"
+                    >
+                      <CircularProgress size={30} />
+                    </Box>
+                  </Grid>
+                ) : (
+                  visitorStatCards.slice(0, 3).map((card, index) => (
+                    <Grid item xs={12} key={`stats-${index}`}>
+                      <StatCard>
+                        <CardContent sx={{ flexGrow: 1, p: 2 }}>
+                          <Box
+                            sx={{
+                              display: "flex",
+                              justifyContent: "space-between",
+                              alignItems: "flex-start",
+                            }}
+                          >
+                            <Box>
+                              <StatIconWrapper color={card.color}>
+                                {card.icon}
+                              </StatIconWrapper>
+                            </Box>
+                            <Box textAlign="right">
+                              <Typography
+                                variant="h5"
+                                component="div"
+                                sx={{ fontWeight: 700, mb: 0.5 }}
+                              >
+                                {card.value}
+                              </Typography>
+                              {card.trendDirection !== "neutral" && (
+                                <TrendChip
+                                  icon={
+                                    card.trendDirection === "up" ? (
+                                      <ArrowUpwardIcon sx={{ fontSize: 16 }} />
+                                    ) : (
+                                      <ArrowUpwardIcon
+                                        sx={{
+                                          fontSize: 16,
+                                          transform: "rotate(180deg)",
+                                        }}
+                                      />
+                                    )
+                                  }
+                                  label={card.trend}
+                                  size="small"
+                                  variant="outlined"
+                                  color={
+                                    card.trendDirection === "up"
+                                      ? "success"
+                                      : "warning"
+                                  }
+                                  sx={{
+                                    ".MuiChip-icon": {
+                                      color:
+                                        card.trendDirection === "up"
+                                          ? "#4caf50"
+                                          : "#ff9800",
+                                    },
+                                  }}
+                                />
+                              )}
+                            </Box>
+                          </Box>
+                          <Typography variant="body2" color="text.secondary">
+                            {card.title}
+                          </Typography>
+                        </CardContent>
+                      </StatCard>
+                    </Grid>
+                  ))
+                )}
+              </Grid>
+
+              {/* Detailed Metrics */}
+              <Box sx={{ mt: 3 }}>
+                <Typography
+                  variant="subtitle2"
+                  sx={{ fontWeight: 600, mb: 2, color: "text.secondary" }}
+                >
+                  Detailed Metrics
+                </Typography>
+                <Grid container spacing={1}>
+                  {visitorStats.loading ? (
+                    <Grid item xs={12}>
+                      <Box
+                        display="flex"
+                        justifyContent="center"
+                        alignItems="center"
+                        minHeight="60px"
+                      >
+                        <CircularProgress size={20} />
+                      </Box>
+                    </Grid>
+                  ) : (
+                    visitorStatCards.slice(3).map((card, index) => (
+                      <Grid item xs={12} key={`detail-${index}`}>
+                        <Paper
+                          sx={{
+                            p: 1.5,
+                            mb: 1,
+                            display: "flex",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                            bgcolor: "grey.50",
+                          }}
+                        >
+                          <Box sx={{ display: "flex", alignItems: "center" }}>
+                            <Box
+                              sx={{
+                                width: 32,
+                                height: 32,
+                                borderRadius: "50%",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                bgcolor: `${card.color}20`,
+                                color: card.color,
+                                mr: 1.5,
+                              }}
+                            >
+                              {card.icon}
+                            </Box>
+                            <Typography variant="body2" color="text.secondary">
+                              {card.title}
+                            </Typography>
+                          </Box>
+                          <Typography variant="body1" sx={{ fontWeight: 600 }}>
+                            {card.value}
+                          </Typography>
+                        </Paper>
+                      </Grid>
+                    ))
+                  )}
+                </Grid>
+              </Box>
+
+              {/* Top Pages */}
+              <Box sx={{ mt: 3 }}>
+                <Typography
+                  variant="subtitle2"
+                  sx={{ fontWeight: 600, mb: 2, color: "text.secondary" }}
+                >
+                  Top Pages
+                </Typography>
+                <List sx={{ py: 0 }}>
+                  {visitorStats.loading ? (
+                    <ListItem sx={{ py: 0.5, px: 0 }}>
+                      <ListItemText
+                        primary={
+                          <Box
+                            display="flex"
+                            justifyContent="center"
+                            alignItems="center"
+                            minHeight="40px"
+                          >
+                            <CircularProgress size={16} />
+                          </Box>
+                        }
+                      />
+                    </ListItem>
+                  ) : visitorStats.topPages &&
+                    visitorStats.topPages.length > 0 ? (
+                    visitorStats.topPages.slice(0, 5).map((page, index) => (
+                      <ListItem key={index} sx={{ py: 0.5, px: 0 }}>
+                        <ListItemText
+                          primary={
+                            <Typography variant="body2" noWrap>
+                              {page.pageTitle}
+                            </Typography>
+                          }
+                          secondary={`Views: ${page.pageViews}`}
+                          primaryTypographyProps={{ fontSize: "0.8rem" }}
+                          secondaryTypographyProps={{
+                            fontSize: "0.7rem",
+                            color: "text.secondary",
+                          }}
+                        />
+                      </ListItem>
+                    ))
+                  ) : (
+                    <Typography
+                      variant="body2"
+                      color="text.secondary"
+                      sx={{ py: 1 }}
+                    >
+                      No top pages data
+                    </Typography>
+                  )}
+                </List>
+              </Box>
+
+              {/* Traffic Sources */}
+              <Box sx={{ mt: 3 }}>
+                <Typography
+                  variant="subtitle2"
+                  sx={{ fontWeight: 600, mb: 2, color: "text.secondary" }}
+                >
+                  Traffic Sources
+                </Typography>
+                <List sx={{ py: 0 }}>
+                  {visitorStats.loading ? (
+                    <ListItem sx={{ py: 0.5, px: 0 }}>
+                      <ListItemText
+                        primary={
+                          <Box
+                            display="flex"
+                            justifyContent="center"
+                            alignItems="center"
+                            minHeight="40px"
+                          >
+                            <CircularProgress size={16} />
+                          </Box>
+                        }
+                      />
+                    </ListItem>
+                  ) : visitorStats.trafficSources &&
+                    visitorStats.trafficSources.length > 0 ? (
+                    visitorStats.trafficSources
+                      .slice(0, 5)
+                      .map((source, index) => (
+                        <ListItem key={index} sx={{ py: 0.5, px: 0 }}>
+                          <ListItemText
+                            primary={`${source.source}`}
+                            secondary={`Users: ${source.users}`}
+                            primaryTypographyProps={{ fontSize: "0.8rem" }}
+                            secondaryTypographyProps={{
+                              fontSize: "0.7rem",
+                              color: "text.secondary",
+                            }}
+                          />
+                        </ListItem>
+                      ))
+                  ) : (
+                    <Typography
+                      variant="body2"
+                      color="text.secondary"
+                      sx={{ py: 1 }}
+                    >
+                      No traffic sources data
+                    </Typography>
+                  )}
+                </List>
+              </Box>
+
+              {/* Last Updated */}
+              {visitorStats.lastUpdated && (
+                <Box
+                  sx={{
+                    mt: 2,
+                    pt: 2,
+                    borderTop: "1px solid",
+                    borderColor: "divider",
+                  }}
+                >
+                  <Typography variant="caption" color="text.secondary">
+                    Last updated:{" "}
+                    {new Date(visitorStats.lastUpdated).toLocaleString()}
+                  </Typography>
+                </Box>
+              )}
             </CardContent>
           </Card>
         </Grid>

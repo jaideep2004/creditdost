@@ -57,6 +57,7 @@ const FeaturesSection = () => {
 
   return (
     <div
+      className="features-container"
       style={{
         position: "relative",
         background: "#f5f7fa",
@@ -126,10 +127,88 @@ const FeaturesSection = () => {
           opacity: 0.5;
           cursor: not-allowed;
         }
+        /* Mobile responsiveness */
+        @media (max-width: 768px) {
+          .service-card {
+            max-width: 100%;
+            margin-bottom: 20px;
+          }
+          
+          .features-container {
+            padding: 40px 16px !important;
+          }
+          
+          .features-header {
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 20px;
+          }
+          
+          .features-title {
+            font-size: 2rem !important;
+          }
+          
+          .features-subtitle {
+            font-size: 0.85rem !important;
+          }
+          
+          .nav-buttons {
+            order: -1;
+            margin-bottom: 20px;
+          }
+          
+          .service-grid {
+            grid-template-columns: 1fr !important;
+            gap: 24px !important;
+          }
+          
+          .service-card-content {
+            padding: 24px !important;
+          }
+          
+          .service-card-image {
+            height: 160px !important;
+          }
+          
+          .service-card-icon {
+            font-size: 40px !important;
+            height: 100px !important;
+          }
+          
+          .animated-bg-elements {
+            display: none;
+          }
+        }
+        
+        @media (max-width: 480px) {
+          .features-container {
+            padding: 32px 12px !important;
+          }
+          
+          .features-title {
+            font-size: 1.75rem !important;
+          }
+          
+          .service-card-icon {
+            height: 80px !important;
+          }
+          
+          .service-card-content {
+            padding: 20px !important;
+          }
+          
+          .nav-buttonz {
+            width: 48px !important;
+            height: 48px !important;
+            font-size: 20px !important;
+          }
+        }
       `}</style>
 
       {/* Animated Background Elements */}
       <div
+        className="animated-bg-elements"
         style={{
           position: "absolute",
           top: "10%",
@@ -143,6 +222,7 @@ const FeaturesSection = () => {
         }}
       />
       <div
+        className="animated-bg-elements"
         style={{
           position: "absolute",
           bottom: "72%",
@@ -156,6 +236,7 @@ const FeaturesSection = () => {
         }}
       />
       <div
+        className="animated-bg-elements"
         style={{
           position: "absolute",
           top: "50%",
@@ -171,6 +252,7 @@ const FeaturesSection = () => {
 
       <div style={{ maxWidth: "1400px", margin: "0 auto" }}>
         <div
+          className="features-header"
           style={{
             display: "flex",
             justifyContent: "space-between",
@@ -194,6 +276,7 @@ const FeaturesSection = () => {
               OUR SERVICES
             </div>
             <h2
+              className="features-title"
               style={{
                 fontSize: "2.5rem",
                 fontWeight: 800,
@@ -207,7 +290,7 @@ const FeaturesSection = () => {
             </h2>
           </div>
 
-          <div style={{ display: "flex", gap: "16px" }}>
+          <div className="nav-buttons" style={{ display: "flex", gap: "16px" }}>
             <button
               onClick={handlePrevious}
               disabled={isAnimating}
@@ -226,6 +309,7 @@ const FeaturesSection = () => {
         </div>
 
         <div
+          className="service-grid"
           style={{
             display: "grid",
             gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))",
@@ -242,6 +326,7 @@ const FeaturesSection = () => {
               }}
             >
               <div
+                className="service-card-icon"
                 style={{
                   background: "#007ba7",
                   height: "120px",
@@ -274,7 +359,7 @@ const FeaturesSection = () => {
                 </div>
               </div>
 
-              <div style={{ padding: "32px" }}>
+              <div className="service-card-content" style={{ padding: "32px" }}>
                 <h3
                   style={{
                     fontWeight: 700,
@@ -298,6 +383,7 @@ const FeaturesSection = () => {
                 </p>
 
                 <img
+                  className="service-card-image"
                   src={service.image}
                   alt={service.title}
                   style={{

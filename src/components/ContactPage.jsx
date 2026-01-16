@@ -4,6 +4,7 @@ import { Phone, Email, LocationOn, Facebook, Twitter, LinkedIn, YouTube } from '
 import Header from './homepage/Header';
 import HomePageFooter from './homepage/HomePageFooter';
 import api from '../services/api';
+import { trackEvent, trackException } from '../hooks/useAnalytics';
 
 const ContactPage = () => {
   const [formData, setFormData] = useState({
@@ -38,14 +39,24 @@ const ContactPage = () => {
     setIsSubmitting(true);
     
     try {
+      // Track form submission attempt
+      trackEvent('Contact Form', 'Form Submission Started', 'Contact Page');
+      
       // Submit to backend API
       await api.post('/forms/contact', formData);
+      
+      // Track successful submission
+      trackEvent('Contact Form', 'Form Submitted Successfully', 'Contact Page');
+      
       // Reset form
       setFormData({ name: '', email: '', mobileNumber: '', subject: '', message: '' });
       // Show success message
       alert('Thank you for your message. We will get back to you soon!');
     } catch (error) {
       console.error('Form submission error:', error);
+      // Track failed submission
+      trackException(`Contact form submission failed: ${error.message}`, false);
+      trackEvent('Contact Form', 'Form Submission Failed', 'Contact Page');
       alert('Failed to submit your message. Please try again.');
     } finally {
       setIsSubmitting(false);
@@ -66,7 +77,7 @@ const ContactPage = () => {
     {
       icon: <Phone sx={{ fontSize: 40, color: '#0891b2' }} />,
       title: 'Telephone',
-      content: ['98213-89400']
+      content: [' 92174-69202']
     }
   ];
 

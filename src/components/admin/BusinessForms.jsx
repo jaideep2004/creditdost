@@ -80,7 +80,7 @@ const BusinessForms = () => {
     <Box>
       <Typography variant="h4" gutterBottom>
         Business MIS
-      </Typography>
+      </Typography>     
       
       {error && (
         <Alert severity="error" sx={{ mb: 2 }}>

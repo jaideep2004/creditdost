@@ -407,15 +407,7 @@ const Header = () => {
         >
           <ListItemText primary="IFSC Finder" />
         </ListItem>
-        <ListItem
-          button
-          onClick={() => {
-            navigate("/credit-score-repair");
-            handleDrawerToggle();
-          }}
-        >
-          <ListItemText primary="Credit Score Repair" />
-        </ListItem>
+       
       </List>
       <Divider />
       <Box sx={{ p: 2 }}>
@@ -635,7 +627,7 @@ const Header = () => {
                           fontSize: "1rem",
                         }}
                       >
-                        +91 9821389400
+                        +91 9217469202
                       </Typography>
                     </Box>
                   </ContactBox>

@@ -1,42 +1,59 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 const WhoWeAreSection = () => {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
   return (
     <div style={{
-      padding: '80px 20px',
+      padding: isMobile ? '40px 16px' : '80px 20px',
       backgroundColor: '#ffffff',
       position: 'relative',
       overflow: 'hidden',
     }}>
-      {/* Animated Background Elements */}
-      <div style={{
-        position: 'absolute',
-        top: '10%',
-        right: '5%',
-        width: '300px',
-        height: '300px',
-        background: 'radial-gradient(circle, rgba(8, 145, 178, 0.05) 0%, transparent 70%)',
-        borderRadius: '50%',
-        animation: 'float 8s ease-in-out infinite',
-      }} />
-      
-      <div style={{
-        position: 'absolute',
-        bottom: '15%',
-        left: '10%',
-        width: '400px',
-        height: '400px',
-        background: 'radial-gradient(circle, rgba(6, 182, 212, 0.04) 0%, transparent 70%)',
-        borderRadius: '50%',
-        animation: 'float 10s ease-in-out infinite reverse',
-      }} />
+      {/* Animated Background Elements - Hide on mobile */}
+      {!isMobile && (
+        <>
+          <div style={{
+            position: 'absolute',
+            top: '10%',
+            right: '5%',
+            width: '300px',
+            height: '300px',
+            background: 'radial-gradient(circle, rgba(8, 145, 178, 0.05) 0%, transparent 70%)',
+            borderRadius: '50%',
+            animation: 'float 8s ease-in-out infinite',
+          }} />
+          
+          <div style={{
+            position: 'absolute',
+            bottom: '15%',
+            left: '10%',
+            width: '400px',
+            height: '400px',
+            background: 'radial-gradient(circle, rgba(6, 182, 212, 0.04) 0%, transparent 70%)',
+            borderRadius: '50%',
+            animation: 'float 10s ease-in-out infinite reverse',
+          }} />
+        </>
+      )}
 
       <div style={{
         maxWidth: '1200px',
         margin: '0 auto',
         display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-        gap: '60px',
+        gridTemplateColumns: isMobile ? '1fr' : 'repeat(auto-fit, minmax(300px, 1fr))',
+        gap: isMobile ? '40px' : '60px',
         alignItems: 'center',
         position: 'relative',
         zIndex: 1,
@@ -44,43 +61,48 @@ const WhoWeAreSection = () => {
         
         {/* Left Side - Content */}
         <div style={{
-          padding: '20px',
+          padding: isMobile ? '0' : '20px',
+          order: isMobile ? 2 : 1, // Content after image on mobile
         }}>
           <div style={{
             color: '#0891b2',
-            fontSize: '0.9rem',
+            fontSize: isMobile ? '0.8rem' : '0.9rem',
             fontWeight: '600',
             letterSpacing: '2px',
-            marginBottom: '12px',
+            marginBottom: isMobile ? '8px' : '12px',
+            textAlign: isMobile ? 'center' : 'left',
           }}>
             WHO WE ARE
           </div>
 
           <h2 style={{
-            fontSize: '2.1rem',
+            fontSize: isMobile ? '1.75rem' : '2.1rem',
             fontWeight: '700',
             color: '#0f172a',
-            marginBottom: '24px',
+            marginBottom: isMobile ? '16px' : '24px',
             lineHeight: 1.2,
+            textAlign: isMobile ? 'center' : 'left',
           }}>
             Your Trusted Partner in Credit Score Improvement in India
           </h2>
 
           <p style={{
             color: '#64748b',
-            fontSize: '1.1rem',
+            fontSize: isMobile ? '1rem' : '1.1rem',
             lineHeight: 1.7,
-            marginBottom: '24px',
+            marginBottom: isMobile ? '20px' : '24px',
             fontWeight: '500',
+            textAlign: isMobile ? 'justify' : 'left',
           }}>
             At <strong>Credit Dost</strong>, we believe everyone deserves a second chance to rebuild their credit and financial confidence.
           </p>
 
           <p style={{
             color: '#64748b',
-            fontSize: '1rem',
+            fontSize: isMobile ? '0.95rem' : '1rem',
             lineHeight: 1.7,
-            marginBottom: '32px',
+            marginBottom: isMobile ? '24px' : '32px',
+            textAlign: isMobile ? 'justify' : 'left',
           }}>
             We are India's dedicated <strong>Credit Score Improvement and Dispute Resolution Company</strong>, 
             helping individuals repair, rebuild, and manage their credit health with transparency, accuracy, and trust.
@@ -88,16 +110,17 @@ const WhoWeAreSection = () => {
 
           <div style={{
             backgroundColor: '#f8f9fa',
-            padding: '24px',
+            padding: isMobile ? '20px' : '24px',
             borderRadius: '12px',
             borderLeft: '4px solid #0891b2',
           }}>
             <p style={{
               color: '#475569',
-              fontSize: '1rem',
+              fontSize: isMobile ? '0.95rem' : '1rem',
               lineHeight: 1.6,
               margin: 0,
               fontStyle: 'italic',
+              textAlign: isMobile ? 'justify' : 'left',
             }}>
               <strong>Credit Dost is a division of Optimystic Auxiliary Services Pvt. Ltd.</strong>, 
               a compliance-driven financial services organization. We bring together a team of trained credit professionals, 
@@ -109,15 +132,16 @@ const WhoWeAreSection = () => {
         {/* Right Side - Image/Graphic */}
         <div style={{
           position: 'relative',
-          height: '500px',
+          height: isMobile ? '300px' : '500px',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
+          order: isMobile ? 1 : 2, // Image before content on mobile
         }}>
           {/* Main Graphic */}
           <div style={{
             width: '100%',
-            height: '400px',
+            height: isMobile ? '100%' : '400px',
             backgroundColor: '#e0f2fe',
             borderRadius: '20px',
             display: 'flex',
@@ -125,23 +149,24 @@ const WhoWeAreSection = () => {
             justifyContent: 'center',
             position: 'relative',
             overflow: 'hidden',
+            boxShadow: isMobile ? '0 4px 12px rgba(0, 0, 0, 0.08)' : 'none',
           }}>
             <div style={{
               textAlign: 'center',
               color: '#0891b2',
-              padding: '40px',
+              padding: isMobile ? '20px' : '40px',
             }}>
               <div style={{
-                fontSize: '3rem',
+                fontSize: isMobile ? '2.5rem' : '3rem',
                 fontWeight: '700',
-                marginBottom: '16px',
+                marginBottom: isMobile ? '12px' : '16px',
               }}>
                 📊
               </div>
               <h3 style={{
-                fontSize: '1.5rem',
+                fontSize: isMobile ? '1.25rem' : '1.5rem',
                 fontWeight: '600',
-                marginBottom: '12px',
+                marginBottom: isMobile ? '8px' : '12px',
                 color: '#0f172a',
               }}>
                 Credit Health Matters
@@ -149,32 +174,37 @@ const WhoWeAreSection = () => {
               <p style={{
                 color: '#64748b',
                 lineHeight: 1.6,
+                fontSize: isMobile ? '0.9rem' : '1rem',
               }}>
                 Transforming credit profiles with expertise and empathy
               </p>
             </div>
             
-            {/* Decorative Elements */}
-            <div style={{
-              position: 'absolute',
-              top: '20px',
-              right: '20px',
-              width: '60px',
-              height: '60px',
-              backgroundColor: '#0891b2',
-              borderRadius: '50%',
-              opacity: 0.1,
-            }} />
-            <div style={{
-              position: 'absolute',
-              bottom: '30px',
-              left: '30px',
-              width: '40px',
-              height: '40px',
-              backgroundColor: '#0891b2',
-              borderRadius: '50%',
-              opacity: 0.1,
-            }} />
+            {/* Decorative Elements - Hide on mobile */}
+            {!isMobile && (
+              <>
+                <div style={{
+                  position: 'absolute',
+                  top: '20px',
+                  right: '20px',
+                  width: '60px',
+                  height: '60px',
+                  backgroundColor: '#0891b2',
+                  borderRadius: '50%',
+                  opacity: 0.1,
+                }} />
+                <div style={{
+                  position: 'absolute',
+                  bottom: '30px',
+                  left: '30px',
+                  width: '40px',
+                  height: '40px',
+                  backgroundColor: '#0891b2',
+                  borderRadius: '50%',
+                  opacity: 0.1,
+                }} />
+              </>
+            )}
           </div>
         </div>
       </div>

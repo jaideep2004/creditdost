@@ -629,6 +629,15 @@ const FAQSection = () => {
             width: 50px;
             height: 50px;
           }
+            .overline{
+            text-align:center;
+            }
+            .faq-title{
+             text-align:center;
+            }
+             .faq-description{
+             text-align:center;
+             }
         }
 
         @media (max-width: 480px) {

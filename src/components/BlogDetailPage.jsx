@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { blogAPI } from "../services/api";
 import Header from "./homepage/Header";
 import { getImagePreviewUrl } from "../utils/googleDriveUtils";
+import HomePageFooter from "./homepage/HomePageFooter";
 
 const BlogDetailPage = () => {
   const { slug } = useParams();
@@ -350,11 +351,14 @@ const BlogDetailPage = () => {
             grid-template-columns: 1fr !important;
           }
           .hero-title {
-            font-size: 2.5rem !important;
+            font-size: 2.1rem !important;
           }
           .feature-section {
             grid-template-columns: 1fr !important;
           }
+            .blog-det-h1{
+            font-size: 2.1rem !important;
+            
         }
       `}</style>
 
@@ -363,7 +367,9 @@ const BlogDetailPage = () => {
         <div style={styles.heroPattern}></div>
         <div style={styles.heroContent}>
           <div>
-            <h1 style={styles.heroTitle}>Blog Details</h1>
+            <h1 style={styles.heroTitle} className="blog-det-h1">
+              Blog Details
+            </h1>
           </div>
           <div style={styles.breadcrumb}>
             Home → <strong>Blog Details</strong>
@@ -413,66 +419,6 @@ const BlogDetailPage = () => {
                       "Aliquam eros justo, posuere loborti viverra laoreet matti ullamcorper posuere viverra .Aliquam eros justo, posuere lobortis non, viverra laoreet augue mattis fermentum ullamcorper viver laoreet Aliquam eros justo, posuere loborti viverra laoreet matti ullamcorper posuere viverra .Aliquam eros justo, posuere lobortis non",
                   }}
                 />
-
-                <div style={styles.featureSection} className="feature-section">
-                  <div style={styles.featureBox}>
-                    <h3 style={styles.featureTitle}>
-                      <svg
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="#0891b2"
-                      >
-                        <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
-                      </svg>
-                      Best Implementation
-                    </h3>
-                    <p style={styles.featureText}>
-                      Oshed fact that a reader will be dist acted bioiiy design
-                      ished fact that a reader will.
-                    </p>
-                  </div>
-
-                  <div style={styles.featureBox}>
-                    <h3 style={styles.featureTitle}>
-                      <svg
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="#0891b2"
-                      >
-                        <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
-                      </svg>
-                      Follow Your Categy
-                    </h3>
-                    <p style={styles.featureText}>
-                      Oshed fact that a reader will be dist acted bioiiy design
-                      ished fact that a reader will.
-                    </p>
-                  </div>
-                </div>
-
-                <blockquote style={styles.blockquote}>
-                  Aliquam eros justo, posuere loborti viverra laoreetti
-                  ullamcorper posuere viverra .Aliquam eros justo, posuere
-                  lobortis non, viverra laoreet augue mattis feentum ullamcorper
-                  viverra laoreet. Aliquam eros justo, posuere loborti viverra
-                  laoreet matti ullamcorpe
-                </blockquote>
-
-                <p style={styles.blogText}>
-                  Aliquam eros justo, posuere loborti viverra laoreet matti
-                  ullamcorper posuere viverra .Aliquam eros justo, posuere
-                  lobortis non, viverra laoreet augue mattis fermentum
-                  ullamcorper viverra laoreet
-                </p>
-
-                <p style={styles.blogText}>
-                  Aliquam eros justo, posuere loborti viverra laoreet matti
-                  ullamcorper posuere viverra .Aliquam eros justo, posuere
-                  lobortis non, viverra laoreet augue mattis fermentum
-                  ullamcorper viverra laoreet
-                </p>
               </div>
             </div>
           </div>
@@ -596,6 +542,7 @@ const BlogDetailPage = () => {
           <path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z" />
         </svg>
       </button>
+      <HomePageFooter/>
     </div>
   );
 };
