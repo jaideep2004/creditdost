@@ -446,9 +446,7 @@ const FranchiseDashboard = () => {
             <IconButton size="large" color="inherit">
               <NotificationsIcon />
             </IconButton>
-            <IconButton size="large" color="inherit">
-              <SettingsIcon />
-            </IconButton>
+            
             <Tooltip title="Account settings">
               <IconButton 
                 color="inherit" 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Typography,
@@ -19,21 +19,21 @@ import {
   IconButton,
   Tooltip,
   Chip,
-} from '@mui/material';
-import { GroupAdd, Send, ContentCopy, Check } from '@mui/icons-material';
-import { franchiseAPI } from '../../services/api';
+} from "@mui/material";
+import { GroupAdd, Send, ContentCopy, Check } from "@mui/icons-material";
+import { franchiseAPI } from "../../services/api";
 
 const Referrals = () => {
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
+    name: "",
+    email: "",
+    phone: "",
   });
   const [referrals, setReferrals] = useState([]);
   const [loading, setLoading] = useState(false);
   const [dataLoading, setDataLoading] = useState(true);
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
   const [copiedId, setCopiedId] = useState(null);
 
   useEffect(() => {
@@ -46,8 +46,8 @@ const Referrals = () => {
       const response = await franchiseAPI.getReferrals();
       setReferrals(response.data);
     } catch (error) {
-      setError('Failed to fetch referrals');
-      console.error('Error fetching referrals:', error);
+      setError("Failed to fetch referrals");
+      console.error("Error fetching referrals:", error);
     } finally {
       setDataLoading(false);
     }
@@ -64,17 +64,17 @@ const Referrals = () => {
   const handleRefer = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setError('');
-    setSuccess('');
-    
+    setError("");
+    setSuccess("");
+
     try {
       await franchiseAPI.createReferral(formData);
-      setSuccess('Referral sent successfully!');
-      setFormData({ name: '', email: '', phone: '' });
+      setSuccess("Referral sent successfully!");
+      setFormData({ name: "", email: "", phone: "" });
       fetchReferrals(); // Refresh the referrals list
     } catch (error) {
-      setError(error.response?.data?.message || 'Failed to send referral');
-      console.error('Error sending referral:', error);
+      setError(error.response?.data?.message || "Failed to send referral");
+      console.error("Error sending referral:", error);
     } finally {
       setLoading(false);
     }
@@ -90,11 +90,16 @@ const Referrals = () => {
 
   const getStatusColor = (status) => {
     switch (status) {
-      case 'pending': return 'warning';
-      case 'registered': return 'info';
-      case 'purchased': return 'primary';
-      case 'credited': return 'success';
-      default: return 'default';
+      case "pending":
+        return "warning";
+      case "registered":
+        return "info";
+      case "purchased":
+        return "primary";
+      case "credited":
+        return "success";
+      default:
+        return "default";
     }
   };
 
@@ -103,29 +108,34 @@ const Referrals = () => {
       <Typography variant="h4" gutterBottom>
         Referrals
       </Typography>
-      
+
       {error && (
-        <Alert severity="error" sx={{ mb: 2 }} onClose={() => setError('')}>
+        <Alert severity="error" sx={{ mb: 2 }} onClose={() => setError("")}>
           {error}
         </Alert>
       )}
-      
+
       {success && (
-        <Alert severity="success" sx={{ mb: 2 }} onClose={() => setSuccess('')}>
+        <Alert severity="success" sx={{ mb: 2 }} onClose={() => setSuccess("")}>
           {success}
         </Alert>
       )}
-      
-      <Grid container spacing={3} style={{flexWrap: 'nowrap'}}>
-        <Grid item xs={12} md={6} style={{ flex: '1' }}>
-          <Card sx={{ height: '100%', boxShadow: 3, borderRadius: 2 }}>
+
+      <Grid
+        container
+        spacing={3}
+        style={{ flexWrap: "nowrap" }}
+        sx={{ flexDirection: { xs: "column", md: "row" } }}
+      >
+        <Grid item xs={12} md={6} style={{ flex: "1" }}>
+          <Card sx={{ height: "100%", boxShadow: 3, borderRadius: 2 }}>
             <CardContent>
               <Typography variant="h6" gutterBottom>
                 Refer a Friend
               </Typography>
-              
+
               <Box component="form" onSubmit={handleRefer}>
-                <Grid container spacing={3} style={{flexDirection:"column" }}>
+                <Grid container spacing={3} style={{ flexDirection: "column" }}>
                   <Grid item xs={12}>
                     <TextField
                       required
@@ -162,7 +172,7 @@ const Referrals = () => {
                     />
                   </Grid>
                   <Grid item xs={12}>
-                    <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+                    <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
                       <Button
                         type="submit"
                         variant="contained"
@@ -170,7 +180,11 @@ const Referrals = () => {
                         disabled={loading}
                         sx={{ py: 1.5, px: 4 }}
                       >
-                        {loading ? <CircularProgress size={24} /> : 'Send Referral'}
+                        {loading ? (
+                          <CircularProgress size={24} />
+                        ) : (
+                          "Send Referral"
+                        )}
                       </Button>
                     </Box>
                   </Grid>
@@ -179,9 +193,9 @@ const Referrals = () => {
             </CardContent>
           </Card>
         </Grid>
-        
-        <Grid item xs={12} md={6} style={{ flex: '1' }}>
-          <Card sx={{ height: '100%', boxShadow: 3, borderRadius: 2 }}>
+
+        <Grid item xs={12} md={6} style={{ flex: "1" }}>
+          <Card sx={{ height: "100%", boxShadow: 3, borderRadius: 2 }}>
             <CardContent>
               <Typography variant="h6" gutterBottom>
                 Referral Program
@@ -228,15 +242,15 @@ const Referrals = () => {
           </Card>
         </Grid>
       </Grid>
-      
+
       <Card sx={{ mt: 3, boxShadow: 3, borderRadius: 2 }}>
         <CardContent>
           <Typography variant="h6" gutterBottom>
             Your Referrals
           </Typography>
-          
+
           {dataLoading ? (
-            <Box sx={{ display: 'flex', justifyContent: 'center', py: 3 }}>
+            <Box sx={{ display: "flex", justifyContent: "center", py: 3 }}>
               <CircularProgress />
             </Box>
           ) : (
@@ -257,7 +271,7 @@ const Referrals = () => {
                   {referrals.map((referral) => (
                     <TableRow
                       key={referral._id}
-                      sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                      sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                     >
                       <TableCell component="th" scope="row">
                         {referral.referredName}
@@ -265,27 +279,37 @@ const Referrals = () => {
                       <TableCell>{referral.referredEmail}</TableCell>
                       <TableCell>{referral.referredPhone}</TableCell>
                       <TableCell>
-                        <Typography 
-                          variant="body2" 
+                        <Typography
+                          variant="body2"
                           color={getStatusColor(referral.status)}
-                          sx={{ fontWeight: 'bold' }}
+                          sx={{ fontWeight: "bold" }}
                         >
                           {referral.status}
                         </Typography>
                       </TableCell>
                       <TableCell>
-                        {referral.bonusAmount > 0 ? `${referral.bonusAmount} credits` : 'N/A'}
+                        {referral.bonusAmount > 0
+                          ? `${referral.bonusAmount} credits`
+                          : "N/A"}
                       </TableCell>
                       <TableCell>
                         <Tooltip title="Copy referral link">
-                          <IconButton 
+                          <IconButton
                             onClick={() => copyReferralLink(referral._id)}
                             size="small"
                           >
-                            {copiedId === referral._id ? <Check color="success" /> : <ContentCopy />}
+                            {copiedId === referral._id ? (
+                              <Check color="success" />
+                            ) : (
+                              <ContentCopy />
+                            )}
                           </IconButton>
                         </Tooltip>
-                        <Typography variant="caption" display="block" sx={{ mt: 1 }}>
+                        <Typography
+                          variant="caption"
+                          display="block"
+                          sx={{ mt: 1 }}
+                        >
                           {window.location.origin}/register?ref={referral._id}
                         </Typography>
                       </TableCell>

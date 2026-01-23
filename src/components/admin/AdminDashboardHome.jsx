@@ -530,7 +530,12 @@ const AdminDashboardHome = () => {
         />
       </Box>
 
-      <Grid container spacing={3} mb={4}>
+      <Grid
+        container
+        spacing={3}
+        mb={4}
+        sx={{ flexDirection: { xs: "column", md: "row" } }}
+      >
         {statCards.map((card, index) => (
           <Grid
             item
@@ -597,7 +602,12 @@ const AdminDashboardHome = () => {
         ))}
       </Grid>
 
-      <Grid container spacing={3} mb={4}>
+      <Grid
+        container
+        spacing={3}
+        mb={4}
+        sx={{ flexDirection: { xs: "column", md: "row" } }}
+      >
         <Grid item xs={12} md={8} style={{ flex: " 1" }}>
           <Card
             sx={{
@@ -744,7 +754,12 @@ const AdminDashboardHome = () => {
         </Grid>
       </Grid>
 
-      <Grid container spacing={3} style={{flexWrap: "nowrap"}}>
+      <Grid
+        container
+        spacing={3}
+        style={{ flexWrap: "nowrap" }}
+        sx={{ flexDirection: { xs: "column", md: "row" } }}
+      >
         <Grid item xs={12} md={8}>
           <Card
             sx={{

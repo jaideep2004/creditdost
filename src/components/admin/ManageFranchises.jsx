@@ -1651,19 +1651,35 @@ const ManageFranchises = () => {
           <Grid container spacing={3} sx={{ mt: 3 }}>
             <Grid item xs={12}>
               <Typography variant="h6" gutterBottom sx={{ fontWeight: 'bold', color: 'primary.main', textAlign: 'left' }}>
-                Purchased Packages
+                Package History
               </Typography>
               <Divider sx={{ mb: 2 }} />
             </Grid>
             <Grid item xs={12}>
               {/* Display both assigned and purchased packages */}
               {(editFranchiseData.allPackages && editFranchiseData.allPackages.assigned && editFranchiseData.allPackages.assigned.length > 0) || 
-               (editFranchiseData.allPackages && editFranchiseData.allPackages.purchased && editFranchiseData.allPackages.purchased.length > 0) ? (
+               (editFranchiseData.allPackages && editFranchiseData.allPackages.purchased && editFranchiseData.allPackages.purchased.length > 0) ||
+               (editFranchiseData.packageHistory && editFranchiseData.packageHistory.length > 0) ? (
                 <Box>
+                  {/* Package History Section */}
+                  {editFranchiseData.packageHistory && editFranchiseData.packageHistory.length > 0 && (
+                    <Box>
+                      <Typography variant="body1" fontWeight="bold" color="primary.main" gutterBottom>Package History:</Typography>
+                      {editFranchiseData.packageHistory.map((pkg, index) => (
+                        <Box key={pkg._id || `history-${index}`} sx={{ mb: 1, p: 2, bgcolor: '#e3f2fd', borderRadius: 1, border: '1px solid #2196f3' }}>
+                          <Typography variant="body1" fontWeight="bold" gutterBottom>{pkg.packageName}</Typography>
+                          <Typography variant="body2" color="textSecondary" gutterBottom>Price: ₹{pkg.price}</Typography>
+                          <Typography variant="body2" color="textSecondary" gutterBottom>Credits Included: {pkg.creditsIncluded}</Typography>
+                          <Typography variant="body2" color="textSecondary">Upgrade Date: {new Date(pkg.upgradeDate).toLocaleDateString()}</Typography>
+                        </Box>
+                      ))}
+                    </Box>
+                  )}
+                                
                   {/* Assigned Packages Section */}
                   {editFranchiseData.allPackages && editFranchiseData.allPackages.assigned && editFranchiseData.allPackages.assigned.length > 0 && (
-                    <Box>
-                      <Typography variant="body1" fontWeight="bold" color="primary.main" gutterBottom>Assigned Packages:</Typography>
+                    <Box sx={{ mt: 2 }}>
+                      <Typography variant="body1" fontWeight="bold" color="primary.main" gutterBottom>Current Assigned Packages:</Typography>
                       {editFranchiseData.allPackages.assigned.map((pkg, index) => (
                         <Box key={pkg._id || `assigned-${index}`} sx={{ mb: 1, p: 2, bgcolor: 'lightblue', borderRadius: 1, border: '1px solid #b3d9ff' }}>
                           <Typography variant="body1" fontWeight="bold" gutterBottom>{pkg.name}</Typography>
@@ -1673,7 +1689,7 @@ const ManageFranchises = () => {
                       ))}
                     </Box>
                   )}
-                  
+                                
                   {/* Purchased Packages Section */}
                   {editFranchiseData.allPackages && editFranchiseData.allPackages.purchased && editFranchiseData.allPackages.purchased.length > 0 && (
                     <Box sx={{ mt: 2 }}>
@@ -1689,7 +1705,7 @@ const ManageFranchises = () => {
                   )}
                 </Box>
               ) : (
-                <Typography variant="body2" color="textSecondary">No packages assigned or purchased</Typography>
+                <Typography variant="body2" color="textSecondary">No package history available</Typography>
               )}
             </Grid>
           </Grid>

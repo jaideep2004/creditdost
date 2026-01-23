@@ -88,12 +88,12 @@ const Business = () => {
       const paidTransactions = transactionsResponse.data
         .filter((tx) => tx.status === "paid")
         .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)); // Sort by most recent first
-      
+
       // Find the most recent transaction with a package
-      const latestTransaction = paidTransactions.find(tx => tx.packageId);
-      
+      const latestTransaction = paidTransactions.find((tx) => tx.packageId);
+
       let accessiblePackageIds = [];
-      
+
       // Use either the purchased package (if exists) or fall back to assigned packages
       if (latestTransaction && latestTransaction.packageId) {
         // Use only the most recently purchased package
@@ -377,7 +377,12 @@ const Business = () => {
                       </Typography>
 
                       <Grid container spacing={2}>
-                        <Grid item xs={12} sm={6} style={{ minWidth: "350px" }}>
+                        <Grid
+                          item
+                          xs={12}
+                          sm={6}
+                          sx={{ minWidth: { xs: "0px", md: "350px" } }}
+                        >
                           <TextField
                             required
                             fullWidth
@@ -387,7 +392,12 @@ const Business = () => {
                             onChange={handleInputChange}
                           />
                         </Grid>
-                        <Grid item xs={12} sm={6} style={{ minWidth: "350px" }}>
+                        <Grid
+                          item
+                          xs={12}
+                          sm={6}
+                          sx={{ minWidth: { xs: "0px", md: "350px" } }}
+                        >
                           <TextField
                             required
                             fullWidth
@@ -398,7 +408,12 @@ const Business = () => {
                             onChange={handleInputChange}
                           />
                         </Grid>
-                        <Grid item xs={12} sm={6} style={{ minWidth: "350px" }}>
+                        <Grid
+                          item
+                          xs={12}
+                          sm={6}
+                          sx={{ minWidth: { xs: "0px", md: "350px" } }}
+                        >
                           <TextField
                             required
                             fullWidth
@@ -408,7 +423,12 @@ const Business = () => {
                             onChange={handleInputChange}
                           />
                         </Grid>
-                        <Grid item xs={12} sm={6} style={{ minWidth: "350px" }}>
+                        <Grid
+                          item
+                          xs={12}
+                          sm={6}
+                          sx={{ minWidth: { xs: "0px", md: "350px" } }}
+                        >
                           <TextField
                             required
                             fullWidth
@@ -419,7 +439,12 @@ const Business = () => {
                             inputProps={{ maxLength: 10 }}
                           />
                         </Grid>
-                        <Grid item xs={12} sm={6} style={{ minWidth: "350px" }}>
+                        <Grid
+                          item
+                          xs={12}
+                          sm={6}
+                          sx={{ minWidth: { xs: "0px", md: "350px" } }}
+                        >
                           <TextField
                             required
                             fullWidth
@@ -430,7 +455,12 @@ const Business = () => {
                             inputProps={{ maxLength: 12 }}
                           />
                         </Grid>
-                        <Grid item xs={12} sm={6} style={{ minWidth: "350px" }}>
+                        <Grid
+                          item
+                          xs={12}
+                          sm={6}
+                          sx={{ minWidth: { xs: "0px", md: "350px" } }}
+                        >
                           <TextField
                             required
                             fullWidth
@@ -440,7 +470,12 @@ const Business = () => {
                             onChange={handleInputChange}
                           />
                         </Grid>
-                        <Grid item xs={12} sm={6} style={{ minWidth: "350px" }}>
+                        <Grid
+                          item
+                          xs={12}
+                          sm={6}
+                          sx={{ minWidth: { xs: "0px", md: "350px" } }}
+                        >
                           <FormControl
                             fullWidth
                             required
@@ -461,7 +496,12 @@ const Business = () => {
                             </Select>
                           </FormControl>
                         </Grid>
-                        <Grid item xs={12} sm={6} style={{ minWidth: "350px" }}>
+                        <Grid
+                          item
+                          xs={12}
+                          sm={6}
+                          sx={{ minWidth: { xs: "0px", md: "350px" } }}
+                        >
                           <FormControl
                             fullWidth
                             required
@@ -482,7 +522,12 @@ const Business = () => {
                             </Select>
                           </FormControl>
                         </Grid>
-                        <Grid item xs={12} sm={6} style={{ minWidth: "350px" }}>
+                        <Grid
+                          item
+                          xs={12}
+                          sm={6}
+                          sx={{ minWidth: { xs: "0px", md: "350px" } }}
+                        >
                           <FormControl
                             fullWidth
                             required
@@ -503,7 +548,12 @@ const Business = () => {
                             </Select>
                           </FormControl>
                         </Grid>
-                        <Grid item xs={12} sm={6} style={{ minWidth: "350px" }}>
+                        <Grid
+                          item
+                          xs={12}
+                          sm={6}
+                          sx={{ minWidth: { xs: "0px", md: "350px" } }}
+                        >
                           <TextField
                             required
                             fullWidth
@@ -514,7 +564,11 @@ const Business = () => {
                             onChange={handleInputChange}
                           />
                         </Grid>
-                        <Grid item xs={12} style={{ minWidth: "350px" }}>
+                        <Grid
+                          item
+                          xs={12}
+                          sx={{ minWidth: { xs: "0px", md: "350px" } }}
+                        >
                           <TextField
                             required
                             fullWidth
@@ -524,10 +578,14 @@ const Business = () => {
                             onChange={handleInputChange}
                             multiline
                             rows={3}
-                            style={{ minWidth: "280px" }}
+                            sx={{ minWidth: { xs: "0px", md: "280px" } }}
                           />
                         </Grid>
-                        <Grid item xs={12} style={{ minWidth: "350px" }}>
+                        <Grid
+                          item
+                          xs={12}
+                          sx={{ minWidth: { xs: "0px", md: "350px" } }}
+                        >
                           <Box
                             sx={{ display: "flex", justifyContent: "flex-end" }}
                           >
@@ -584,7 +642,10 @@ const Business = () => {
                               sm={6}
                               md={4}
                               key={pkg._id}
-                              style={{ minWidth: "350px", maxWidth: "350px" }}
+                              sx={{
+                                minWidth: { xs: "265px", md: "350px" },
+                                maxWidth: { xs: "265px", md: "350px" },
+                              }}
                             >
                               <Card
                                 sx={{
