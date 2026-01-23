@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import {
   Grid,
   Card,
@@ -29,11 +29,11 @@ import {
   DialogActions,
   DialogContentText,
   CardActions,
-} from '@mui/material';
-import { 
-  People, 
-  CreditScore, 
-  AccountBalance, 
+} from "@mui/material";
+import {
+  People,
+  CreditScore,
+  AccountBalance,
   TrendingUp,
   Assessment,
   GroupAdd,
@@ -43,10 +43,10 @@ import {
   Star,
   ArrowUpward,
   Close as CloseIcon,
-} from '@mui/icons-material';
-import { franchiseAPI } from '../../services/api';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../hooks/useAuth';
+} from "@mui/icons-material";
+import { franchiseAPI } from "../../services/api";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../hooks/useAuth";
 
 const DashboardHome = () => {
   const navigate = useNavigate();
@@ -60,7 +60,7 @@ const DashboardHome = () => {
   });
   const [recentReports, setRecentReports] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [purchasedPackage, setPurchasedPackage] = useState(null);
   const [assignedPackages, setAssignedPackages] = useState([]);
   const [kycStatus, setKycStatus] = useState(null);
@@ -68,7 +68,7 @@ const DashboardHome = () => {
   const [availablePackages, setAvailablePackages] = useState([]);
   const [selectedPackage, setSelectedPackage] = useState(null);
   const [upgradeLoading, setUpgradeLoading] = useState(false);
-  const [upgradeError, setUpgradeError] = useState('');
+  const [upgradeError, setUpgradeError] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -76,19 +76,22 @@ const DashboardHome = () => {
         // Fetch KYC status
         const kycResponse = await franchiseAPI.getKycStatus();
         setKycStatus(kycResponse.data.kycStatus);
-        
+
         // Fetch dashboard stats
         const dashboardResponse = await franchiseAPI.getDashboardStats();
-        
+
         // Fetch recent credit reports
         const reportsResponse = await franchiseAPI.getCreditReports();
         const recentReports = reportsResponse.data.slice(0, 5); // Get last 5 reports
-        
+
         // Fetch transactions to get purchased package
         const transactionsResponse = await franchiseAPI.getTransactions();
-        const paidTransactions = transactionsResponse.data.filter(tx => tx.status === 'paid');
-        const latestTransaction = paidTransactions.length > 0 ? paidTransactions[0] : null;
-        
+        const paidTransactions = transactionsResponse.data.filter(
+          (tx) => tx.status === "paid"
+        );
+        const latestTransaction =
+          paidTransactions.length > 0 ? paidTransactions[0] : null;
+
         setStats({
           credits: dashboardResponse.data.stats.credits,
           totalLeads: dashboardResponse.data.stats.totalLeads,
@@ -96,34 +99,42 @@ const DashboardHome = () => {
           totalCreditReports: dashboardResponse.data.stats.totalCreditReports,
           totalReferrals: dashboardResponse.data.stats.totalReferrals,
         });
-        
+
         setRecentReports(recentReports);
-        
+
         // Set purchased package from latest transaction
         if (latestTransaction && latestTransaction.packageId) {
-          console.log('Latest transaction package data:', latestTransaction.packageId);
+          console.log(
+            "Latest transaction package data:",
+            latestTransaction.packageId
+          );
           setPurchasedPackage({
             name: latestTransaction.packageId.name,
             credits: latestTransaction.packageId.creditsIncluded || 0,
             price: latestTransaction.packageId.price || 0,
             purchaseDate: latestTransaction.createdAt,
-            sortOrder: latestTransaction.packageId.sortOrder || 0
+            sortOrder: latestTransaction.packageId.sortOrder || 0,
           });
         }
-        
+
         // Set assigned packages from franchise data
-        if (dashboardResponse.data.franchise.assignedPackages && dashboardResponse.data.franchise.assignedPackages.length > 0) {
-          setAssignedPackages(dashboardResponse.data.franchise.assignedPackages);
+        if (
+          dashboardResponse.data.franchise.assignedPackages &&
+          dashboardResponse.data.franchise.assignedPackages.length > 0
+        ) {
+          setAssignedPackages(
+            dashboardResponse.data.franchise.assignedPackages
+          );
         }
-        
+
         setLoading(false);
       } catch (err) {
-        console.error('Error fetching dashboard data:', err);
-        setError('Failed to load dashboard data');
+        console.error("Error fetching dashboard data:", err);
+        setError("Failed to load dashboard data");
         setLoading(false);
       }
     };
-    
+
     fetchData();
   }, []);
 
@@ -131,16 +142,16 @@ const DashboardHome = () => {
   useEffect(() => {
     const loadRazorpayScript = () => {
       if (window.Razorpay) return Promise.resolve(true);
-      
+
       return new Promise((resolve) => {
-        const script = document.createElement('script');
-        script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+        const script = document.createElement("script");
+        script.src = "https://checkout.razorpay.com/v1/checkout.js";
         script.onload = () => resolve(true);
         script.onerror = () => resolve(false);
         document.body.appendChild(script);
       });
     };
-    
+
     loadRazorpayScript();
   }, []);
 
@@ -148,51 +159,70 @@ const DashboardHome = () => {
   const fetchUpgradePackages = async () => {
     try {
       setUpgradeLoading(true);
-      setUpgradeError('');
-      
+      setUpgradeError("");
+
       // Get all packages
       const response = await franchiseAPI.getCreditPackages();
-      
-      console.log('All packages:', response.data);
-      console.log('Purchased package:', purchasedPackage);
-      console.log('Assigned packages:', assignedPackages);
-      
+
+      console.log("All packages:", response.data);
+      console.log("Purchased package:", purchasedPackage);
+      console.log("Assigned packages:", assignedPackages);
+
       // Filter packages with higher price (higher tier) than current package
       let filteredPackages = [];
       if (purchasedPackage) {
-        console.log('Filtering by purchased package price:', purchasedPackage.price || purchasedPackage.credits);
-        filteredPackages = response.data.filter(pkg => {
+        console.log(
+          "Filtering by purchased package price:",
+          purchasedPackage.price || purchasedPackage.credits
+        );
+        filteredPackages = response.data.filter((pkg) => {
           const result = pkg.price > (purchasedPackage.price || 0);
-          console.log(`Package ${pkg.name} (price: ${pkg.price}) > ${purchasedPackage.price || 0}: ${result}`);
+          console.log(
+            `Package ${pkg.name} (price: ${pkg.price}) > ${
+              purchasedPackage.price || 0
+            }: ${result}`
+          );
           return result;
         });
       } else if (assignedPackages.length > 0) {
         // If no purchased package, check assigned packages
         // Use credits as a proxy for tier level since price isn't available in assigned packages
-        const highestCredits = Math.max(...assignedPackages.map(pkg => pkg.creditsIncluded || 0));
-        console.log('Filtering by assigned packages highest credits:', highestCredits);
-        filteredPackages = response.data.filter(pkg => {
+        const highestCredits = Math.max(
+          ...assignedPackages.map((pkg) => pkg.creditsIncluded || 0)
+        );
+        console.log(
+          "Filtering by assigned packages highest credits:",
+          highestCredits
+        );
+        filteredPackages = response.data.filter((pkg) => {
           const result = pkg.creditsIncluded > highestCredits;
-          console.log(`Package ${pkg.name} (credits: ${pkg.creditsIncluded}) > ${highestCredits}: ${result}`);
+          console.log(
+            `Package ${pkg.name} (credits: ${pkg.creditsIncluded}) > ${highestCredits}: ${result}`
+          );
           return result;
         });
       }
-      
-      console.log('Filtered packages:', filteredPackages);
-      
+
+      console.log("Filtered packages:", filteredPackages);
+
       // Sort packages by price in ascending order (lowest to highest)
-      const sortedPackages = [...filteredPackages].sort((a, b) => a.price - b.price);
+      const sortedPackages = [...filteredPackages].sort(
+        (a, b) => a.price - b.price
+      );
       setAvailablePackages(sortedPackages);
-      
+
       // Show error if no packages available for upgrade
       if (sortedPackages.length === 0) {
-        setUpgradeError('No upgrade packages available at this time.');
+        setUpgradeError("No upgrade packages available at this time.");
       }
-      
+
       setUpgradeDialogOpen(true);
     } catch (err) {
-      console.error('Error fetching upgrade packages:', err);
-      setUpgradeError(err.response?.data?.message || 'Failed to load upgrade packages. Please try again.');
+      console.error("Error fetching upgrade packages:", err);
+      setUpgradeError(
+        err.response?.data?.message ||
+          "Failed to load upgrade packages. Please try again."
+      );
     } finally {
       setUpgradeLoading(false);
     }
@@ -202,18 +232,18 @@ const DashboardHome = () => {
   const handlePackageSelection = async (pkg) => {
     try {
       setUpgradeLoading(true);
-      setUpgradeError('');
-      
+      setUpgradeError("");
+
       // Check if Razorpay is loaded
       if (!window.Razorpay) {
-        throw new Error('Payment gateway not loaded. Please try again.');
+        throw new Error("Payment gateway not loaded. Please try again.");
       }
-      
+
       // Create order on backend
       const response = await franchiseAPI.initiatePayment(pkg._id);
-      
+
       const { orderId } = response.data;
-      
+
       // Initialize Razorpay
       const options = {
         key: import.meta.env.VITE_RAZORPAY_KEY_ID,
@@ -237,24 +267,26 @@ const DashboardHome = () => {
           color: "#6200ea",
         },
         modal: {
-          ondismiss: function() {
+          ondismiss: function () {
             setUpgradeLoading(false);
-            setUpgradeError('Payment cancelled by user.');
-          }
-        }
+            setUpgradeError("Payment cancelled by user.");
+          },
+        },
       };
-      
+
       const rzp = new window.Razorpay(options);
-      rzp.on('payment.failed', function (response) {
-        console.error('Payment failed:', response.error);
+      rzp.on("payment.failed", function (response) {
+        console.error("Payment failed:", response.error);
         setUpgradeLoading(false);
         setUpgradeError(`Payment failed: ${response.error.description}`);
       });
-      
+
       rzp.open();
     } catch (err) {
-      console.error('Error initiating payment:', err);
-      setUpgradeError(err.message || 'Failed to initiate payment. Please try again.');
+      console.error("Error initiating payment:", err);
+      setUpgradeError(
+        err.message || "Failed to initiate payment. Please try again."
+      );
     } finally {
       setUpgradeLoading(false);
     }
@@ -264,88 +296,93 @@ const DashboardHome = () => {
   const verifyPayment = async (response) => {
     try {
       setUpgradeLoading(true);
-      
+
       // Verify payment with backend
       await franchiseAPI.verifyPayment({
         razorpay_order_id: response.razorpay_order_id,
         razorpay_payment_id: response.razorpay_payment_id,
         razorpay_signature: response.razorpay_signature,
       });
-      
+
       // Payment verified successfully
       setUpgradeDialogOpen(false);
-      alert('Payment successful! Your package has been upgraded.');
-      
+      alert("Payment successful! Your package has been upgraded.");
+
       // Refresh the page to show updated package information
       window.location.reload();
     } catch (err) {
-      console.error('Error verifying payment:', err);
-      setUpgradeError('Payment verification failed. Please contact support.');
+      console.error("Error verifying payment:", err);
+      setUpgradeError("Payment verification failed. Please contact support.");
       setUpgradeLoading(false);
     }
   };
 
   const statCards = [
     {
-      title: 'Available Credits',
+      title: "Available Credits",
       value: stats.credits,
       icon: <CreditScore sx={{ fontSize: 40 }} />,
-      color: '#6200ea',
+      color: "#6200ea",
     },
     {
-      title: 'Total Leads',
+      title: "Total Leads",
       value: stats.totalLeads,
       icon: <People sx={{ fontSize: 40 }} />,
-      color: '#03dac6',
+      color: "#03dac6",
     },
     {
-      title: 'New Leads',
+      title: "New Leads",
       value: stats.newLeads,
       icon: <TrendingUp sx={{ fontSize: 40 }} />,
-      color: '#ff4081',
+      color: "#ff4081",
     },
     {
-      title: 'Credit Reports',
+      title: "Credit Reports",
       value: stats.totalCreditReports,
       icon: <AccountBalance sx={{ fontSize: 40 }} />,
-      color: '#00c853',
+      color: "#00c853",
     },
   ];
 
   const quickActions = [
     {
-      title: 'Generate Credit Report',
+      title: "Generate Credit Report",
       icon: <Assessment sx={{ fontSize: 30 }} />,
-      color: '#6200ea',
-      path: '/franchise/credit-check',
-      description: 'Check customer credit scores'
+      color: "#6200ea",
+      path: "/franchise/credit-check",
+      description: "Check customer credit scores",
     },
     {
-      title: 'Manage Leads',
+      title: "Manage Leads",
       icon: <PersonSearch sx={{ fontSize: 30 }} />,
-      color: '#03dac6',
-      path: '/franchise/leads',
-      description: 'View and manage customer leads'
+      color: "#03dac6",
+      path: "/franchise/leads",
+      description: "View and manage customer leads",
     },
     {
-      title: 'View Reports',
+      title: "View Reports",
       icon: <CreditScore sx={{ fontSize: 30 }} />,
-      color: '#ff4081',
-      path: '/franchise/reports',
-      description: 'View generated credit reports'
+      color: "#ff4081",
+      path: "/franchise/reports",
+      description: "View generated credit reports",
     },
     {
-      title: 'Refer Franchise',
+      title: "Refer Franchise",
       icon: <GroupAdd sx={{ fontSize: 30 }} />,
-      color: '#00c853',
-      path: '/franchise/referrals',
-      description: 'Refer new franchise partners'
+      color: "#00c853",
+      path: "/franchise/referrals",
+      description: "Refer new franchise partners",
     },
   ];
 
   if (loading) {
     return (
-      <Box display="flex" justifyContent="center" alignItems="center" minHeight="400px">
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        minHeight="400px"
+      >
         <CircularProgress />
       </Box>
     );
@@ -353,7 +390,12 @@ const DashboardHome = () => {
 
   if (error) {
     return (
-      <Box display="flex" justifyContent="center" alignItems="center" minHeight="400px">
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        minHeight="400px"
+      >
         <Typography color="error">{error}</Typography>
       </Box>
     );
@@ -362,60 +404,89 @@ const DashboardHome = () => {
   return (
     <Box>
       <Typography variant="h4" gutterBottom sx={{ mb: 3 }}>
-        Welcome <span style={{ color: '#6200ea', fontWeight: 'bold' }}>{user?.name || 'User'}</span>
+        Welcome{" "}
+        <span style={{ color: "#6200ea", fontWeight: "bold" }}>
+          {user?.name || "User"}
+        </span>
       </Typography>
-      
+
       {/* Purchased Package Section */}
       {purchasedPackage && (
-        <Card sx={{ 
-          mb: 3, 
-          boxShadow: 3, 
-          borderRadius: 2,
-          background: 'linear-gradient(135deg, #6200ea 0%, #03dac6 100%)',
-          color: 'white'
-        }}>
+        <Card
+          sx={{
+            mb: 3,
+            boxShadow: 3,
+            borderRadius: 2,
+            background: "linear-gradient(135deg, #6200ea 0%, #03dac6 100%)",
+            color: "white",
+          }}
+        >
           <CardContent>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+            >
               <Box>
-                <Typography variant="h5" component="div" fontWeight="bold" gutterBottom>
+                <Typography
+                  variant="h5"
+                  component="div"
+                  fontWeight="bold"
+                  gutterBottom
+                >
                   Your Current Package
                 </Typography>
-                <Typography variant="h4" component="div" fontWeight="bold" sx={{ mb: 1 }}>
+                <Typography
+                  variant="h4"
+                  component="div"
+                  fontWeight="bold"
+                  sx={{ mb: 1 }}
+                >
                   {purchasedPackage.name}
                 </Typography>
                 <Typography variant="body1" sx={{ mb: 1 }}>
                   <strong>{purchasedPackage.credits} Credits</strong> included
                 </Typography>
                 <Typography variant="body2" sx={{ opacity: 0.9 }}>
-                  Purchased on {new Date(purchasedPackage.purchaseDate).toLocaleDateString()}
+                  Purchased on{" "}
+                  {new Date(purchasedPackage.purchaseDate).toLocaleDateString()}
                 </Typography>
               </Box>
-              <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 1 }}>
-                <Chip 
-                  icon={<Star />} 
-                  label="Active" 
-                  color="success" 
-                  sx={{ 
-                    fontWeight: 'bold',
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "flex-end",
+                  gap: 1,
+                }}
+              >
+                <Chip
+                  icon={<Star />}
+                  label="Active"
+                  color="success"
+                  sx={{
+                    fontWeight: "bold",
                     height: 32,
-                    '& .MuiChip-icon': {
-                      color: 'white !important'
-                    }
-                  }} 
+                    "& .MuiChip-icon": {
+                      color: "white !important",
+                    },
+                  }}
                 />
-                <Button 
-                  variant="contained" 
+                <Button
+                  variant="contained"
                   color="secondary"
                   startIcon={<ArrowUpward />}
                   onClick={fetchUpgradePackages}
-                  sx={{ 
+                  sx={{
                     mt: 1,
-                    backgroundColor: 'white',
-                    color: '#6200ea',
-                    fontWeight: 'bold',
-                    '&:hover': {
-                      backgroundColor: '#f5f5f5',
-                    }
+                    backgroundColor: "white",
+                    color: "#6200ea",
+                    fontWeight: "bold",
+                    "&:hover": {
+                      backgroundColor: "#f5f5f5",
+                    },
                   }}
                 >
                   Upgrade Package
@@ -425,25 +496,47 @@ const DashboardHome = () => {
           </CardContent>
         </Card>
       )}
-      
+
       {/* Assigned Packages Section */}
       {assignedPackages.length > 0 && !purchasedPackage && (
-        <Card sx={{ 
-          mb: 3, 
-          boxShadow: 3, 
-          borderRadius: 2,
-          background: 'linear-gradient(135deg, #03dac6 0%, #6200ea 100%)',
-          color: 'white'
-        }}>
+        <Card
+          sx={{
+            mb: 3,
+            boxShadow: 3,
+            borderRadius: 2,
+            background: "linear-gradient(135deg, #03dac6 0%, #6200ea 100%)",
+            color: "white",
+          }}
+        >
           <CardContent>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: { xs: "start", md: "center" },
+                flexDirection: { xs: "column", md: "row" },
+              }}
+            >
               <Box>
-                <Typography variant="h5" component="div" fontWeight="bold" gutterBottom>
-                  Your Assigned Package{assignedPackages.length > 1 ? 's' : ''}
+                <Typography
+                  variant="h5"
+                  component="div"
+                  fontWeight="bold"
+                  gutterBottom
+                >
+                  Your Assigned Package{assignedPackages.length > 1 ? "s" : ""}
                 </Typography>
                 {assignedPackages.map((pkg, index) => (
-                  <Box key={pkg._id} sx={{ mb: index < assignedPackages.length - 1 ? 1 : 0 }}>
-                    <Typography variant="h4" component="div" fontWeight="bold" sx={{ mb: 1 }}>
+                  <Box
+                    key={pkg._id}
+                    sx={{ mb: index < assignedPackages.length - 1 ? 1 : 0 }}
+                  >
+                    <Typography
+                      variant="h4"
+                      component="div"
+                      fontWeight="bold"
+                      sx={{ mb: 1 }}
+                    >
                       {pkg.name}
                     </Typography>
                     <Typography variant="body1" sx={{ mb: 1 }}>
@@ -455,32 +548,40 @@ const DashboardHome = () => {
                   Assigned by admin
                 </Typography>
               </Box>
-              <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 1 }}>
-                <Chip 
-                  icon={<Star />} 
-                  label="Active" 
-                  color="success" 
-                  sx={{ 
-                    fontWeight: 'bold',
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: { xs: "start", md: "flex-end" },
+                  gap: 1,
+                }}
+              >
+                <Chip
+                  icon={<Star />}
+                  label="Active"
+                  color="success"
+                  sx={{
+                    fontWeight: "bold",
+                    marginTop: { xs: "15px", md: "0" },
                     height: 32,
-                    '& .MuiChip-icon': {
-                      color: 'white !important'
-                    }
-                  }} 
+                    "& .MuiChip-icon": {
+                      color: "white !important",
+                    },
+                  }}
                 />
-                <Button 
-                  variant="contained" 
+                <Button
+                  variant="contained"
                   color="secondary"
                   startIcon={<ArrowUpward />}
                   onClick={fetchUpgradePackages}
-                  sx={{ 
+                  sx={{
                     mt: 1,
-                    backgroundColor: 'white',
-                    color: '#6200ea',
-                    fontWeight: 'bold',
-                    '&:hover': {
-                      backgroundColor: '#f5f5f5',
-                    }
+                    backgroundColor: "white",
+                    color: "#6200ea",
+                    fontWeight: "bold",
+                    "&:hover": {
+                      backgroundColor: "#f5f5f5",
+                    },
                   }}
                 >
                   Upgrade Package
@@ -490,49 +591,59 @@ const DashboardHome = () => {
           </CardContent>
         </Card>
       )}
-      
-      <Grid container spacing={3} mt={2}>
+
+      <Grid
+        container
+        spacing={3}
+        mt={2}
+        sx={{ flexDirection: { xs: "column", md: "row" } }}
+      >
         {statCards.map((card, index) => (
-          <Grid item xs={12} sm={6} md={3} key={index} style={{flex: "1"}}>
-            <Card sx={{ 
-              height: '100%', 
-              display: 'flex', 
-              flexDirection: 'column',
-              boxShadow: 3,
-              borderRadius: 2,
-            }}>
-              <CardContent sx={{ flexGrow: 1, textAlign: 'center' }}>
-                <Box sx={{ color: card.color, mb: 2 }}>
-                  {card.icon}
-                </Box>
+          <Grid item xs={12} sm={6} md={3} key={index} style={{ flex: "1" }}>
+            <Card
+              sx={{
+                height: "100%",
+                display: "flex",
+                flexDirection: "column",
+                boxShadow: 3,
+                borderRadius: 2,
+              }}
+            >
+              <CardContent sx={{ flexGrow: 1, textAlign: "center" }}>
+                <Box sx={{ color: card.color, mb: 2 }}>{card.icon}</Box>
                 <Typography variant="h5" component="div" gutterBottom>
                   {card.value}
                 </Typography>
-                <Typography color="text.secondary">
-                  {card.title}
-                </Typography>
+                <Typography color="text.secondary">{card.title}</Typography>
               </CardContent>
             </Card>
           </Grid>
         ))}
       </Grid>
 
-      <Grid container spacing={3} mt={3}>
-        <Grid item xs={12} md={8} style={{flex: "1"}}>
-          <Card sx={{ height: '100%', boxShadow: 3, borderRadius: 2 }}>
+      <Grid container spacing={3} mt={3} sx={{ flexDirection: { xs: "column", md: "row" } }}>
+        <Grid item xs={12} md={8} style={{ flex: "1" }}>
+          <Card sx={{ height: "100%", boxShadow: 3, borderRadius: 2 }}>
             <CardContent>
               <Typography variant="h6" gutterBottom>
                 Recent Credit Reports
               </Typography>
               {recentReports.length === 0 ? (
                 <Box sx={{ minHeight: 200 }}>
-                  <Typography color="text.secondary" align="center" sx={{ mt: 8 }}>
+                  <Typography
+                    color="text.secondary"
+                    align="center"
+                    sx={{ mt: 8 }}
+                  >
                     No credit reports generated yet
                   </Typography>
                 </Box>
               ) : (
                 <TableContainer component={Paper}>
-                  <Table sx={{ minWidth: 400 }} aria-label="recent reports table">
+                  <Table
+                    sx={{ minWidth: 400 }}
+                    aria-label="recent reports table"
+                  >
                     <TableHead>
                       <TableRow>
                         <TableCell>Name</TableCell>
@@ -545,24 +656,32 @@ const DashboardHome = () => {
                       {recentReports.map((report) => (
                         <TableRow
                           key={report._id}
-                          sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                          sx={{
+                            "&:last-child td, &:last-child th": { border: 0 },
+                          }}
                         >
                           <TableCell component="th" scope="row">
                             {report.name}
                           </TableCell>
                           <TableCell>
-                            {report.bureau ? report.bureau.toUpperCase() : 'N/A'}
+                            {report.bureau
+                              ? report.bureau.toUpperCase()
+                              : "N/A"}
                           </TableCell>
                           <TableCell>
                             <Typography
                               variant="body2"
                               sx={{
-                                color: report.score >= 700 ? 'success.main' : 
-                                       report.score >= 600 ? 'warning.main' : 'error.main',
-                                fontWeight: 'bold',
+                                color:
+                                  report.score >= 700
+                                    ? "success.main"
+                                    : report.score >= 600
+                                    ? "warning.main"
+                                    : "error.main",
+                                fontWeight: "bold",
                               }}
                             >
-                              {report.score || 'N/A'}
+                              {report.score || "N/A"}
                             </Typography>
                           </TableCell>
                           <TableCell>
@@ -578,58 +697,66 @@ const DashboardHome = () => {
           </Card>
         </Grid>
         {/* Quick Actions Section - Only visible when KYC is approved */}
-        {kycStatus === 'approved' && (
-          <Grid item xs={12} md={4} style={{flex: "1"}}>
-            <Card sx={{ height: '100%', boxShadow: 3, borderRadius: 2 }}>
+        {kycStatus === "approved" && (
+          <Grid item xs={12} md={4} style={{ flex: "1" }}>
+            <Card sx={{ height: "100%", boxShadow: 3, borderRadius: 2 }}>
               <CardContent>
                 <Typography variant="h6" gutterBottom>
                   Quick Actions
                 </Typography>
-                <Box sx={{ 
-                  display: 'grid', 
-                  gridTemplateColumns: 'repeat(2, 1fr)', 
-                  gap: 2,
-                  mt: 2
-                }}>
+                <Box
+                  sx={{
+                    display: "grid",
+                    gridTemplateColumns: "repeat(2, 1fr)",
+                    gap: 2,
+                    mt: 2,
+                  }}
+                >
                   {quickActions.map((action, index) => (
-                    <Tooltip key={index} title={action.description} placement="top">
-                      <Card 
-                        sx={{ 
-                          height: '100%', 
-                          display: 'flex', 
-                          flexDirection: 'column',
-                          alignItems: 'center',
-                          justifyContent: 'center',
+                    <Tooltip
+                      key={index}
+                      title={action.description}
+                      placement="top"
+                    >
+                      <Card
+                        sx={{
+                          height: "100%",
+                          display: "flex",
+                          flexDirection: "column",
+                          alignItems: "center",
+                          justifyContent: "center",
                           p: 2,
-                          cursor: 'pointer',
-                          transition: 'all 0.3s ease',
-                          '&:hover': {
-                            transform: 'translateY(-5px)',
+                          cursor: "pointer",
+                          transition: "all 0.3s ease",
+                          "&:hover": {
+                            transform: "translateY(-5px)",
                             boxShadow: 3,
-                            bgcolor: 'background.default'
-                          }
+                            bgcolor: "background.default",
+                          },
                         }}
                         onClick={() => navigate(action.path)}
                       >
-                        <Box sx={{ 
-                          color: action.color, 
-                          mb: 1,
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          width: 56,
-                          height: 56,
-                          borderRadius: '50%',
-                          bgcolor: `${action.color}15`,
-                        }}>
+                        <Box
+                          sx={{
+                            color: action.color,
+                            mb: 1,
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            width: 56,
+                            height: 56,
+                            borderRadius: "50%",
+                            bgcolor: `${action.color}15`,
+                          }}
+                        >
                           {action.icon}
                         </Box>
-                        <Typography 
-                          variant="body2" 
+                        <Typography
+                          variant="body2"
                           align="center"
-                          sx={{ 
-                            fontWeight: 'medium',
-                            fontSize: '0.8rem'
+                          sx={{
+                            fontWeight: "medium",
+                            fontSize: "0.8rem",
                           }}
                         >
                           {action.title}
@@ -643,16 +770,22 @@ const DashboardHome = () => {
           </Grid>
         )}
       </Grid>
-      
+
       {/* Upgrade Package Dialog */}
-      <Dialog 
-        open={upgradeDialogOpen} 
+      <Dialog
+        open={upgradeDialogOpen}
         onClose={() => setUpgradeDialogOpen(false)}
         maxWidth="md"
         fullWidth
       >
         <DialogTitle>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
             <Typography variant="h6">Upgrade Your Package</Typography>
             <IconButton onClick={() => setUpgradeDialogOpen(false)}>
               <CloseIcon />
@@ -665,9 +798,9 @@ const DashboardHome = () => {
               {upgradeError}
             </Alert>
           )}
-          
+
           {upgradeLoading ? (
-            <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
+            <Box sx={{ display: "flex", justifyContent: "center", py: 4 }}>
               <CircularProgress />
               <Typography sx={{ ml: 2 }}>Loading packages...</Typography>
             </Box>
@@ -680,30 +813,54 @@ const DashboardHome = () => {
               ) : (
                 <Grid container spacing={3}>
                   {availablePackages.map((pkg) => (
-                    <Grid item xs={12} sm={6} md={4} key={pkg._id} style={{width:"100%"}}>
-                      <Card 
-                        sx={{ 
-                          height: '100%', 
-                          display: 'flex', 
-                          flexDirection: 'column',
-                          cursor: 'pointer',
+                    <Grid
+                      item
+                      xs={12}
+                      sm={6}
+                      md={4}
+                      key={pkg._id}
+                      style={{ width: "100%" }}
+                    >
+                      <Card
+                        sx={{
+                          height: "100%",
+                          display: "flex",
+                          flexDirection: "column",
+                          cursor: "pointer",
                           border: selectedPackage?._id === pkg._id ? 2 : 1,
-                          borderColor: selectedPackage?._id === pkg._id ? 'primary.main' : 'divider',
-                          '&:hover': {
+                          borderColor:
+                            selectedPackage?._id === pkg._id
+                              ? "primary.main"
+                              : "divider",
+                          "&:hover": {
                             boxShadow: 3,
-                          }
+                          },
                         }}
                         onClick={() => setSelectedPackage(pkg)}
                       >
                         <CardContent sx={{ flexGrow: 1 }}>
-                          <Typography variant="h6" component="div" fontWeight="bold" gutterBottom>
+                          <Typography
+                            variant="h6"
+                            component="div"
+                            fontWeight="bold"
+                            gutterBottom
+                          >
                             {pkg.name}
                           </Typography>
-                          <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                          <Typography
+                            variant="body2"
+                            color="text.secondary"
+                            sx={{ mb: 2 }}
+                          >
                             {pkg.description}
                           </Typography>
                           <Box sx={{ mb: 2 }}>
-                            <Typography variant="h4" component="div" color="primary.main" fontWeight="bold">
+                            <Typography
+                              variant="h4"
+                              component="div"
+                              color="primary.main"
+                              fontWeight="bold"
+                            >
                               ₹{pkg.price}
                             </Typography>
                             <Typography variant="body2" color="text.secondary">
@@ -714,19 +871,24 @@ const DashboardHome = () => {
                             {pkg.features?.map((feature, index) => (
                               <ListItem key={index} sx={{ py: 0.5 }}>
                                 <ListItemIcon sx={{ minWidth: 24 }}>
-                                  <CheckCircle sx={{ fontSize: 16 }} color="success" />
+                                  <CheckCircle
+                                    sx={{ fontSize: 16 }}
+                                    color="success"
+                                  />
                                 </ListItemIcon>
-                                <ListItemText 
-                                  primary={feature} 
-                                  primaryTypographyProps={{ variant: 'body2' }} 
+                                <ListItemText
+                                  primary={feature}
+                                  primaryTypographyProps={{ variant: "body2" }}
                                 />
                               </ListItem>
                             ))}
                           </List>
                         </CardContent>
-                        <CardActions sx={{ justifyContent: 'center', p: 2, pt: 0 }}>
-                          <Button 
-                            variant="contained" 
+                        <CardActions
+                          sx={{ justifyContent: "center", p: 2, pt: 0 }}
+                        >
+                          <Button
+                            variant="contained"
                             fullWidth
                             disabled={upgradeLoading}
                             onClick={(e) => {
@@ -734,13 +896,14 @@ const DashboardHome = () => {
                               handlePackageSelection(pkg);
                             }}
                           >
-                            {upgradeLoading && selectedPackage?._id === pkg._id ? (
+                            {upgradeLoading &&
+                            selectedPackage?._id === pkg._id ? (
                               <>
                                 <CircularProgress size={20} sx={{ mr: 1 }} />
                                 Processing...
                               </>
                             ) : (
-                              'Select Package'
+                              "Select Package"
                             )}
                           </Button>
                         </CardActions>
@@ -753,7 +916,10 @@ const DashboardHome = () => {
           )}
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setUpgradeDialogOpen(false)} disabled={upgradeLoading}>
+          <Button
+            onClick={() => setUpgradeDialogOpen(false)}
+            disabled={upgradeLoading}
+          >
             Cancel
           </Button>
         </DialogActions>

@@ -16,6 +16,7 @@ import {
   IconButton,
   Snackbar,
   Alert,
+  CircularProgress,
 } from "@mui/material";
 import { Close as CloseIcon, Upload as UploadIcon } from "@mui/icons-material";
 import Header from "./homepage/Header";
@@ -36,6 +37,7 @@ const CareersPage = () => {
     message: "",
     severity: "success",
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const positions = [
     {
@@ -133,6 +135,8 @@ const CareersPage = () => {
 
   const handleSubmitApplication = async () => {
     try {
+      setIsSubmitting(true);
+      
       // Create FormData object to send file
       const submitData = new FormData();
       submitData.append("name", formData.name);
@@ -161,6 +165,8 @@ const CareersPage = () => {
           "Failed to submit application. Please try again.",
         severity: "error",
       });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -780,7 +786,14 @@ const CareersPage = () => {
         onClose={handleCloseModal}
         maxWidth="sm"
         fullWidth
-        fullScreen={{ xs: true, sm: false }}
+        sx={{
+          '& .MuiDialog-paper': {
+            m: { xs: 2, sm: 4 },
+            maxHeight: { xs: '90vh', sm: '80vh' },
+            maxWidth: '550px',
+            width: '100%'
+          }
+        }}
       >
         <DialogTitle sx={{ pb: 1 }}>
           <Box
@@ -801,8 +814,8 @@ const CareersPage = () => {
             {selectedPosition}
           </Typography>
         </DialogTitle>
-        <DialogContent>
-          <Box component="form" sx={{ mt: 2 }}>
+        <DialogContent sx={{ overflowY: 'auto', maxHeight: 'calc(80vh - 200px)' }}>
+          <Box component="form" sx={{ mt: 1 }}>
             <Grid container spacing={2}>
               <Grid item xs={12}>
                 <TextField
@@ -873,7 +886,7 @@ const CareersPage = () => {
             </Grid>
           </Box>
         </DialogContent>
-        <DialogActions sx={{ px: { xs: 2, sm: 3 }, pb: 3 }}>
+        <DialogActions sx={{ px: { xs: 2, sm: 3 }, py: 2 }}>
           <Button onClick={handleCloseModal} sx={{ color: "#64748b" }}>
             Cancel
           </Button>
@@ -881,7 +894,7 @@ const CareersPage = () => {
             variant="contained"
             onClick={handleSubmitApplication}
             disabled={
-              !formData.name || !formData.email || !formData.phone || !resume
+              !formData.name || !formData.email || !formData.phone || !resume || isSubmitting
             }
             sx={{
               background: "linear-gradient(135deg, #0891b2 0%, #06b6d4 100%)",
@@ -892,6 +905,7 @@ const CareersPage = () => {
               borderRadius: "50px",
               boxShadow: "0 4px 20px rgba(8, 145, 178, 0.3)",
               transition: "all 0.3s ease",
+              minWidth: "150px",
               "&:hover": {
                 transform: "translateY(-2px)",
                 boxShadow: "0 6px 25px rgba(8, 145, 178, 0.4)",
@@ -903,7 +917,14 @@ const CareersPage = () => {
               },
             }}
           >
-            Submit Application
+            {isSubmitting ? (
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <CircularProgress size={20} sx={{ color: 'white' }} />
+                <span>Uploading...</span>
+              </Box>
+            ) : (
+              "Submit Application"
+            )}
           </Button>
         </DialogActions>
       </Dialog>

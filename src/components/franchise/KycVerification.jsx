@@ -150,7 +150,7 @@ const KycVerification = () => {
               Please provide accurate info from your documents. Make sure to
               verify it before submitting.
             </Typography>
-            <Grid container spacing={3}>
+            <Grid container spacing={3} sx={{ flexDirection: { xs: "column", md: "row" } }}>
               <Grid item xs={12} style={{ flex: "1" }}>
                 <TextField
                   required

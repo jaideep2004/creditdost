@@ -339,7 +339,12 @@ const CreditCheck = () => {
 
             <Box component="form" onSubmit={handleCheckCredit}>
               <Grid container spacing={3}>
-                <Grid item xs={12} sm={6} style={{ minWidth: "500px" }}>
+                <Grid
+                  item
+                  xs={12}
+                  sm={6}
+                  sx={{ minWidth: { xs: "0px", md: "500px" } }}
+                >
                   <TextField
                     required
                     id="name"
@@ -351,7 +356,12 @@ const CreditCheck = () => {
                     helperText="Enter the full name of the customer"
                   />
                 </Grid>
-                <Grid item xs={12} sm={6} style={{ minWidth: "500px" }}>
+                <Grid
+                  item
+                  xs={12}
+                  sm={6}
+                  sx={{ minWidth: { xs: "0px", md: "500px" } }}
+                >
                   <TextField
                     required
                     id="mobile"
@@ -367,7 +377,12 @@ const CreditCheck = () => {
                     helperText="Enter exactly 10 digits without spaces or dashes"
                   />
                 </Grid>
-                <Grid item xs={12} sm={6} style={{ minWidth: "500px" }}>
+                <Grid
+                  item
+                  xs={12}
+                  sm={6}
+                  sx={{ minWidth: { xs: "0px", md: "500px" } }}
+                >
                   <TextField
                     id="pan"
                     name="pan"
@@ -380,25 +395,16 @@ const CreditCheck = () => {
                       maxLength: 10,
                       pattern: "[A-Za-z0-9]{10}",
                     }}
-                    helperText="10-character PAN number (e.g., ABCDE1234F)"
+                    helperText="PAN number (e.g., ABCDE1234F)"
                   />
                 </Grid>
-                {/* <Grid item xs={12} sm={6}>
-                  <TextField
-                    id="aadhaar"
-                    name="aadhaar"
-                    label="Aadhaar Number (Optional)"
-                    fullWidth
-                    value={formData.aadhaar}
-                    onChange={handleInputChange}
-                    inputProps={{ 
-                      maxLength: 12,
-                      pattern: "[0-9]{12}"
-                    }}
-                    helperText="12-digit Aadhaar number"
-                  />
-                </Grid> */}
-                <Grid item xs={12} sm={6} style={{ minWidth: "500px" }}>
+
+                <Grid
+                  item
+                  xs={12}
+                  sm={6}
+                  sx={{ minWidth: { xs: "0px", md: "500px" } }}
+                >
                   <TextField
                     id="dob"
                     name="dob"
@@ -412,7 +418,12 @@ const CreditCheck = () => {
                     }}
                   />
                 </Grid>
-                <Grid item xs={12} sm={6} style={{ minWidth: "500px" }}>
+                <Grid
+                  item
+                  xs={12}
+                  sm={6}
+                  sx={{ minWidth: { xs: "0px", md: "500px" } }}
+                >
                   <FormControl fullWidth style={{ minWidth: "200px" }}>
                     <InputLabel>Gender (Optional)</InputLabel>
                     <Select
@@ -431,7 +442,12 @@ const CreditCheck = () => {
                     </Select>
                   </FormControl>
                 </Grid>
-                <Grid item xs={12} sm={6} style={{ minWidth: "500px" }}>
+                <Grid
+                  item
+                  xs={12}
+                  sm={6}
+                  sx={{ minWidth: { xs: "0px", md: "500px" } }}
+                >
                   <FormControl fullWidth style={{ minWidth: "200px" }}>
                     <InputLabel id="bureau-label">Credit Bureau</InputLabel>
                     <Select

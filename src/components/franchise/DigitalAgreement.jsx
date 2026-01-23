@@ -326,6 +326,7 @@ const DigitalAgreement = () => {
                 electronically using Surepass eSign. The system will automatically
                 track the signing status for admin review.
               </Typography>
+              <small>Note: Reload page after completing the Surepass Esign process</small>
 
               <Box sx={{ display: "flex", gap: 2, mt: 3, flexWrap: "wrap" }}>
                 <Button

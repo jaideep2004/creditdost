@@ -1156,41 +1156,59 @@ const CreditScoreRepairPage = () => {
 
                         {/* Language, Occupation, and Income - Stacked on mobile, side-by-side on desktop */}
                         <Grid item xs={12} sm={6} md={4}>
-                          <TextField
-                            fullWidth
-                            label="Language"
-                            name="language"
-                            value={formData.language}
-                            onChange={handleChange}
-                            variant="outlined"
-                            sx={{
-                              "& .MuiOutlinedInput-root": {
+                          <FormControl fullWidth style={{minWidth:"200px"}}>
+                            <InputLabel>Language</InputLabel>
+                            <Select
+                              name="language"
+                              value={formData.language}
+                              onChange={handleChange}
+                              sx={{
                                 borderRadius: 2,
-                                "&:hover fieldset": {
+                                "&:hover .MuiOutlinedInput-notchedOutline": {
                                   borderColor: "#0ea5e9",
                                 },
-                              },
-                            }}
-                          />
+                              }}
+                            >
+                              <MenuItem value="">Select Language</MenuItem>
+                              <MenuItem value="english">English</MenuItem>
+                              <MenuItem value="hindi">Hindi</MenuItem>
+                              <MenuItem value="telugu">Telugu</MenuItem>
+                              <MenuItem value="tamil">Tamil</MenuItem>
+                              <MenuItem value="punjabi">Punjabi</MenuItem>
+                              <MenuItem value="marathi">Marathi</MenuItem>
+                              <MenuItem value="gujarati">Gujarati</MenuItem>
+                              <MenuItem value="bengali">Bengali</MenuItem>
+                              <MenuItem value="kannada">Kannada</MenuItem>
+                              <MenuItem value="malayalam">Malayalam</MenuItem>
+                              <MenuItem value="other">Other</MenuItem>
+                            </Select>
+                          </FormControl>
                         </Grid>
 
                         <Grid item xs={12} sm={6} md={4}>
-                          <TextField
-                            fullWidth
-                            label="Occupation"
-                            name="occupation"
-                            value={formData.occupation}
-                            onChange={handleChange}
-                            variant="outlined"
-                            sx={{
-                              "& .MuiOutlinedInput-root": {
+                          <FormControl fullWidth style={{minWidth:"200px"}}>
+                            <InputLabel>Occupation</InputLabel>
+                            <Select
+                              name="occupation"
+                              value={formData.occupation}
+                              onChange={handleChange}
+                              sx={{
                                 borderRadius: 2,
-                                "&:hover fieldset": {
+                                "&:hover .MuiOutlinedInput-notchedOutline": {
                                   borderColor: "#0ea5e9",
                                 },
-                              },
-                            }}
-                          />
+                              }}
+                            >
+                              <MenuItem value="">Select Occupation</MenuItem>
+                              <MenuItem value="salaried">Salaried Employee</MenuItem>
+                              <MenuItem value="business_owner">Business Owner</MenuItem>
+                              <MenuItem value="freelancer">Freelancer</MenuItem>
+                              <MenuItem value="student">Student</MenuItem>
+                              <MenuItem value="retired">Retired</MenuItem>
+                              <MenuItem value="unemployed">Unemployed</MenuItem>
+                              <MenuItem value="other">Other</MenuItem>
+                            </Select>
+                          </FormControl>
                         </Grid>
 
                         <Grid item xs={12} sm={6} md={4}>

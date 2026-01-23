@@ -60,7 +60,7 @@ const Certificate = () => {
 
     try {
       const canvas = await html2canvas(certificateRef.current, {
-        scale: 15, // Higher quality
+        scale: 1, // Higher quality
         useCORS: true,
         logging: false,
         backgroundColor: null,
@@ -158,8 +158,9 @@ const Certificate = () => {
           <Box
             display="flex"
             justifyContent="space-between"
-            alignItems="center"
+            alignItems={{ xs: "start", md: "center" }}
             mb={2}
+            sx={{ flexDirection: { xs: "column", md: "row" } }}
           >
             <Typography variant="h6" gutterBottom>
               Your Certificate
@@ -201,6 +202,7 @@ const Certificate = () => {
               flexDirection: "column",
               justifyContent: "center",
               alignItems: "center",
+              // width: { xs: "auto", md: "718px" },
               width: "718px",
               margin: "0 auto",
             }}

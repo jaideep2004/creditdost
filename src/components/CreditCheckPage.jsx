@@ -9,7 +9,8 @@ import {
   CardContent,
   Alert,
   CircularProgress,
-  styled
+  styled,
+  MenuItem
 } from '@mui/material';
 import { CheckCircle, Download } from '@mui/icons-material';
 import { creditAPI } from '../services/api';
@@ -53,6 +54,10 @@ const CreditCheckPage = () => {
     mobile: '',
     pan: '',
     email: '', // Add email field
+    occupation: '',
+    city: '',
+    state: '',
+    language: '',
   });
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
@@ -128,7 +133,7 @@ const CreditCheckPage = () => {
               fontSize: { xs: '2rem', md: '3rem' }
             }}
           >
-            Free Experian Credit Report
+            Free Credit Report
           </Typography>
           <Typography 
             variant="h6" 
@@ -138,7 +143,7 @@ const CreditCheckPage = () => {
               mx: 'auto'
             }}
           >
-            Get your Experian credit report instantly. Check your credit score and financial health for free.
+            Get your credit report instantly. Check your credit score and financial health for free.
           </Typography>
         </Box>
 
@@ -360,6 +365,187 @@ const CreditCheckPage = () => {
                       }
                     }}
                   />
+                  
+                  {/* New Fields */}
+                  <TextField
+                    select
+                    fullWidth
+                    label="Occupation"
+                    name="occupation"
+                    value={formData.occupation}
+                    onChange={handleChange}
+                    variant="outlined"
+                    InputProps={{
+                      sx: {
+                        borderRadius: '8px',
+                        '& .MuiOutlinedInput-notchedOutline': {
+                          borderColor: 'rgba(255, 255, 255, 0.2)',
+                        },
+                        '&:hover .MuiOutlinedInput-notchedOutline': {
+                          borderColor: 'rgba(14, 165, 233, 0.5)',
+                        },
+                        '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                          borderColor: '#0ea5e9',
+                        },
+                      }
+                    }}
+                    InputLabelProps={{
+                      sx: {
+                        color: 'rgba(255, 255, 255, 0.7)',
+                        '&.Mui-focused': {
+                          color: '#0ea5e9',
+                        },
+                      }
+                    }}
+                    sx={{
+                      '& .MuiInputBase-input': {
+                        color: 'white',
+                      },
+                      '& .MuiFormLabel-root': {
+                        color: 'rgba(255, 255, 255, 0.7)',
+                      }
+                    }}
+                  >
+                    <MenuItem value="">Select Occupation</MenuItem>
+                    <MenuItem value="salaried">Salaried Employee</MenuItem>
+                    <MenuItem value="business_owner">Business Owner</MenuItem>
+                    <MenuItem value="freelancer">Freelancer</MenuItem>
+                    <MenuItem value="student">Student</MenuItem>
+                    <MenuItem value="retired">Retired</MenuItem>
+                    <MenuItem value="unemployed">Unemployed</MenuItem>
+                    <MenuItem value="other">Other</MenuItem>
+                  </TextField>
+                  
+                  <TextField
+                    fullWidth
+                    label="City"
+                    name="city"
+                    value={formData.city}
+                    onChange={handleChange}
+                    variant="outlined"
+                    InputProps={{
+                      sx: {
+                        borderRadius: '8px',
+                        '& .MuiOutlinedInput-notchedOutline': {
+                          borderColor: 'rgba(255, 255, 255, 0.2)',
+                        },
+                        '&:hover .MuiOutlinedInput-notchedOutline': {
+                          borderColor: 'rgba(14, 165, 233, 0.5)',
+                        },
+                        '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                          borderColor: '#0ea5e9',
+                        },
+                      }
+                    }}
+                    InputLabelProps={{
+                      sx: {
+                        color: 'rgba(255, 255, 255, 0.7)',
+                        '&.Mui-focused': {
+                          color: '#0ea5e9',
+                        },
+                      }
+                    }}
+                    sx={{
+                      '& .MuiInputBase-input': {
+                        color: 'white',
+                      },
+                      '& .MuiFormLabel-root': {
+                        color: 'rgba(255, 255, 255, 0.7)',
+                      }
+                    }}
+                  />
+                  
+                  <TextField
+                    fullWidth
+                    label="State"
+                    name="state"
+                    value={formData.state}
+                    onChange={handleChange}
+                    variant="outlined"
+                    InputProps={{
+                      sx: {
+                        borderRadius: '8px',
+                        '& .MuiOutlinedInput-notchedOutline': {
+                          borderColor: 'rgba(255, 255, 255, 0.2)',
+                        },
+                        '&:hover .MuiOutlinedInput-notchedOutline': {
+                          borderColor: 'rgba(14, 165, 233, 0.5)',
+                        },
+                        '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                          borderColor: '#0ea5e9',
+                        },
+                      }
+                    }}
+                    InputLabelProps={{
+                      sx: {
+                        color: 'rgba(255, 255, 255, 0.7)',
+                        '&.Mui-focused': {
+                          color: '#0ea5e9',
+                        },
+                      }
+                    }}
+                    sx={{
+                      '& .MuiInputBase-input': {
+                        color: 'white',
+                      },
+                      '& .MuiFormLabel-root': {
+                        color: 'rgba(255, 255, 255, 0.7)',
+                      }
+                    }}
+                  />
+                  
+                  <TextField
+                    select
+                    fullWidth
+                    label="Preferred Language"
+                    name="language"
+                    value={formData.language}
+                    onChange={handleChange}
+                    variant="outlined"
+                    InputProps={{
+                      sx: {
+                        borderRadius: '8px',
+                        '& .MuiOutlinedInput-notchedOutline': {
+                          borderColor: 'rgba(255, 255, 255, 0.2)',
+                        },
+                        '&:hover .MuiOutlinedInput-notchedOutline': {
+                          borderColor: 'rgba(14, 165, 233, 0.5)',
+                        },
+                        '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                          borderColor: '#0ea5e9',
+                        },
+                      }
+                    }}
+                    InputLabelProps={{
+                      sx: {
+                        color: 'rgba(255, 255, 255, 0.7)',
+                        '&.Mui-focused': {
+                          color: '#0ea5e9',
+                        },
+                      }
+                    }}
+                    sx={{
+                      '& .MuiInputBase-input': {
+                        color: 'white',
+                      },
+                      '& .MuiFormLabel-root': {
+                        color: 'rgba(255, 255, 255, 0.7)',
+                      }
+                    }}
+                  >
+                    <MenuItem value="">Select Language</MenuItem>
+                    <MenuItem value="english">English</MenuItem>
+                    <MenuItem value="hindi">Hindi</MenuItem>
+                    <MenuItem value="telugu">Telugu</MenuItem>
+                    <MenuItem value="tamil">Tamil</MenuItem>
+                    <MenuItem value="punjabi">Punjabi</MenuItem>
+                    <MenuItem value="marathi">Marathi</MenuItem>
+                    <MenuItem value="gujarati">Gujarati</MenuItem>
+                    <MenuItem value="bengali">Bengali</MenuItem>
+                    <MenuItem value="kannada">Kannada</MenuItem>
+                    <MenuItem value="malayalam">Malayalam</MenuItem>
+                    <MenuItem value="other">Other</MenuItem>
+                  </TextField>
                   
                   <StyledButton
                     type="submit"
