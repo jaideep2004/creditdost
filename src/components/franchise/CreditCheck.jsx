@@ -58,7 +58,7 @@ const CreditCheck = () => {
     { value: "cibil", label: "CIBIL" },
     { value: "crif", label: "CRIF" },
     { value: "experian", label: "Experian" },
-    // { value: "equifax", label: "Equifax" },
+    { value: "equifax", label: "Equifax" },
   ];
 
   // Load recent credit reports and available credits on component mount
@@ -142,6 +142,13 @@ const CreditCheck = () => {
       return;
     }
 
+    // Special validation for Equifax - requires either PAN or Aadhaar
+    if (formData.bureau === "equifax" && !formData.pan && !formData.aadhaar) {
+      setError("For Equifax credit check, either PAN or Aadhaar number is required");
+      setSaving(false);
+      return;
+    }
+
     // Retry mechanism
     const maxRetries = 2;
     let retries = 0;
@@ -155,11 +162,23 @@ const CreditCheck = () => {
           bureau: formData.bureau,
         };
 
-        // Add optional fields if provided
-        if (formData.pan) requestData.pan = formData.pan.trim().toUpperCase();
-        if (formData.aadhaar) requestData.aadhaar = formData.aadhaar.trim();
-        if (formData.dob) requestData.dob = formData.dob;
-        if (formData.gender) requestData.gender = formData.gender;
+        // Add bureau-specific fields
+        if (formData.bureau === "equifax") {
+          // For Equifax, we need id_number and id_type instead of separate PAN/Aadhaar
+          if (formData.pan) {
+            requestData.id_number = formData.pan.trim().toUpperCase();
+            requestData.id_type = "pan";
+          } else if (formData.aadhaar) {
+            requestData.id_number = formData.aadhaar.trim();
+            requestData.id_type = "aadhaar";
+          }
+        } else {
+          // Add optional fields for other bureaus if provided
+          if (formData.pan) requestData.pan = formData.pan.trim().toUpperCase();
+          if (formData.aadhaar) requestData.aadhaar = formData.aadhaar.trim();
+          if (formData.dob) requestData.dob = formData.dob;
+          if (formData.gender) requestData.gender = formData.gender;
+        }
 
         // Call the API to check credit
         const response = await franchiseAPI.getCreditReport(requestData);
@@ -646,7 +665,7 @@ const CreditCheck = () => {
           </Typography>
           <ul>
             <li>
-              <strong>Equifax</strong> - One of India's leading credit bureaus
+              <strong>Equifax</strong> - One of India's leading credit bureaus. Requires either PAN or Aadhaar for verification.
             </li>
             <li>
               <strong>Experian</strong> - Global credit reporting agency with

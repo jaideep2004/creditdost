@@ -579,22 +579,11 @@ const FranchiseOpportunityPage = () => {
                     "&:hover": {
                       transform: "perspective(1000px) rotateY(0) rotateX(0)",
                     },
-                    "&::before": {
-                      content: '""',
-                      position: "absolute",
-                      top: 0,
-                      left: 0,
-                      right: 0,
-                      bottom: 0,
-                      background:
-                        "linear-gradient(45deg, rgba(76, 175, 80, 0.1), rgba(33, 150, 243, 0.1))",
-                      zIndex: 1,
-                    },
                   }}
                 >
                   <Box
                     component="img"
-                    src="https://images.unsplash.com/photo-1553877522-43269d4ea984?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80"
+                    src="/images/franchise-new.jpeg"
                     alt="Franchise Opportunity"
                     sx={{
                       width: "100%",
@@ -604,55 +593,6 @@ const FranchiseOpportunityPage = () => {
                       zIndex: 0,
                     }}
                   />
-
-                  <Box
-                    sx={{
-                      position: "absolute",
-                      top: "20px",
-                      left: "20px",
-                      background: "rgba(255, 255, 255, 0.9)",
-                      borderRadius: "12px",
-                      padding: "12px 20px",
-                      boxShadow: "0 10px 25px rgba(0, 0, 0, 0.15)",
-                      zIndex: 2,
-                    }}
-                  >
-                    <Typography
-                      variant="h6"
-                      sx={{
-                        fontWeight: 700,
-                        color: "#1a237e",
-                        mb: 0.5,
-                      }}
-                    >
-                      Why Partner with Credit Dost?
-                    </Typography>
-                    <List sx={{ padding: 0 }}>
-                      {[
-                        "Proven Business Model",
-                        "Expert-Led Training",
-                        "Technology & Tools",
-                      ].map((item, index) => (
-                        <ListItem key={index} sx={{ py: 0.5, px: 0 }}>
-                          <ListItemIcon sx={{ minWidth: 24 }}>
-                            <CheckCircle
-                              sx={{ color: "#4caf50", fontSize: 16 }}
-                            />
-                          </ListItemIcon>
-                          <ListItemText
-                            primary={item}
-                            primaryTypographyProps={{
-                              sx: {
-                                color: "#1a237e",
-                                fontWeight: 500,
-                                fontSize: "0.9rem",
-                              },
-                            }}
-                          />
-                        </ListItem>
-                      ))}
-                    </List>
-                  </Box>
                 </Box>
 
                 <Box
@@ -1454,7 +1394,7 @@ const FranchiseOpportunityPage = () => {
                       }}
                     >
                       <Phone sx={{ color: "#4caf50" }} />
-                      <Typography>Partnership Desk: +91 XXXXXXXXXX</Typography>
+                      <Typography>Partnership Desk: +91 92174-69202</Typography>
                     </Box>
                     <Box
                       sx={{
@@ -1465,7 +1405,7 @@ const FranchiseOpportunityPage = () => {
                       }}
                     >
                       <Email sx={{ color: "#4caf50" }} />
-                      <Typography>Email: franchise@creditdost.co.in</Typography>
+                      <Typography>Email: info@creditdost.co.in</Typography>
                     </Box>
                     <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
                       <LocationOn sx={{ color: "#4caf50" }} />

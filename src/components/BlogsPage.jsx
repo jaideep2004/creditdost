@@ -29,6 +29,7 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { blogAPI } from '../services/api';
 import Header from './homepage/Header';
+import HomePageFooter from './homepage/HomePageFooter';
 
 const BlogsPage = () => {
   const [blogs, setBlogs] = useState([]);
@@ -493,6 +494,7 @@ const BlogsPage = () => {
           </Grid>
         )}
       </Container>
+      <HomePageFooter/>
     </Box>
   );
 };

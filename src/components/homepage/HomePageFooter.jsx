@@ -17,6 +17,7 @@ import {
   Instagram as InstagramIcon,
   YouTube as YouTubeIcon,
 } from "@mui/icons-material";
+import { X } from "@mui/icons-material";
 
 const FooterBackground = styled(Box)(({ theme }) => ({
   background: "linear-gradient(135deg, #1a2a6c 0%, #2c3e50 100%)",
@@ -122,7 +123,7 @@ const MobileAccordionContent = styled(Box)(({ theme, open }) => ({
 const HomePageFooter = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
-  
+
   // Mobile accordion state
   const [openSections, setOpenSections] = React.useState({
     services: false,
@@ -132,9 +133,9 @@ const HomePageFooter = () => {
   });
 
   const toggleSection = (section) => {
-    setOpenSections(prev => ({
+    setOpenSections((prev) => ({
       ...prev,
-      [section]: !prev[section]
+      [section]: !prev[section],
     }));
   };
 
@@ -148,15 +149,10 @@ const HomePageFooter = () => {
             alt="CreditDost Logo"
             style={{ width: "200px", marginBottom: "20px" }}
           />
-          <Typography
-            variant="body2"
-            color="grey.300"
-            mb={3}
-            lineHeight={1.6}
-          >
+          <Typography variant="body2" color="grey.300" mb={3} lineHeight={1.6}>
             Credit Dost Suvidha Centre is a dedicated financial service point
-            offering credit score repair, loan assistance, and financial
-            support services.
+            offering credit score repair, loan assistance, and financial support
+            services.
           </Typography>
           <Box mb={2}>
             <ContactInfo>
@@ -182,13 +178,14 @@ const HomePageFooter = () => {
                 <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z" />
               </svg>
               <Typography variant="body2" color="grey.300">
-                +91 98765 43210
+                +91 92174-69202
               </Typography>
             </ContactInfo>
           </Box>
           <Box>
             <a
-              href="https://www.facebook.com/creditdost/"
+              href="https://www.facebook.com/aapkacreditdost"
+              target="_blank"
               style={{ color: "white" }}
             >
               <SocialIcon size="small">
@@ -196,21 +193,34 @@ const HomePageFooter = () => {
               </SocialIcon>
             </a>
             <a
-              href="https://www.youtube.com/@CreditDostLearning"
+              href="https://x.com/aapkacreditdost"
+              target="_blank"
               style={{ color: "white" }}
             >
               <SocialIcon size="small">
-                <YouTubeIcon />
+                <X />
               </SocialIcon>
             </a>
-            <a href="https://www.linkedin.com/company/creditdost/">
+            <a href="https://www.instagram.com/aapkacreditdost" target="_blank">
+              <SocialIcon size="small">
+                <InstagramIcon />
+              </SocialIcon>
+            </a>
+            <a
+              href="https://www.linkedin.com/company/aapkacreditdost"
+              target="_blank"
+            >
               <SocialIcon size="small">
                 <LinkedInIcon />
               </SocialIcon>
             </a>
-            <a href="https://www.instagram.com/credit.dost/">
+            <a
+              href="http://www.youtube.com/@aapkacreditdost"
+              target="_blank"
+              style={{ color: "white", marginTop:"10px" }}
+            >
               <SocialIcon size="small">
-                <InstagramIcon />
+                <YouTubeIcon />
               </SocialIcon>
             </a>
           </Box>
@@ -226,15 +236,9 @@ const HomePageFooter = () => {
           <FooterLink href="/franchise-opportunity">
             Franchise Opportunity
           </FooterLink>
-          <FooterLink href="/apply-for-loan">
-            Apply for Loan
-          </FooterLink>
-          <FooterLink href="/credit-check">
-            Free Credit Report
-          </FooterLink>
-          <FooterLink href="/suvidha-centre">
-            Suvidha Centre
-          </FooterLink>
+          <FooterLink href="/apply-for-loan">Apply for Loan</FooterLink>
+          <FooterLink href="/credit-check">Free Credit Report</FooterLink>
+          <FooterLink href="/suvidha-centre">Suvidha Centre</FooterLink>
         </Grid>
 
         <Grid item xs={6} md={2} style={{ flex: "1" }}>
@@ -262,9 +266,7 @@ const HomePageFooter = () => {
             Legal
           </FooterHeading>
           <FooterLink href="/privacy-policy">Privacy Policy</FooterLink>
-          <FooterLink href="/terms-and-conditions">
-            Terms of Service
-          </FooterLink>
+          <FooterLink href="/terms-and-conditions">Terms of Service</FooterLink>
           <FooterLink href="/disclaimer">Disclaimer</FooterLink>
           <FooterLink href="/refund-policy">Refund Policy</FooterLink>
         </Grid>
@@ -280,7 +282,15 @@ const HomePageFooter = () => {
           © {new Date().getFullYear()} CreditDost. All rights reserved.
         </Typography>
         <Typography variant="caption" display="block" color="grey.500" mt={1}>
-          Optimystic Auxiliary Services Private Limited
+          Optimystic Auxiliary Services Private Limited &nbsp; (Designed by{" "}
+          <a
+            href="https://gdscreatives.in/"
+            style={{ color: "white" }}
+            target="_blank"
+          >
+            GDS Creatives
+          </a>
+          )
         </Typography>
       </Box>
     </Container>
@@ -304,18 +314,13 @@ const HomePageFooter = () => {
           fontSize="0.9rem"
         >
           Credit Dost Suvidha Centre is a dedicated financial service point
-          offering credit score repair, loan assistance, and financial
-          support services.
+          offering credit score repair, loan assistance, and financial support
+          services.
         </Typography>
-        
+
         <Box mb={2}>
           <ContactInfo>
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="currentColor"
-            >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
               <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z" />
             </svg>
             <Typography variant="body2" color="grey.300" fontSize="0.9rem">
@@ -323,12 +328,7 @@ const HomePageFooter = () => {
             </Typography>
           </ContactInfo>
           <ContactInfo>
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="currentColor"
-            >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
               <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z" />
             </svg>
             <Typography variant="body2" color="grey.300" fontSize="0.9rem">
@@ -336,7 +336,7 @@ const HomePageFooter = () => {
             </Typography>
           </ContactInfo>
         </Box>
-        
+
         {/* Social Icons */}
         <Box display="flex" justifyContent="center" mb={4}>
           <a
@@ -375,7 +375,10 @@ const HomePageFooter = () => {
           {/* Services Accordion */}
           <MobileAccordion>
             <MobileAccordionHeader onClick={() => toggleSection("services")}>
-              <FooterHeading variant="h6" style={{ fontSize: "1rem", margin: 0 }}>
+              <FooterHeading
+                variant="h6"
+                style={{ fontSize: "1rem", margin: 0 }}
+              >
                 Services
               </FooterHeading>
               <Typography color="grey.300">
@@ -389,22 +392,19 @@ const HomePageFooter = () => {
               <FooterLink href="/franchise-opportunity">
                 Franchise Opportunity
               </FooterLink>
-              <FooterLink href="/apply-for-loan">
-                Apply for Loan
-              </FooterLink>
-              <FooterLink href="/credit-check">
-                Free Credit Report
-              </FooterLink>
-              <FooterLink href="/suvidha-centre">
-                Suvidha Centre
-              </FooterLink>
+              <FooterLink href="/apply-for-loan">Apply for Loan</FooterLink>
+              <FooterLink href="/credit-check">Free Credit Report</FooterLink>
+              <FooterLink href="/suvidha-centre">Suvidha Centre</FooterLink>
             </MobileAccordionContent>
           </MobileAccordion>
 
           {/* Financial Tools Accordion */}
           <MobileAccordion>
             <MobileAccordionHeader onClick={() => toggleSection("tools")}>
-              <FooterHeading variant="h6" style={{ fontSize: "1rem", margin: 0 }}>
+              <FooterHeading
+                variant="h6"
+                style={{ fontSize: "1rem", margin: 0 }}
+              >
                 Financial Tools
               </FooterHeading>
               <Typography color="grey.300">
@@ -424,7 +424,10 @@ const HomePageFooter = () => {
           {/* Quick Links Accordion */}
           <MobileAccordion>
             <MobileAccordionHeader onClick={() => toggleSection("links")}>
-              <FooterHeading variant="h6" style={{ fontSize: "1rem", margin: 0 }}>
+              <FooterHeading
+                variant="h6"
+                style={{ fontSize: "1rem", margin: 0 }}
+              >
                 Quick Links
               </FooterHeading>
               <Typography color="grey.300">
@@ -443,7 +446,10 @@ const HomePageFooter = () => {
           {/* Legal Accordion */}
           <MobileAccordion>
             <MobileAccordionHeader onClick={() => toggleSection("legal")}>
-              <FooterHeading variant="h6" style={{ fontSize: "1rem", margin: 0 }}>
+              <FooterHeading
+                variant="h6"
+                style={{ fontSize: "1rem", margin: 0 }}
+              >
                 Legal
               </FooterHeading>
               <Typography color="grey.300">
@@ -472,7 +478,13 @@ const HomePageFooter = () => {
         <Typography variant="body2" color="grey.400" fontSize="0.85rem">
           © {new Date().getFullYear()} CreditDost. All rights reserved.
         </Typography>
-        <Typography variant="caption" display="block" color="grey.500" mt={1} fontSize="0.75rem">
+        <Typography
+          variant="caption"
+          display="block"
+          color="grey.500"
+          mt={1}
+          fontSize="0.75rem"
+        >
           Optimystic Auxiliary Services Private Limited
         </Typography>
       </Box>

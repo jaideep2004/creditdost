@@ -1,35 +1,58 @@
-import React, { useState } from 'react';
-import { Box, Container, Grid, Typography, TextField, Button, Paper, IconButton, Select, MenuItem, FormControl, InputLabel } from '@mui/material';
-import { Phone, Email, LocationOn, Facebook, Twitter, LinkedIn, YouTube } from '@mui/icons-material';
-import Header from './homepage/Header';
-import HomePageFooter from './homepage/HomePageFooter';
-import api from '../services/api';
-import { trackEvent, trackException } from '../hooks/useAnalytics';
+import React, { useState } from "react";
+import {
+  Box,
+  Container,
+  Grid,
+  Typography,
+  TextField,
+  Button,
+  Paper,
+  IconButton,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+} from "@mui/material";
+import {
+  Phone,
+  Email,
+  LocationOn,
+  Facebook,
+  Twitter,
+  LinkedIn,
+  YouTube,
+  X,
+  Instagram,
+} from "@mui/icons-material";
+import Header from "./homepage/Header";
+import HomePageFooter from "./homepage/HomePageFooter";
+import api from "../services/api";
+import { trackEvent, trackException } from "../hooks/useAnalytics";
 
 const ContactPage = () => {
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    mobileNumber: '',
-    subject: '',
-    message: ''
+    name: "",
+    email: "",
+    mobileNumber: "",
+    subject: "",
+    message: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    
+
     // If it's the mobile number field, only allow digits and limit to 10
-    if (name === 'mobileNumber') {
-      const numericValue = value.replace(/[^0-9]/g, '').slice(0, 10);
+    if (name === "mobileNumber") {
+      const numericValue = value.replace(/[^0-9]/g, "").slice(0, 10);
       setFormData({
         ...formData,
-        [name]: numericValue
+        [name]: numericValue,
       });
     } else {
       setFormData({
         ...formData,
-        [name]: value
+        [name]: value,
       });
     }
   };
@@ -37,27 +60,33 @@ const ContactPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-    
+
     try {
       // Track form submission attempt
-      trackEvent('Contact Form', 'Form Submission Started', 'Contact Page');
-      
+      trackEvent("Contact Form", "Form Submission Started", "Contact Page");
+
       // Submit to backend API
-      await api.post('/forms/contact', formData);
-      
+      await api.post("/forms/contact", formData);
+
       // Track successful submission
-      trackEvent('Contact Form', 'Form Submitted Successfully', 'Contact Page');
-      
+      trackEvent("Contact Form", "Form Submitted Successfully", "Contact Page");
+
       // Reset form
-      setFormData({ name: '', email: '', mobileNumber: '', subject: '', message: '' });
+      setFormData({
+        name: "",
+        email: "",
+        mobileNumber: "",
+        subject: "",
+        message: "",
+      });
       // Show success message
-      alert('Thank you for your message. We will get back to you soon!');
+      alert("Thank you for your message. We will get back to you soon!");
     } catch (error) {
-      console.error('Form submission error:', error);
+      console.error("Form submission error:", error);
       // Track failed submission
       trackException(`Contact form submission failed: ${error.message}`, false);
-      trackEvent('Contact Form', 'Form Submission Failed', 'Contact Page');
-      alert('Failed to submit your message. Please try again.');
+      trackEvent("Contact Form", "Form Submission Failed", "Contact Page");
+      alert("Failed to submit your message. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
@@ -70,61 +99,65 @@ const ContactPage = () => {
     //   content: '6391 Elgin St. Celina, 10299'
     // },
     {
-      icon: <Email sx={{ fontSize: 40, color: '#0891b2' }} />,
-      title: 'Mail Us',
-      content: [' info@creditdost.co.in']
+      icon: <Email sx={{ fontSize: 40, color: "#0891b2" }} />,
+      title: "Mail Us",
+      content: [" info@creditdost.co.in"],
     },
     {
-      icon: <Phone sx={{ fontSize: 40, color: '#0891b2' }} />,
-      title: 'Telephone',
-      content: [' 92174-69202']
-    }
+      icon: <Phone sx={{ fontSize: 40, color: "#0891b2" }} />,
+      title: "Telephone",
+      content: [" 92174-69202"],
+    },
   ];
 
   return (
-    <Box sx={{ backgroundColor: '#f8f9fa', minHeight: '100vh' }}>
+    <Box sx={{ backgroundColor: "#f8f9fa", minHeight: "100vh" }}>
       <Header />
-      
+
       {/* Hero Section */}
       <Box
         sx={{
-          background: 'linear-gradient(135deg, #1e3a5f 0%, #2c5282 100%)',
-          color: 'white',
+          background: "linear-gradient(135deg, #1e3a5f 0%, #2c5282 100%)",
+          color: "white",
           py: 8,
-          position: 'relative',
-          overflow: 'hidden',
-          '&::before': {
+          position: "relative",
+          overflow: "hidden",
+          "&::before": {
             content: '""',
-            position: 'absolute',
+            position: "absolute",
             top: 0,
             left: 0,
             right: 0,
             bottom: 0,
-            background: 'url("data:image/svg+xml,%3Csvg width=\'100\' height=\'100\' viewBox=\'0 0 100 100\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cpath d=\'M0 0L50 50L0 100\' fill=\'none\' stroke=\'rgba(255,255,255,0.05)\' stroke-width=\'2\'/%3E%3Cpath d=\'M50 0L100 50L50 100\' fill=\'none\' stroke=\'rgba(255,255,255,0.05)\' stroke-width=\'2\'/%3E%3C/svg%3E")',
-            opacity: 0.3
-          }
+            background:
+              "url(\"data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0L50 50L0 100' fill='none' stroke='rgba(255,255,255,0.05)' stroke-width='2'/%3E%3Cpath d='M50 0L100 50L50 100' fill='none' stroke='rgba(255,255,255,0.05)' stroke-width='2'/%3E%3C/svg%3E\")",
+            opacity: 0.3,
+          },
         }}
       >
-        <Container maxWidth="lg" sx={{ position: 'relative', zIndex: 1 }}>
+        <Container maxWidth="lg" sx={{ position: "relative", zIndex: 1 }}>
           <Grid container alignItems="center" justifyContent="space-between">
             <Grid item xs={12}>
               <Typography
                 variant="h2"
                 sx={{
                   fontWeight: 700,
-                  fontSize: { xs: '2.5rem', md: '3.5rem' },
+                  fontSize: { xs: "2.5rem", md: "3.5rem" },
                   mb: 2,
-                  textAlign: 'center'
+                  textAlign: "center",
                 }}
               >
                 Contact Us
               </Typography>
-              <Box sx={{ textAlign: 'center' }}>
-                <Typography variant="body1" sx={{ display: 'inline', mr: 1 }}>
+              <Box sx={{ textAlign: "center" }}>
+                <Typography variant="body1" sx={{ display: "inline", mr: 1 }}>
                   Home
                 </Typography>
-                <span style={{ margin: '0 10px' }}>→</span>
-                <Typography variant="body1" sx={{ display: 'inline', fontWeight: 600 }}>
+                <span style={{ margin: "0 10px" }}>→</span>
+                <Typography
+                  variant="body1"
+                  sx={{ display: "inline", fontWeight: 600 }}
+                >
                   Contact
                 </Typography>
               </Box>
@@ -134,53 +167,54 @@ const ContactPage = () => {
       </Box>
 
       {/* Main Content */}
-      <Container sx={{ py: 8 }} style={{ maxWidth: '1300px' }}>
+      <Container sx={{ py: 8 }} style={{ maxWidth: "1300px" }}>
         <Grid container spacing={6}>
           {/* Contact Form */}
-          <Grid item xs={12} md={7} style={{flex:"1"}}>
-            <Paper 
-              sx={{ 
-                p: 4, 
-                borderRadius: 2, 
-                boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
-                height: '100%'
+          <Grid item xs={12} md={7} style={{ flex: "1" }}>
+            <Paper
+              sx={{
+                p: 4,
+                borderRadius: 2,
+                boxShadow: "0 4px 20px rgba(0,0,0,0.08)",
+                height: "100%",
               }}
             >
-              <Typography 
-                variant="h4" 
-                sx={{ 
-                  fontWeight: 700, 
-                  mb: 3, 
-                  color: '#1e3a5f',
-                  position: 'relative',
+              <Typography
+                variant="h4"
+                sx={{
+                  fontWeight: 700,
+                  mb: 3,
+                  color: "#1e3a5f",
+                  position: "relative",
                   pb: 2,
-                  '&::after': {
+                  "&::after": {
                     content: '""',
-                    position: 'absolute',
+                    position: "absolute",
                     bottom: 0,
                     left: 0,
-                    width: '60px',
-                    height: '4px',
-                    background: 'linear-gradient(135deg, #0891b2 0%, #06b6d4 100%)',
-                    borderRadius: '2px'
-                  }
+                    width: "60px",
+                    height: "4px",
+                    background:
+                      "linear-gradient(135deg, #0891b2 0%, #06b6d4 100%)",
+                    borderRadius: "2px",
+                  },
                 }}
               >
                 Get in touch
               </Typography>
-              <Typography 
-                variant="body1" 
-                sx={{ 
-                  color: '#64748b', 
+              <Typography
+                variant="body1"
+                sx={{
+                  color: "#64748b",
                   mb: 4,
-                  fontSize: '1.1rem'
+                  fontSize: "1.1rem",
                 }}
               >
                 We are here for you! How can we help?
               </Typography>
-              
+
               <Box component="form" onSubmit={handleSubmit}>
-                <Grid container spacing={3} style={{flexDirection:"column"}}>
+                <Grid container spacing={3} style={{ flexDirection: "column" }}>
                   <Grid item xs={12} sm={6}>
                     <TextField
                       fullWidth
@@ -191,17 +225,17 @@ const ContactPage = () => {
                       required
                       variant="outlined"
                       sx={{
-                        '& .MuiOutlinedInput-root': {
-                          '& fieldset': {
-                            borderColor: '#e2e8f0'
+                        "& .MuiOutlinedInput-root": {
+                          "& fieldset": {
+                            borderColor: "#e2e8f0",
                           },
-                          '&:hover fieldset': {
-                            borderColor: '#cbd5e1'
+                          "&:hover fieldset": {
+                            borderColor: "#cbd5e1",
                           },
-                          '&.Mui-focused fieldset': {
-                            borderColor: '#0891b2'
-                          }
-                        }
+                          "&.Mui-focused fieldset": {
+                            borderColor: "#0891b2",
+                          },
+                        },
                       }}
                     />
                   </Grid>
@@ -216,17 +250,17 @@ const ContactPage = () => {
                       required
                       variant="outlined"
                       sx={{
-                        '& .MuiOutlinedInput-root': {
-                          '& fieldset': {
-                            borderColor: '#e2e8f0'
+                        "& .MuiOutlinedInput-root": {
+                          "& fieldset": {
+                            borderColor: "#e2e8f0",
                           },
-                          '&:hover fieldset': {
-                            borderColor: '#cbd5e1'
+                          "&:hover fieldset": {
+                            borderColor: "#cbd5e1",
                           },
-                          '&.Mui-focused fieldset': {
-                            borderColor: '#0891b2'
-                          }
-                        }
+                          "&.Mui-focused fieldset": {
+                            borderColor: "#0891b2",
+                          },
+                        },
                       }}
                     />
                   </Grid>
@@ -241,34 +275,38 @@ const ContactPage = () => {
                       inputProps={{ maxLength: 10 }}
                       placeholder="Enter 10-digit mobile number"
                       sx={{
-                        '& .MuiOutlinedInput-root': {
-                          '& fieldset': {
-                            borderColor: '#e2e8f0'
+                        "& .MuiOutlinedInput-root": {
+                          "& fieldset": {
+                            borderColor: "#e2e8f0",
                           },
-                          '&:hover fieldset': {
-                            borderColor: '#cbd5e1'
+                          "&:hover fieldset": {
+                            borderColor: "#cbd5e1",
                           },
-                          '&.Mui-focused fieldset': {
-                            borderColor: '#0891b2'
-                          }
-                        }
+                          "&.Mui-focused fieldset": {
+                            borderColor: "#0891b2",
+                          },
+                        },
                       }}
                     />
                   </Grid>
                   <Grid item xs={12}>
-                    <FormControl fullWidth variant="outlined" sx={{
-                      '& .MuiOutlinedInput-root': {
-                        '& fieldset': {
-                          borderColor: '#e2e8f0'
+                    <FormControl
+                      fullWidth
+                      variant="outlined"
+                      sx={{
+                        "& .MuiOutlinedInput-root": {
+                          "& fieldset": {
+                            borderColor: "#e2e8f0",
+                          },
+                          "&:hover fieldset": {
+                            borderColor: "#cbd5e1",
+                          },
+                          "&.Mui-focused fieldset": {
+                            borderColor: "#0891b2",
+                          },
                         },
-                        '&:hover fieldset': {
-                          borderColor: '#cbd5e1'
-                        },
-                        '&.Mui-focused fieldset': {
-                          borderColor: '#0891b2'
-                        }
-                      }
-                    }}>
+                      }}
+                    >
                       <InputLabel id="subject-label">Subject</InputLabel>
                       <Select
                         labelId="subject-label"
@@ -279,9 +317,15 @@ const ContactPage = () => {
                         required
                       >
                         <MenuItem value="Franchise">Franchise</MenuItem>
-                        <MenuItem value="Credit Dost Suvidha Centre">Credit Dost Suvidha Centre</MenuItem>
-                        <MenuItem value="Credit Score Repair">Credit Score Repair</MenuItem>
-                        <MenuItem value="Apply for Loan">Apply for Loan</MenuItem>
+                        <MenuItem value="Credit Dost Suvidha Centre">
+                          Credit Dost Suvidha Centre
+                        </MenuItem>
+                        <MenuItem value="Credit Score Repair">
+                          Credit Score Repair
+                        </MenuItem>
+                        <MenuItem value="Apply for Loan">
+                          Apply for Loan
+                        </MenuItem>
                         <MenuItem value="Others">Others</MenuItem>
                       </Select>
                     </FormControl>
@@ -298,17 +342,17 @@ const ContactPage = () => {
                       rows={6}
                       variant="outlined"
                       sx={{
-                        '& .MuiOutlinedInput-root': {
-                          '& fieldset': {
-                            borderColor: '#e2e8f0'
+                        "& .MuiOutlinedInput-root": {
+                          "& fieldset": {
+                            borderColor: "#e2e8f0",
                           },
-                          '&:hover fieldset': {
-                            borderColor: '#cbd5e1'
+                          "&:hover fieldset": {
+                            borderColor: "#cbd5e1",
                           },
-                          '&.Mui-focused fieldset': {
-                            borderColor: '#0891b2'
-                          }
-                        }
+                          "&.Mui-focused fieldset": {
+                            borderColor: "#0891b2",
+                          },
+                        },
                       }}
                     />
                   </Grid>
@@ -318,27 +362,30 @@ const ContactPage = () => {
                       variant="contained"
                       disabled={isSubmitting}
                       sx={{
-                        background: 'linear-gradient(135deg, #0891b2 0%, #06b6d4 100%)',
-                        color: 'white',
+                        background:
+                          "linear-gradient(135deg, #0891b2 0%, #06b6d4 100%)",
+                        color: "white",
                         fontWeight: 700,
-                        textTransform: 'none',
-                        padding: '12px 32px',
-                        borderRadius: '50px',
-                        fontSize: '1rem',
-                        boxShadow: '0 4px 20px rgba(8, 145, 178, 0.3)',
-                        transition: 'all 0.3s ease',
-                        '&:hover': {
-                          transform: 'translateY(-2px)',
-                          boxShadow: '0 6px 25px rgba(8, 145, 178, 0.4)',
-                          background: 'linear-gradient(135deg, #0e7490 0%, #0891b2 100%)'
+                        textTransform: "none",
+                        padding: "12px 32px",
+                        borderRadius: "50px",
+                        fontSize: "1rem",
+                        boxShadow: "0 4px 20px rgba(8, 145, 178, 0.3)",
+                        transition: "all 0.3s ease",
+                        "&:hover": {
+                          transform: "translateY(-2px)",
+                          boxShadow: "0 6px 25px rgba(8, 145, 178, 0.4)",
+                          background:
+                            "linear-gradient(135deg, #0e7490 0%, #0891b2 100%)",
                         },
-                        '&.Mui-disabled': {
-                          background: 'linear-gradient(135deg, #94a3b8 0%, #cbd5e1 100%)',
-                          color: 'white'
-                        }
+                        "&.Mui-disabled": {
+                          background:
+                            "linear-gradient(135deg, #94a3b8 0%, #cbd5e1 100%)",
+                          color: "white",
+                        },
                       }}
                     >
-                      {isSubmitting ? 'Sending...' : 'Send Message'}
+                      {isSubmitting ? "Sending..." : "Send Message"}
                     </Button>
                   </Grid>
                 </Grid>
@@ -347,88 +394,103 @@ const ContactPage = () => {
           </Grid>
 
           {/* Contact Information */}
-          <Grid item xs={12} md={5} style={{flex:"1", flexDirection:"column"}}>
-            <Paper 
-              sx={{ 
-                p: 4, 
-                borderRadius: 2, 
-                boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
-                height: '100%'
+          <Grid
+            item
+            xs={12}
+            md={5}
+            style={{ flex: "1", flexDirection: "column" }}
+          >
+            <Paper
+              sx={{
+                p: 4,
+                borderRadius: 2,
+                boxShadow: "0 4px 20px rgba(0,0,0,0.08)",
+                height: "100%",
               }}
             >
-              <Typography 
-                variant="h4" 
-                sx={{ 
-                  fontWeight: 700, 
-                  mb: 4, 
-                  color: '#1e3a5f',
-                  position: 'relative',
+              <Typography
+                variant="h4"
+                sx={{
+                  fontWeight: 700,
+                  mb: 4,
+                  color: "#1e3a5f",
+                  position: "relative",
                   pb: 2,
-                  '&::after': {
+                  "&::after": {
                     content: '""',
-                    position: 'absolute',
+                    position: "absolute",
                     bottom: 0,
                     left: 0,
-                    width: '60px',
-                    height: '4px',
-                    background: 'linear-gradient(135deg, #0891b2 0%, #06b6d4 100%)',
-                    borderRadius: '2px'
-                  }
+                    width: "60px",
+                    height: "4px",
+                    background:
+                      "linear-gradient(135deg, #0891b2 0%, #06b6d4 100%)",
+                    borderRadius: "2px",
+                  },
                 }}
               >
                 Contact Information
               </Typography>
-              
+
               <Grid container spacing={4}>
                 {contactInfo.map((info, index) => (
-                  <Grid item xs={12} key={index} style={{width: '100%'}}>
-                    <Box sx={{ display: 'flex', gap: 3 }}>
-                      <Box sx={{ 
-                        width: 70, 
-                        height: 70, 
-                        borderRadius: '50%', 
-                        background: 'linear-gradient(135deg, rgba(8, 145, 178, 0.1) 0%, rgba(6, 182, 212, 0.1) 100%)',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        flexShrink: 0
-                      }}>
+                  <Grid item xs={12} key={index} style={{ width: "100%" }}>
+                    <Box sx={{ display: "flex", gap: 3 }}>
+                      <Box
+                        sx={{
+                          width: 70,
+                          height: 70,
+                          borderRadius: "50%",
+                          background:
+                            "linear-gradient(135deg, rgba(8, 145, 178, 0.1) 0%, rgba(6, 182, 212, 0.1) 100%)",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          flexShrink: 0,
+                        }}
+                      >
                         {info.icon}
                       </Box>
                       <Box>
-                        <Typography 
-                          variant="h6" 
-                          sx={{ 
-                            fontWeight: 600, 
-                            mb: 1, 
-                            color: '#1e3a5f' 
+                        <Typography
+                          variant="h6"
+                          sx={{
+                            fontWeight: 600,
+                            mb: 1,
+                            color: "#1e3a5f",
                           }}
                         >
                           {info.title}
                         </Typography>
                         {Array.isArray(info.content) ? (
                           info.content.map((item, i) => (
-                            <Typography 
+                            <Typography
                               key={i}
-                              variant="body1" 
-                              sx={{ 
-                                color: '#64748b', 
+                              variant="body1"
+                              sx={{
+                                color: "#64748b",
                                 mb: 0.5,
-                                textDecoration: 'none',
-                                display: 'block',
-                                '&:hover': { color: '#0891b2' }
+                                textDecoration: "none",
+                                display: "block",
+                                "&:hover": { color: "#0891b2" },
                               }}
                               component="a"
-                              href={info.title === 'Mail Us' ? `mailto:${item}` : info.title === 'Telephone' ? `tel:${item}` : undefined}
+                              href={
+                                info.title === "Mail Us"
+                                  ? `mailto:${item}`
+                                  : info.title === "Telephone"
+                                  ? `tel:${item}`
+                                  : undefined
+                              }
                             >
                               {item}
                             </Typography>
                           ))
                         ) : (
-                          <Typography 
-                            variant="body1" 
-                            sx={{ 
-                              color: '#64748b' 
+                          <Typography
+                            variant="body1"
+                            sx={{
+                              color: "#64748b",
                             }}
                           >
                             {info.content}
@@ -436,84 +498,115 @@ const ContactPage = () => {
                         )}
                       </Box>
                     </Box>
-                  </Grid> 
+                  </Grid>
                 ))}
               </Grid>
-              
+
               {/* Social Media */}
               <Box sx={{ mt: 6 }}>
-                <Typography 
-                  variant="h6"   
-                  sx={{ 
-                    fontWeight: 600, 
-                    mb: 3, 
-                    color: '#1e3a5f' 
+                <Typography
+                  variant="h6"
+                  sx={{
+                    fontWeight: 600,
+                    mb: 3,
+                    color: "#1e3a5f",
                   }}
                 >
                   Follow Us
                 </Typography>
-                <Box sx={{ display: 'flex', gap: 2 }}>
-                  <IconButton 
-                    sx={{ 
-                      width: 48, 
-                      height: 48, 
-                      borderRadius: '50%', 
-                      background: 'linear-gradient(135deg, #0891b2 0%, #06b6d4 100%)',
-                      color: 'white',
-                      '&:hover': {
-                        transform: 'translateY(-3px)',
-                        boxShadow: '0 4px 15px rgba(8, 145, 178, 0.4)'
+                <Box sx={{ display: "flex", gap: 2 }}>
+                  <IconButton
+                    sx={{
+                      width: 48,
+                      height: 48,
+                      borderRadius: "50%",
+                      background:
+                        "linear-gradient(135deg, #0891b2 0%, #06b6d4 100%)",
+                      color: "white",
+                      "&:hover": {
+                        transform: "translateY(-3px)",
+                        boxShadow: "0 4px 15px rgba(8, 145, 178, 0.4)",
                       },
-                      transition: 'all 0.3s ease'
+                      transition: "all 0.3s ease",
                     }}
+                    href="https://www.facebook.com/aapkacreditdost"
+                    target="_blank"
                   >
                     <Facebook />
                   </IconButton>
-                  <IconButton 
-                    sx={{ 
-                      width: 48, 
-                      height: 48, 
-                      borderRadius: '50%', 
-                      background: 'linear-gradient(135deg, #0891b2 0%, #06b6d4 100%)',
-                      color: 'white',
-                      '&:hover': {
-                        transform: 'translateY(-3px)',
-                        boxShadow: '0 4px 15px rgba(8, 145, 178, 0.4)'
+                  <IconButton
+                    sx={{
+                      width: 48,
+                      height: 48,
+                      borderRadius: "50%",
+                      background:
+                        "linear-gradient(135deg, #0891b2 0%, #06b6d4 100%)",
+                      color: "white",
+                      "&:hover": {
+                        transform: "translateY(-3px)",
+                        boxShadow: "0 4px 15px rgba(8, 145, 178, 0.4)",
                       },
-                      transition: 'all 0.3s ease'
+                      transition: "all 0.3s ease",
                     }}
+                    href="https://x.com/aapkacreditdost"
+                    target="_blank"
                   >
-                    <Twitter />
+                    <X />
                   </IconButton>
-                  <IconButton 
-                    sx={{ 
-                      width: 48, 
-                      height: 48, 
-                      borderRadius: '50%', 
-                      background: 'linear-gradient(135deg, #0891b2 0%, #06b6d4 100%)',
-                      color: 'white',
-                      '&:hover': {
-                        transform: 'translateY(-3px)',
-                        boxShadow: '0 4px 15px rgba(8, 145, 178, 0.4)'
+                  <IconButton
+                    sx={{
+                      width: 48,
+                      height: 48,
+                      borderRadius: "50%",
+                      background:
+                        "linear-gradient(135deg, #0891b2 0%, #06b6d4 100%)",
+                      color: "white",
+                      "&:hover": {
+                        transform: "translateY(-3px)",
+                        boxShadow: "0 4px 15px rgba(8, 145, 178, 0.4)",
                       },
-                      transition: 'all 0.3s ease'
+                      transition: "all 0.3s ease",
                     }}
+                    href="https://www.instagram.com/aapkacreditdost"
+                    target="_blank"
+                  >
+                    <Instagram />
+                  </IconButton>
+                  <IconButton
+                    sx={{
+                      width: 48,
+                      height: 48,
+                      borderRadius: "50%",
+                      background:
+                        "linear-gradient(135deg, #0891b2 0%, #06b6d4 100%)",
+                      color: "white",
+                      "&:hover": {
+                        transform: "translateY(-3px)",
+                        boxShadow: "0 4px 15px rgba(8, 145, 178, 0.4)",
+                      },
+                      transition: "all 0.3s ease",
+                    }}
+                    href="https://www.linkedin.com/company/aapkacreditdost"
+                    target="_blank"
                   >
                     <LinkedIn />
                   </IconButton>
-                  <IconButton 
-                    sx={{ 
-                      width: 48, 
-                      height: 48, 
-                      borderRadius: '50%', 
-                      background: 'linear-gradient(135deg, #0891b2 0%, #06b6d4 100%)',
-                      color: 'white',
-                      '&:hover': {
-                        transform: 'translateY(-3px)',
-                        boxShadow: '0 4px 15px rgba(8, 145, 178, 0.4)'
+                  <IconButton
+                    sx={{
+                      width: 48,
+                      height: 48,
+                      borderRadius: "50%",
+                      background:
+                        "linear-gradient(135deg, #0891b2 0%, #06b6d4 100%)",
+                      color: "white",
+                      "&:hover": {
+                        transform: "translateY(-3px)",
+                        boxShadow: "0 4px 15px rgba(8, 145, 178, 0.4)",
                       },
-                      transition: 'all 0.3s ease'
+                      transition: "all 0.3s ease",
                     }}
+                    href="https://www.youtube.com/@aapkacreditdost"
+                    target="_blank"
                   >
                     <YouTube />
                   </IconButton>
@@ -522,87 +615,8 @@ const ContactPage = () => {
             </Paper>
           </Grid>
         </Grid>
-        
-        {/* Newsletter Section */}
-        <Paper 
-          sx={{ 
-            p: 5, 
-            borderRadius: 2, 
-            boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
-            mt: 6,
-            background: 'linear-gradient(135deg, #1e3a5f 0%, #2c5282 100%)',
-            color: 'white',
-            textAlign: 'center'
-          }}
-        >
-          <Typography 
-            variant="h4" 
-            sx={{ 
-              fontWeight: 700, 
-              mb: 2
-            }}
-          >
-            Get notified about the event! Subscribe today
-          </Typography>
-          <Typography 
-            variant="body1" 
-            sx={{ 
-              mb: 4,
-              opacity: 0.9
-            }}
-          >
-            Stay updated with our latest news and offers
-          </Typography>
-          <Box sx={{ display: 'flex', gap: 2, maxWidth: 500, mx: 'auto' }}>
-            <TextField
-              fullWidth
-              placeholder="Enter your email"
-              variant="outlined"
-              sx={{
-                '& .MuiOutlinedInput-root': {
-                  '& fieldset': {
-                    borderColor: 'rgba(255,255,255,0.3)'
-                  },
-                  '&:hover fieldset': {
-                    borderColor: 'rgba(255,255,255,0.5)'
-                  },
-                  '&.Mui-focused fieldset': {
-                    borderColor: 'white'
-                  },
-                  '& input': {
-                    color: 'white'
-                  }
-                },
-                '& .MuiInputLabel-root': {
-                  color: 'rgba(255,255,255,0.7)'
-                }
-              }}
-            />
-            <Button
-              variant="contained"
-              sx={{
-                background: 'linear-gradient(135deg, #0891b2 0%, #06b6d4 100%)',
-                color: 'white',
-                fontWeight: 700,
-                textTransform: 'none',
-                padding: '12px 24px',
-                borderRadius: '50px',
-                fontSize: '1rem',
-                boxShadow: '0 4px 20px rgba(8, 145, 178, 0.3)',
-                transition: 'all 0.3s ease',
-                '&:hover': {
-                  transform: 'translateY(-2px)',
-                  boxShadow: '0 6px 25px rgba(8, 145, 178, 0.4)',
-                  background: 'linear-gradient(135deg, #0e7490 0%, #0891b2 100%)'
-                }
-              }}
-            >
-              Subscribe
-            </Button>
-          </Box>
-        </Paper>
       </Container>
-      
+
       <HomePageFooter />
     </Box>
   );

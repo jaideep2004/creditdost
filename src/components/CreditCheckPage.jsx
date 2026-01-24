@@ -15,6 +15,7 @@ import {
 import { CheckCircle, Download } from '@mui/icons-material';
 import { creditAPI } from '../services/api';
 import Header from './homepage/Header';
+import HomePageFooter from './homepage/HomePageFooter';
 
 const CreditCheckBackground = styled(Box)(({ theme }) => ({
   background: "linear-gradient(135deg, #0a1929 0%, #1a2744 50%, #0d2847 100%)",
@@ -579,6 +580,7 @@ const CreditCheckPage = () => {
         </Box>
       </Container>
     </CreditCheckBackground>
+    <HomePageFooter/>
     </>
   );
 };
