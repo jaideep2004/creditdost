@@ -16,7 +16,7 @@ const services = [
       "Partner with Credit Dost and build a rewarding business helping people improve their credit scores and financial confidence.",
     icon: "📈",
     image:
-      "/images/WHY-PARTNER.jpg",
+      "/images/franchise-new.jpeg",
   },
   {
     title: "CreditDost Suvidha Centre",

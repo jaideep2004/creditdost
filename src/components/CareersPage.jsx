@@ -136,7 +136,7 @@ const CareersPage = () => {
   const handleSubmitApplication = async () => {
     try {
       setIsSubmitting(true);
-      
+
       // Create FormData object to send file
       const submitData = new FormData();
       submitData.append("name", formData.name);
@@ -183,7 +183,7 @@ const CareersPage = () => {
         sx={{
           background: "linear-gradient(135deg, #1e3a5f 0%, #2c5282 100%)",
           color: "white",
-          py: { xs: 4, md: 8 },
+          py: { xs: 4, md: 11 },
           position: "relative",
           overflow: "hidden",
           "&::before": {
@@ -273,8 +273,9 @@ const CareersPage = () => {
                 sx={{
                   width: "100%",
                   height: "300px",
-                  background:
-                    "linear-gradient(135deg, rgba(8, 145, 178, 0.2) 0%, rgba(6, 182, 212, 0.2) 100%)",
+                  backgroundImage: 'url("./images/join our team.jpg")',
+                  backgroundSize: "cover",
+                  backgroundPosition: "center",
                   borderRadius: "16px",
                   display: "flex",
                   alignItems: "center",
@@ -286,7 +287,7 @@ const CareersPage = () => {
                   variant="h4"
                   sx={{ fontWeight: 700, textAlign: "center" }}
                 >
-                  Join Our Team
+                  
                 </Typography>
               </Box>
             </Grid>
@@ -787,12 +788,12 @@ const CareersPage = () => {
         maxWidth="sm"
         fullWidth
         sx={{
-          '& .MuiDialog-paper': {
+          "& .MuiDialog-paper": {
             m: { xs: 2, sm: 4 },
-            maxHeight: { xs: '90vh', sm: '80vh' },
-            maxWidth: '550px',
-            width: '100%'
-          }
+            maxHeight: { xs: "90vh", sm: "80vh" },
+            maxWidth: "550px",
+            width: "100%",
+          },
         }}
       >
         <DialogTitle sx={{ pb: 1 }}>
@@ -814,7 +815,9 @@ const CareersPage = () => {
             {selectedPosition}
           </Typography>
         </DialogTitle>
-        <DialogContent sx={{ overflowY: 'auto', maxHeight: 'calc(80vh - 200px)' }}>
+        <DialogContent
+          sx={{ overflowY: "auto", maxHeight: "calc(80vh - 200px)" }}
+        >
           <Box component="form" sx={{ mt: 1 }}>
             <Grid container spacing={2}>
               <Grid item xs={12}>
@@ -894,7 +897,11 @@ const CareersPage = () => {
             variant="contained"
             onClick={handleSubmitApplication}
             disabled={
-              !formData.name || !formData.email || !formData.phone || !resume || isSubmitting
+              !formData.name ||
+              !formData.email ||
+              !formData.phone ||
+              !resume ||
+              isSubmitting
             }
             sx={{
               background: "linear-gradient(135deg, #0891b2 0%, #06b6d4 100%)",
@@ -918,8 +925,8 @@ const CareersPage = () => {
             }}
           >
             {isSubmitting ? (
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                <CircularProgress size={20} sx={{ color: 'white' }} />
+              <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                <CircularProgress size={20} sx={{ color: "white" }} />
                 <span>Uploading...</span>
               </Box>
             ) : (

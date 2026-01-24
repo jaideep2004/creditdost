@@ -7,11 +7,11 @@ const HistorySection = () => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 768);
     };
-    
+
     checkMobile();
-    window.addEventListener('resize', checkMobile);
-    
-    return () => window.removeEventListener('resize', checkMobile);
+    window.addEventListener("resize", checkMobile);
+
+    return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
   return (
@@ -61,7 +61,9 @@ const HistorySection = () => {
           maxWidth: "1400px",
           margin: "0 auto",
           display: "grid",
-          gridTemplateColumns: isMobile ? "1fr" : "repeat(auto-fit, minmax(300px, 1fr))",
+          gridTemplateColumns: isMobile
+            ? "1fr"
+            : "repeat(auto-fit, minmax(300px, 1fr))",
           gap: isMobile ? "40px" : "60px",
           alignItems: "start",
           position: "relative",
@@ -249,16 +251,18 @@ const HistorySection = () => {
                 style={{
                   width: "100%",
                   height: "100%",
-                  background: "linear-gradient(135deg, #94a3b8 0%, #cbd5e1 100%)",
+                  background:
+                    "linear-gradient(135deg, #94a3b8 0%, #cbd5e1 100%)",
+                  backgroundImage: 'url("./images/founder image-01.jpg")',
+                  backgroundSize: "cover",
+                  backgroundPosition: "center",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                   color: "#64748b",
                   fontSize: "1rem",
                 }}
-              >
-                Founder & Team Image
-              </div>
+              ></div>
             </div>
 
             {/* Secondary Image - Mobile */}
@@ -277,16 +281,18 @@ const HistorySection = () => {
                 style={{
                   width: "100%",
                   height: "100%",
-                  background: "linear-gradient(135deg, #cbd5e1 0%, #e2e8f0 100%)",
+                  background:
+                    "linear-gradient(135deg, #cbd5e1 0%, #e2e8f0 100%)",
+                  backgroundImage: 'url("./images/below founder image.jpg")',
+                  backgroundSize: "cover",
+                  backgroundPosition: "center",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                   color: "#64748b",
                   fontSize: "1rem",
                 }}
-              >
-                Company Journey
-              </div>
+              ></div>
             </div>
 
             {/* Founder's Message - Mobile */}
@@ -321,8 +327,8 @@ const HistorySection = () => {
                 }}
               >
                 "Everyone deserves a financial comeback. At Credit Dost, our
-                mission is to make credit-worthiness achievable through awareness,
-                technology, and responsible human guidance."
+                mission is to make credit-worthiness achievable through
+                awareness, technology, and responsible human guidance."
               </p>
               <div
                 style={{
@@ -363,16 +369,18 @@ const HistorySection = () => {
                 style={{
                   width: "100%",
                   height: "100%",
-                  background: "linear-gradient(135deg, #94a3b8 0%, #cbd5e1 100%)",
+                  background:
+                    "linear-gradient(135deg, #94a3b8 0%, #cbd5e1 100%)",
+                  backgroundImage: 'url("./images/founder image-01.jpg")',
+                  backgroundSize: "cover",
+                  backgroundPosition: "center",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                   color: "#64748b",
                   fontSize: "1.1rem",
                 }}
-              >
-                Founder & Team Image
-              </div>
+              ></div>
             </div>
 
             {/* Secondary Image */}
@@ -394,16 +402,18 @@ const HistorySection = () => {
                 style={{
                   width: "100%",
                   height: "100%",
-                  background: "linear-gradient(135deg, #cbd5e1 0%, #e2e8f0 100%)",
+                  background:
+                    "linear-gradient(135deg, #cbd5e1 0%, #e2e8f0 100%)",
+                  backgroundImage: 'url("./images/below founder image.jpg")',
+                  backgroundSize: "cover",
+                  backgroundPosition: "center",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
                   color: "#64748b",
                   fontSize: "1.1rem",
                 }}
-              >
-                Company Journey
-              </div>
+              ></div>
             </div>
 
             {/* Experience Badge */}
@@ -478,8 +488,8 @@ const HistorySection = () => {
                 }}
               >
                 "Everyone deserves a financial comeback. At Credit Dost, our
-                mission is to make credit-worthiness achievable through awareness,
-                technology, and responsible human guidance."
+                mission is to make credit-worthiness achievable through
+                awareness, technology, and responsible human guidance."
               </p>
               <div
                 style={{

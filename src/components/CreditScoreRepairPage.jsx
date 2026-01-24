@@ -1081,7 +1081,7 @@ const CreditScoreRepairPage = () => {
                           />
                         </Grid>
 
-                        <Grid item xs={12} md={6} style={{minWidth:"200px"}}>
+                        <Grid item xs={12} md={6} style={{ minWidth: "200px" }}>
                           <FormControl fullWidth>
                             <InputLabel>State</InputLabel>
                             <Select
@@ -1156,7 +1156,7 @@ const CreditScoreRepairPage = () => {
 
                         {/* Language, Occupation, and Income - Stacked on mobile, side-by-side on desktop */}
                         <Grid item xs={12} sm={6} md={4}>
-                          <FormControl fullWidth style={{minWidth:"200px"}}>
+                          <FormControl fullWidth style={{ minWidth: "200px" }}>
                             <InputLabel>Language</InputLabel>
                             <Select
                               name="language"
@@ -1186,7 +1186,7 @@ const CreditScoreRepairPage = () => {
                         </Grid>
 
                         <Grid item xs={12} sm={6} md={4}>
-                          <FormControl fullWidth style={{minWidth:"200px"}}>
+                          <FormControl fullWidth style={{ minWidth: "200px" }}>
                             <InputLabel>Occupation</InputLabel>
                             <Select
                               name="occupation"
@@ -1200,8 +1200,12 @@ const CreditScoreRepairPage = () => {
                               }}
                             >
                               <MenuItem value="">Select Occupation</MenuItem>
-                              <MenuItem value="salaried">Salaried Employee</MenuItem>
-                              <MenuItem value="business_owner">Business Owner</MenuItem>
+                              <MenuItem value="salaried">
+                                Salaried Employee
+                              </MenuItem>
+                              <MenuItem value="business_owner">
+                                Business Owner
+                              </MenuItem>
                               <MenuItem value="freelancer">Freelancer</MenuItem>
                               <MenuItem value="student">Student</MenuItem>
                               <MenuItem value="retired">Retired</MenuItem>
@@ -1380,8 +1384,8 @@ const CreditScoreRepairPage = () => {
                   Need Help? We're Here For You
                 </Typography>
 
-                <Grid container spacing={3} sx={{ mb: 4 }} >
-                  <Grid item xs={12} sm={6} md={4}>
+                <Grid container spacing={3} sx={{ mb: 4 }}>
+                  <Grid item xs={12} sm={6} md={4} style={{ flex: "1" }}>
                     <Box>
                       <Typography
                         variant="h6"
@@ -1390,11 +1394,11 @@ const CreditScoreRepairPage = () => {
                         📞 Call Us
                       </Typography>
                       <Typography sx={{ color: "#cbd5e1" }}>
-                        +91 XXXXXXXXXX
+                        +91 92174-69202
                       </Typography>
                     </Box>
                   </Grid>
-                  <Grid item xs={12} sm={6} md={4}>
+                  <Grid item xs={12} sm={6} md={4} style={{ flex: "1" }}>
                     <Box>
                       <Typography
                         variant="h6"
@@ -1407,7 +1411,7 @@ const CreditScoreRepairPage = () => {
                       </Typography>
                     </Box>
                   </Grid>
-                  <Grid item xs={12} sm={6} md={4}>
+                  <Grid item xs={12} sm={6} md={4} style={{ flex: "1" }}>
                     <Box>
                       <Typography
                         variant="h6"

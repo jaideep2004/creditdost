@@ -292,13 +292,10 @@ const StatsSection = () => {
                 </Typography>
               </Badge>
               <TopImage
-                src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=600&h=400&fit=crop"
+                src="./images/Homepage banner_500x400.jpg"
                 alt="Business professional"
               />
-              <BottomImage
-                src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=500&h=400&fit=crop"
-                alt="Team collaboration"
-              />
+              <BottomImage src="./images/website image.jpg" alt="Team collaboration" />
             </ImageContainer>
           </Grid>
 

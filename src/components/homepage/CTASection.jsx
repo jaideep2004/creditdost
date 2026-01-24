@@ -322,13 +322,12 @@ const CTASection = () => {
         .blog-image-wrapper {
           position: relative;
           width: 100%;
-          height: 280px;
+          height: 255px;
         }
 
         .blog-image {
           width: 100%;
           height: 100%;
-          object-fit: cover;
         }
 
         .date-badge {

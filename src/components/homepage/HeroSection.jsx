@@ -278,7 +278,7 @@ const HeroSection = () => {
                 Download Your Credit Report
               </Typography>
 
-              <Typography
+              {/* <Typography
                 sx={{
                   color: "rgba(255, 255, 255, 0.8)",
                   fontSize: { xs: "0.9rem", sm: "1.1rem" },
@@ -295,7 +295,7 @@ const HeroSection = () => {
               >
                 India’s Trusted Platform for Credit Score Repair, CIBIL Report
                 Correction & Loan Approval Support
-              </Typography>
+              </Typography> */}
 
               <Typography
                 sx={{
@@ -363,60 +363,7 @@ const HeroSection = () => {
                   Download Free Credit Report
                 </StyledButton>
 
-                <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 1.5,
-                    [(theme) => theme.breakpoints.down("sm")]: {
-                      justifyContent: "center",
-                    },
-                  }}
-                >
-                  <Box
-                    sx={{
-                      width: 48,
-                      height: 48,
-                      borderRadius: "50%",
-                      backgroundColor: "rgba(14, 165, 233, 0.15)",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      border: "1px solid rgba(14, 165, 233, 0.3)",
-                      [(theme) => theme.breakpoints.down("sm")]: {
-                        width: 40,
-                        height: 40,
-                      },
-                    }}
-                  >
-                    <Phone sx={{ color: "#0ea5e9", fontSize: 20 }} />
-                  </Box>
-                  <Box>
-                    <Typography
-                      sx={{
-                        color: "rgba(255, 255, 255, 0.6)",
-                        fontSize: "0.875rem",
-                        [(theme) => theme.breakpoints.down("sm")]: {
-                          fontSize: "0.8rem",
-                        },
-                      }}
-                    >
-                      Need help?
-                    </Typography>
-                    <Typography
-                      sx={{
-                        color: "white",
-                        fontSize: "1.125rem",
-                        fontWeight: 600,
-                        [(theme) => theme.breakpoints.down("sm")]: {
-                          fontSize: "1rem",
-                        },
-                      }}
-                    >
-                      +91  92174-69202
-                    </Typography>
-                  </Box>
-                </Box>
+               
               </Box>
             </ContentWrapper>
           </Grid>
@@ -541,7 +488,7 @@ const HeroSection = () => {
                     borderRadius: {
                       xs: "120px 120px 15px",
                       sm: "160px 160px 15px",
-                      md: "200px 200px 20px",
+                      md: "170px 170px 20px",
                     },
                     overflow: "hidden",
                     boxShadow: "0 30px 60px rgba(0, 0, 0, 0.4)",
@@ -572,7 +519,7 @@ const HeroSection = () => {
                   }}
                 >
                   <img
-                    src="/images/MAIN BANNER.jpg"
+                    src="/images/hero-new.jpeg"
                     alt="Business team collaboration"
                     style={{
                       width: "100%",

@@ -1683,7 +1683,7 @@ const ApplyForLoanPage = () => {
                       variant="h5"
                       sx={{ fontWeight: 600, fontSize: "1.1rem" }}
                     >
-                      +91 XXXXXXXXXX
+                      +91 92174-69202
                     </Typography>
                   </Box>
                 </Grid>

@@ -581,7 +581,8 @@ const Profile = () => {
             <Typography variant="h6" gutterBottom>
               Address Details
             </Typography>
-            <Box>
+            <small>Kindly Provide Full Address</small>
+            <Box style={{ marginTop: "20px" }}>
               <Grid container spacing={3}>
                 <Grid item xs={12}>
                   <TextField
