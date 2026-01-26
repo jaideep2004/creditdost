@@ -179,7 +179,7 @@ const WhoWeAreSection = () => {
           <div
             style={{
               width: "100%",
-              height: isMobile ? "100%" : "400px",
+              height: isMobile ? "100%" : "470px",
 
               backgroundImage: 'url("./images/website image.jpg")',
               backgroundSize: "cover",

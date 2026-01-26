@@ -60,11 +60,11 @@ const ManageAIAnalysis = () => {
   // Handle response file selection
   const handleFileChange = (event) => {
     const file = event.target.files[0];
-    if (file && file.type === 'application/pdf') {
+    if (file && (file.type === 'application/pdf' || file.type === 'text/html' || file.name.toLowerCase().endsWith('.html'))) {
       setResponseFile(file);
       setUploadError('');
     } else {
-      setUploadError('Please select a PDF file');
+      setUploadError('Please select a PDF or HTML file');
       setResponseFile(null);
     }
   };
@@ -217,7 +217,7 @@ const ManageAIAnalysis = () => {
               </Typography>
               
               <input
-                accept="application/pdf"
+                accept="application/pdf,.html,text/html"
                 style={{ display: 'none' }}
                 id="response-upload"
                 type="file"
@@ -232,7 +232,7 @@ const ManageAIAnalysis = () => {
                   sx={{ mt: 2 }}
                   disabled={uploading}
                 >
-                  Upload Response PDF
+                  Upload Response PDF/HTML
                 </Button>
               </label>
               

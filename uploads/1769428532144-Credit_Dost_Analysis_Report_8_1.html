@@ -1,0 +1,1704 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CIBIL Credit Analysis Report - Credit Dost</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <style>
+        :root {
+            --primary: #0066cc;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --dark-red: #b91c1c;
+            --light-green: #d1fae5;
+            --bg-primary: #f8fafc;
+            --bg-secondary: #ffffff;
+            --text-primary: #1f2937;
+            --text-secondary: #6b7280;
+            --border: #e5e7eb;
+            --credit-blue: #003366;
+            --gauge-red: #dc2626;
+            --gauge-amber: #f59e0b;
+            --gauge-green: #10b981;
+            --gauge-dark-green: #047857;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            color: var(--text-primary);
+            background-color: var(--bg-primary);
+            line-height: 1.6;
+        }
+
+        body {
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+        }
+
+        /* Header & Branding */
+        .header {
+            background: linear-gradient(135deg, var(--credit-blue) 0%, #005599 100%);
+            color: white;
+            padding: 40px 30px;
+            border-radius: 8px 8px 0 0;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header p {
+            font-size: 14px;
+            opacity: 0.95;
+            margin: 5px 0;
+        }
+
+        .report-meta {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            padding: 20px;
+            background: #f0f4f8;
+            border-bottom: 1px solid var(--border);
+            font-size: 13px;
+        }
+
+        .meta-item strong {
+            color: var(--credit-blue);
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        /* Section Styling */
+        .section {
+            padding: 30px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .section:last-child {
+            border-bottom: none;
+        }
+
+        .section h2 {
+            font-size: 22px;
+            color: var(--credit-blue);
+            margin-bottom: 20px;
+            border-left: 4px solid var(--primary);
+            padding-left: 15px;
+        }
+
+        .section h3 {
+            font-size: 16px;
+            color: var(--text-primary);
+            margin-top: 20px;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        /* Score Section */
+        .score-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .score-display {
+            background: linear-gradient(135deg, var(--credit-blue), #0052a3);
+            color: white;
+            padding: 40px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .score-number {
+            font-size: 64px;
+            font-weight: 700;
+            margin: 20px 0;
+        }
+
+        .score-band {
+            font-size: 18px;
+            padding: 10px 20px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 6px;
+            display: inline-block;
+            margin-top: 15px;
+        }
+
+        .score-band.poor { background: rgba(220, 38, 38, 0.3); }
+        .score-band.fair { background: rgba(245, 158, 11, 0.3); }
+        .score-band.good { background: rgba(16, 185, 129, 0.3); }
+        .score-band.excellent { background: rgba(4, 120, 87, 0.3); }
+
+        .score-factors {
+            background: #f9fafb;
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        .score-factors li {
+            margin: 10px 0;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .score-factors li:before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        /* Chart Containers */
+        .chart-container {
+            position: relative;
+            height: 300px;
+            margin: 30px 0 50px 0;
+            background: #fafbfc;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+
+        .chart-container.large {
+            height: 400px;
+        }
+
+        .chart-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 30px;
+            margin: 30px 0;
+        }
+
+        /* Summary Tables */
+        .summary-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .summary-table th {
+            background: #f3f4f6;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            color: var(--credit-blue);
+            border-bottom: 2px solid var(--border);
+        }
+
+        .summary-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .summary-table tr:hover {
+            background: #f9fafb;
+        }
+
+        .summary-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Risk Badges */
+        .risk-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .risk-critical {
+            background: #fee2e2;
+            color: var(--dark-red);
+        }
+
+        .risk-high {
+            background: #fed7aa;
+            color: #92400e;
+        }
+
+        .risk-medium {
+            background: #fef08a;
+            color: #713f12;
+        }
+
+        .risk-low {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        /* Account Cards */
+        .account-card {
+            background: #f9fafb;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+
+        .account-card h4 {
+            color: var(--credit-blue);
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .account-card table {
+            width: 100%;
+            font-size: 13px;
+            margin: 10px 0;
+        }
+
+        .account-card table tr {
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .account-card table td {
+            padding: 8px 0;
+        }
+
+        .account-card table td:first-child {
+            font-weight: 500;
+            width: 40%;
+            color: var(--text-secondary);
+        }
+
+        /* Action Plan */
+        .action-plan {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .month-plan {
+            background: linear-gradient(135deg, #f0f4f8, #ffffff);
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            padding: 20px;
+        }
+
+        .month-plan h4 {
+            color: var(--primary);
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        .month-plan ol {
+            padding-left: 20px;
+        }
+
+        .month-plan li {
+            margin: 10px 0;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--credit-blue);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            font-size: 12px;
+            line-height: 1.8;
+        }
+
+        .footer a {
+            color: #87ceeb;
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        .social-links {
+            margin: 15px 0;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        /* Risk Severity Gauge */
+        .gauge {
+            position: relative;
+            width: 100%;
+            height: 40px;
+            background: linear-gradient(90deg, var(--gauge-red) 0%, var(--gauge-amber) 33%, var(--gauge-green) 66%, var(--gauge-dark-green) 100%);
+            border-radius: 20px;
+            overflow: hidden;
+            margin: 20px 0;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .gauge-marker {
+            position: absolute;
+            top: -8px;
+            width: 0;
+            height: 0;
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            border-top: 15px solid var(--text-primary);
+            z-index: 10;
+        }
+
+        .gauge-label {
+            position: absolute;
+            bottom: -25px;
+            width: 25%;
+            text-align: center;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .gauge-value {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-weight: 700;
+            font-size: 12px;
+            z-index: 20;
+        }
+
+        /* Utilization Bars */
+        .util-bar {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 10px 0;
+        }
+
+        .util-bar-label {
+            min-width: 150px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .util-bar-container {
+            flex: 1;
+            height: 24px;
+            background: #e5e7eb;
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .util-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--gauge-green), var(--gauge-amber), var(--gauge-red));
+            border-radius: 12px;
+            transition: width 0.3s ease;
+        }
+
+        .util-bar-value {
+            min-width: 40px;
+            text-align: right;
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        /* Diagnostics */
+        .diagnostic-box {
+            background: #fff7ed;
+            border-left: 4px solid var(--gauge-amber);
+            padding: 15px;
+            border-radius: 4px;
+            margin: 15px 0;
+            font-size: 13px;
+        }
+
+        .diagnostic-box.critical {
+            background: #fee2e2;
+            border-left-color: var(--gauge-red);
+        }
+
+        /* Projections */
+        .projection-box {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .projection-card {
+            background: #f0f9ff;
+            border: 1px solid #bfdbfe;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .projection-card .number {
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--primary);
+            margin: 10px 0;
+        }
+
+        .projection-card .label {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        /* Print Styles */
+        @media print {
+            body {
+                padding: 0;
+            }
+            .container {
+                max-width: 100%;
+            }
+            .section {
+                page-break-inside: avoid;
+            }
+            .chart-container {
+                page-break-inside: avoid;
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            .section {
+                padding: 20px;
+            }
+            .score-container {
+                grid-template-columns: 1fr;
+            }
+            .chart-grid {
+                grid-template-columns: 1fr;
+            }
+            .header h1 {
+                font-size: 24px;
+            }
+            .report-meta {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- HEADER -->
+        <div class="header">
+            <h1>CIBIL Credit Analysis Report</h1>
+            <p>Professional Credit Intelligence & Risk Assessment</p>
+            <p>Powered by Credit Dost</p>
+        </div>
+
+        <!-- REPORT METADATA -->
+        <div class="report-meta">
+            <div class="meta-item">
+                <strong>Consumer Name:</strong>
+                Mukesh Ramji Lal
+            </div>
+            <div class="meta-item">
+                <strong>Report Date:</strong>
+                January 23, 2026
+            </div>
+            <div class="meta-item">
+                <strong>Control No:</strong>
+                10438419152
+            </div>
+            <div class="meta-item">
+                <strong>PAN:</strong>
+                BRRPM9844D
+            </div>
+        </div>
+
+        <!-- SECTION 1: CREDIT SCORE OVERVIEW -->
+        <div class="section">
+            <h2>Section 1: Credit Score Overview</h2>
+            <div class="score-container">
+                <div class="score-display">
+                    <div>Current CIBIL Score</div>
+                    <div class="score-number">751</div>
+                    <div class="score-band good">Good (650–749)</div>
+                    <p style="margin-top: 15px; font-size: 13px;">Score last updated: January 23, 2026</p>
+                </div>
+                <div>
+                    <h3>Key Scoring Factors</h3>
+                    <ul class="score-factors">
+                        <li><strong>High Proportion of Outstanding Trades</strong> - Multiple active loan accounts with balances</li>
+                        <li><strong>Recent High Balance Build on Bankcard Trades</strong> - Elevated credit card utilization</li>
+                        <li><strong>Account Age & Tenure</strong> - Oldest account from July 2011 (14+ years)</li>
+                        <li><strong>Payment History Mix</strong> - Multiple closed accounts with standard status</li>
+                    </ul>
+                    <div style="background: #fffbeb; border-left: 3px solid #f59e0b; padding: 15px; margin-top: 20px; border-radius: 4px; font-size: 13px;">
+                        <strong>Score Interpretation:</strong> Your score of 751 falls in the "Good" band. Most lenders view this favorably, but there's room for improvement to reach the "Excellent" (750+) band by reducing credit utilization and maintaining perfect payment behavior.
+                    </div>
+                </div>
+            </div>
+
+            <!-- CHART 1: SCORE GAUGE -->
+            <div class="chart-container" style="position: relative; height: 120px;">
+                <h3 style="margin-top: 0;">Credit Score Positioning</h3>
+                <div class="gauge" style="margin-top: 30px;">
+                    <div class="gauge-marker" style="left: 83.4%;"></div>
+                    <div class="gauge-value">751</div>
+                    <div class="gauge-label" style="left: 0%;">Poor (300)</div>
+                    <div class="gauge-label" style="left: 33%;">Fair (500)</div>
+                    <div class="gauge-label" style="left: 66%;">Good (650)</div>
+                    <div class="gauge-label" style="left: 83%;">Excellent (750)</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 2: PROFILE SNAPSHOT -->
+        <div class="section">
+            <h2>Section 2: Profile Snapshot (Credit Summary)</h2>
+            <table class="summary-table">
+                <tr>
+                    <th>Metric</th>
+                    <th>Value</th>
+                    <th>Status</th>
+                </tr>
+                <tr>
+                    <td>Total Credit Accounts</td>
+                    <td><strong>14 Accounts</strong></td>
+                    <td><span class="risk-badge risk-medium">Moderate Portfolio</span></td>
+                </tr>
+                <tr>
+                    <td>Active Accounts</td>
+                    <td><strong>4 Accounts</strong></td>
+                    <td><span class="risk-badge risk-low">Healthy</span></td>
+                </tr>
+                <tr>
+                    <td>Closed / Settled Accounts</td>
+                    <td><strong>10 Accounts</strong></td>
+                    <td><span class="risk-badge risk-low">Good History</span></td>
+                </tr>
+                <tr>
+                    <td>Total Sanctioned Amount</td>
+                    <td><strong>₹45,16,510</strong></td>
+                    <td>All time high credit limit</td>
+                </tr>
+                <tr>
+                    <td>Total Outstanding Balance</td>
+                    <td><strong>₹11,99,060</strong></td>
+                    <td>Current exposure</td>
+                </tr>
+                <tr>
+                    <td>Overall Credit Utilization %</td>
+                    <td><strong>26.55%</strong></td>
+                    <td><span class="risk-badge risk-low">Healthy (Below 30%)</span></td>
+                </tr>
+                <tr>
+                    <td>Oldest Account Vintage</td>
+                    <td><strong>14 Years 6 Months</strong></td>
+                    <td>Opened: July 29, 2011</td>
+                </tr>
+                <tr>
+                    <td>Recent Hard Enquiries (Last 12 Months)</td>
+                    <td><strong>4 Enquiries</strong></td>
+                    <td><span class="risk-badge risk-high">Moderate Concern</span></td>
+                </tr>
+            </table>
+        </div>
+
+        <!-- SECTION 3: KEY RISK DRIVERS -->
+        <div class="section">
+            <h2>Section 3: Key Risk Drivers (Top 5)</h2>
+            
+            <div style="background: #f0fdf4; border-left: 4px solid #10b981; padding: 15px; margin: 20px 0; border-radius: 4px;">
+                <strong style="color: #166534;">✓ Positive Note:</strong> No active overdue accounts or delinquencies detected. All payment history shows standard status (STD) where recorded.
+            </div>
+
+            <ol style="padding-left: 30px; line-height: 2;">
+                <li>
+                    <strong><span class="risk-badge risk-high">🟠 HIGH</span> – High Credit Card Utilization on Active Accounts</strong>
+                    <ul style="margin-top: 8px; padding-left: 20px;">
+                        <li>SBI Card (account ending in 4575399): 92.87% utilization (₹1,02,033 of ₹1,09,822 limit)</li>
+                        <li>ICICI Card (account ending in 8291014): 786.62% balance-to-limit ratio (₹2,97,277 balance with ₹37,762 limit)</li>
+                        <li><strong>Impact:</strong> Elevated utilization signals financial stress to lenders; reduces creditworthiness</li>
+                        <li><strong>Urgency:</strong> Immediate action required</li>
+                    </ul>
+                </li>
+
+                <li>
+                    <strong><span class="risk-badge risk-medium">🟡 MEDIUM</span> – Recent Hard Enquiries (4 in 12 months)</strong>
+                    <ul style="margin-top: 8px; padding-left: 20px;">
+                        <li>Jan 23, 2026: Purpose Code 10 (General Enquiry)</li>
+                        <li>Nov 26, 2025: Purpose Code 05 (Auto/Personal Loan), Amount: ₹10,00,000</li>
+                        <li>Nov 20, 2025: Purpose Code 13, Amount: ₹1,00,000</li>
+                        <li>Aug 4, 2025: Purpose Code 05 (Auto/Personal Loan), Amount: ₹5,00,000</li>
+                        <li><strong>Impact:</strong> Multiple enquiries in short span suggests active credit seeking; reduces score marginally</li>
+                        <li><strong>Bureau Logic:</strong> Signals elevated credit demand, increases perceived default risk</li>
+                    </ul>
+                </li>
+
+                <li>
+                    <strong><span class="risk-badge risk-medium">🟡 MEDIUM</span> – Historical Account Closures & Settlements</strong>
+                    <ul style="margin-top: 8px; padding-left: 20px;">
+                        <li>10 of 14 accounts closed or settled (71.4% closure rate)</li>
+                        <li>Multiple accounts from SBI Personal Loans closed between 2015–2020</li>
+                        <li>Most show standard payment status at closure (positive)</li>
+                        <li><strong>Impact:</strong> While accounts were closed properly, high turnover may indicate changing financial patterns</li>
+                    </ul>
+                </li>
+
+                <li>
+                    <strong><span class="risk-badge risk-low">🟢 LOW</span> – Insufficient EMI Data on Personal Loans</strong>
+                    <ul style="margin-top: 8px; padding-left: 20px;">
+                        <li>Current SBI Personal Loan (₹9,05,000) shows EMI of ₹17,469</li>
+                        <li>Long-term data not visible in current report (data cuts off at 2021–2022)</li>
+                        <li><strong>Impact:</strong> Limited recent payment trend visibility; recommend 12-month payment verification</li>
+                    </ul>
+                </li>
+
+                <li>
+                    <strong><span class="risk-badge risk-low">🟢 LOW</span> – Account Age and Zero Delinquencies</strong>
+                    <ul style="margin-top: 8px; padding-left: 20px;">
+                        <li>Oldest account: 14+ years (strong tenure foundation)</li>
+                        <li>No written-offs, suits filed, or willful defaults detected</li>
+                        <li>No accounts with 90+ DPD status</li>
+                        <li><strong>Impact:</strong> Positive indicators; demonstrates mature credit management history</li>
+                    </ul>
+                </li>
+            </ol>
+
+            <!-- CHART 2: RISK SEVERITY DISTRIBUTION -->
+            <div class="chart-container large">
+                <canvas id="riskSeverityChart"></canvas>
+            </div>
+
+            <!-- CHART 3: PORTFOLIO COMPOSITION -->
+            <div class="chart-container">
+                <canvas id="portfolioCompositionChart"></canvas>
+            </div>
+        </div>
+
+        <!-- SECTION 4: COMPLETE CREDIT PORTFOLIO TABLE -->
+        <div class="section">
+            <h2>Section 4: Complete Credit Portfolio</h2>
+            <table class="summary-table">
+                <thead>
+                    <tr>
+                        <th>Lender</th>
+                        <th>Account Type</th>
+                        <th>Sanctioned Amount</th>
+                        <th>Outstanding Balance</th>
+                        <th>Utilization %</th>
+                        <th>Max DPD</th>
+                        <th>Status</th>
+                        <th>Risk Level</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr style="background: #f0fdf4;">
+                        <td><strong>ICICI Bank</strong></td>
+                        <td>Credit Card</td>
+                        <td>₹37,762</td>
+                        <td><strong>₹2,97,277</strong></td>
+                        <td><span style="color: var(--danger); font-weight: 600;">786.62%</span></td>
+                        <td>0 DPD</td>
+                        <td>Active</td>
+                        <td><span class="risk-badge risk-high">HIGH</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>SBI</strong></td>
+                        <td>Personal Loan</td>
+                        <td>₹9,05,000</td>
+                        <td>₹7,95,198</td>
+                        <td>87.86%</td>
+                        <td>0 DPD</td>
+                        <td>Active</td>
+                        <td><span class="risk-badge risk-medium">MEDIUM</span></td>
+                    </tr>
+                    <tr style="background: #f3f4f6;">
+                        <td><strong>SBI</strong></td>
+                        <td>Personal Loan</td>
+                        <td>₹92,353</td>
+                        <td>₹0</td>
+                        <td>0%</td>
+                        <td>0 DPD</td>
+                        <td>Closed (2020-09-11)</td>
+                        <td><span class="risk-badge risk-low">LOW</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>SBI</strong></td>
+                        <td>Personal Loan</td>
+                        <td>₹1,48,000</td>
+                        <td>₹0</td>
+                        <td>0%</td>
+                        <td>0 DPD</td>
+                        <td>Closed (2020-09-25)</td>
+                        <td><span class="risk-badge risk-low">LOW</span></td>
+                    </tr>
+                    <tr style="background: #f3f4f6;">
+                        <td><strong>SBI</strong></td>
+                        <td>Personal Loan</td>
+                        <td>₹8,02,000</td>
+                        <td>₹0</td>
+                        <td>0%</td>
+                        <td>0 DPD</td>
+                        <td>Closed (2020-09-11)</td>
+                        <td><span class="risk-badge risk-low">LOW</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>SBI</strong></td>
+                        <td>Personal Loan</td>
+                        <td>₹7,40,000</td>
+                        <td>₹0</td>
+                        <td>0%</td>
+                        <td>0 DPD</td>
+                        <td>Closed (2019-09-04)</td>
+                        <td><span class="risk-badge risk-low">LOW</span></td>
+                    </tr>
+                    <tr style="background: #f3f4f6;">
+                        <td><strong>SBI Card</strong></td>
+                        <td>Credit Card</td>
+                        <td>₹1,09,822</td>
+                        <td>₹1,02,033</td>
+                        <td>92.87%</td>
+                        <td>0 DPD</td>
+                        <td>Active</td>
+                        <td><span class="risk-badge risk-high">HIGH</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>SBI Card</strong></td>
+                        <td>Credit Card</td>
+                        <td>₹47,612</td>
+                        <td>₹0</td>
+                        <td>0%</td>
+                        <td>0 DPD</td>
+                        <td>Closed (2020-06-04)</td>
+                        <td><span class="risk-badge risk-low">LOW</span></td>
+                    </tr>
+                    <tr style="background: #f3f4f6;">
+                        <td><strong>SBI Card</strong></td>
+                        <td>Credit Card</td>
+                        <td>₹30,629</td>
+                        <td>₹0</td>
+                        <td>0%</td>
+                        <td>0 DPD</td>
+                        <td>Closed (2019-11-05)</td>
+                        <td><span class="risk-badge risk-low">LOW</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>SBI</strong></td>
+                        <td>Personal Loan</td>
+                        <td>₹6,50,000</td>
+                        <td>₹0</td>
+                        <td>0%</td>
+                        <td>0 DPD</td>
+                        <td>Closed (2018-08-24)</td>
+                        <td><span class="risk-badge risk-low">LOW</span></td>
+                    </tr>
+                    <tr style="background: #f3f4f6;">
+                        <td><strong>SBI</strong></td>
+                        <td>Personal Loan</td>
+                        <td>₹4,90,000</td>
+                        <td>₹0</td>
+                        <td>0%</td>
+                        <td>0 DPD</td>
+                        <td>Closed (2017-09-08)</td>
+                        <td><span class="risk-badge risk-low">LOW</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>SBI</strong></td>
+                        <td>Personal Loan</td>
+                        <td>₹3,00,000</td>
+                        <td>₹0</td>
+                        <td>0%</td>
+                        <td>0 DPD</td>
+                        <td>Closed (2015-12-29)</td>
+                        <td><span class="risk-badge risk-low">LOW</span></td>
+                    </tr>
+                    <tr style="background: #f3f4f6;">
+                        <td><strong>SBI</strong></td>
+                        <td>Consumer Loan</td>
+                        <td>₹1,50,000</td>
+                        <td>₹0</td>
+                        <td>0%</td>
+                        <td>0 DPD</td>
+                        <td>Closed (2015-01-05)</td>
+                        <td><span class="risk-badge risk-low">LOW</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>SBI</strong></td>
+                        <td>Personal Loan</td>
+                        <td>₹13,332</td>
+                        <td>₹4,552</td>
+                        <td>34.14%</td>
+                        <td>0 DPD</td>
+                        <td>Active</td>
+                        <td><span class="risk-badge risk-low">LOW</span></td>
+                    </tr>
+                    <tr style="background: #f0f9ff; font-weight: 600;">
+                        <td colspan="2"><strong>TOTAL (14 Accounts)</strong></td>
+                        <td><strong>₹45,16,510</strong></td>
+                        <td><strong>₹11,99,060</strong></td>
+                        <td><strong>26.55%</strong></td>
+                        <td><strong>0 DPD</strong></td>
+                        <td colspan="2">4 Active | 10 Closed</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- SECTION 5: PORTFOLIO-LEVEL METRICS -->
+        <div class="section">
+            <h2>Section 5: Portfolio-Level Metrics</h2>
+            
+            <div class="projection-box">
+                <div class="projection-card">
+                    <div class="label">Total Sanctioned Exposure</div>
+                    <div class="number">₹45,16,510</div>
+                </div>
+                <div class="projection-card">
+                    <div class="label">Total Outstanding Exposure</div>
+                    <div class="number">₹11,99,060</div>
+                </div>
+                <div class="projection-card">
+                    <div class="label">Credit Utilization Ratio</div>
+                    <div class="number">26.55%</div>
+                </div>
+                <div class="projection-card">
+                    <div class="label">Active vs Closed</div>
+                    <div class="number">4 : 10</div>
+                </div>
+            </div>
+
+            <h3>Utilization Summary</h3>
+            <div class="util-bar">
+                <div class="util-bar-label">Total Portfolio Utilization:</div>
+                <div class="util-bar-container">
+                    <div class="util-bar-fill" style="width: 26.55%;"></div>
+                </div>
+                <div class="util-bar-value">26.55%</div>
+            </div>
+            <p style="font-size: 13px; color: var(--text-secondary); margin-left: 160px;">✓ Below 30% threshold – Healthy utilization level</p>
+
+            <!-- CHART 4: SANCTIONED vs OUTSTANDING -->
+            <div class="chart-container large">
+                <canvas id="exposureChart"></canvas>
+            </div>
+
+            <!-- CHART 5: RISK BUBBLE MATRIX -->
+            <div class="chart-container large">
+                <canvas id="riskMatrixChart"></canvas>
+            </div>
+        </div>
+
+        <!-- SECTION 6: ACCOUNT-WISE DEEP DIVE -->
+        <div class="section">
+            <h2>Section 6: Account-Wise Deep Dive</h2>
+            
+            <!-- ACCOUNT 1: ICICI CARD -->
+            <div class="account-card">
+                <h4>
+                    <span>ICICI Bank – Credit Card (Ending: 8291014)</span>
+                    <span class="risk-badge risk-high">HIGH RISK</span>
+                </h4>
+                <table>
+                    <tr>
+                        <td>Account Opened:</td>
+                        <td>December 24, 2020</td>
+                    </tr>
+                    <tr>
+                        <td>Account Status:</td>
+                        <td><strong style="color: #10b981;">Active</strong></td>
+                    </tr>
+                    <tr>
+                        <td>Account Vintage:</td>
+                        <td>5 Years 1 Month</td>
+                    </tr>
+                    <tr>
+                        <td>Credit Limit (High Credit):</td>
+                        <td>₹37,762</td>
+                    </tr>
+                    <tr>
+                        <td>Current Outstanding Balance:</td>
+                        <td><strong style="color: var(--danger);">₹2,97,277</strong></td>
+                    </tr>
+                    <tr>
+                        <td>Utilization %:</td>
+                        <td><strong style="color: var(--danger);">786.62% (EXCEEDS LIMIT)</strong></td>
+                    </tr>
+                    <tr>
+                        <td>Maximum Historical DPD:</td>
+                        <td>0 DPD (No delinquency)</td>
+                    </tr>
+                    <tr>
+                        <td>Payment Behaviour Summary:</td>
+                        <td>All payments marked as "000" (On-time/Standard) from Jan-21 to May-22</td>
+                    </tr>
+                    <tr>
+                        <td>Last Payment Date:</td>
+                        <td>September 14, 2021</td>
+                    </tr>
+                    <tr>
+                        <td>Risk Rating:</td>
+                        <td><span class="risk-badge risk-high">HIGH</span></td>
+                    </tr>
+                </table>
+                <div class="diagnostic-box critical">
+                    <strong>⚠️ Critical Observation:</strong> Balance (₹2,97,277) far exceeds credit limit (₹37,762). This indicates either limit increase or accumulated revolving debt. Extreme utilization (786%) is major credit score risk factor.
+                </div>
+            </div>
+
+            <!-- ACCOUNT 2: SBI PERSONAL LOAN (ACTIVE) -->
+            <div class="account-card">
+                <h4>
+                    <span>SBI – Personal Loan (Ending: 2977429) – ACTIVE</span>
+                    <span class="risk-badge risk-medium">MEDIUM RISK</span>
+                </h4>
+                <table>
+                    <tr>
+                        <td>Account Opened:</td>
+                        <td>September 11, 2020</td>
+                    </tr>
+                    <tr>
+                        <td>Account Status:</td>
+                        <td><strong style="color: #10b981;">Active – Currently Repaying</strong></td>
+                    </tr>
+                    <tr>
+                        <td>Account Vintage:</td>
+                        <td>5 Years 4 Months</td>
+                    </tr>
+                    <tr>
+                        <td>Sanctioned Amount:</td>
+                        <td>₹9,05,000</td>
+                    </tr>
+                    <tr>
+                        <td>Current Outstanding Balance:</td>
+                        <td>₹7,95,198</td>
+                    </tr>
+                    <tr>
+                        <td>Utilization %:</td>
+                        <td>87.86%</td>
+                    </tr>
+                    <tr>
+                        <td>Monthly EMI:</td>
+                        <td>₹17,469</td>
+                    </tr>
+                    <tr>
+                        <td>Tenure:</td>
+                        <td>72 Months (6 years)</td>
+                    </tr>
+                    <tr>
+                        <td>Payment Frequency:</td>
+                        <td>Monthly (03)</td>
+                    </tr>
+                    <tr>
+                        <td>Maximum Historical DPD:</td>
+                        <td>0 DPD (No delinquency)</td>
+                    </tr>
+                    <tr>
+                        <td>Payment Behaviour Summary:</td>
+                        <td>All payments marked as "STD" (Standard/On-time) from Sept-20 to Sept-21</td>
+                    </tr>
+                    <tr>
+                        <td>Risk Rating:</td>
+                        <td><span class="risk-badge risk-medium">MEDIUM</span></td>
+                    </tr>
+                </table>
+                <div class="diagnostic-box">
+                    <strong>ℹ️ Assessment:</strong> Large outstanding balance (87.86%) is normal for active personal loans. No DPD history suggests good repayment discipline. Continue on-time EMI payments.
+                </div>
+            </div>
+
+            <!-- ACCOUNT 3: SBI CARD (ACTIVE) -->
+            <div class="account-card">
+                <h4>
+                    <span>SBI Card – Credit Card (Ending: 4575399) – ACTIVE</span>
+                    <span class="risk-badge risk-high">HIGH RISK</span>
+                </h4>
+                <table>
+                    <tr>
+                        <td>Account Opened:</td>
+                        <td>June 25, 2018</td>
+                    </tr>
+                    <tr>
+                        <td>Account Status:</td>
+                        <td><strong style="color: #10b981;">Active</strong></td>
+                    </tr>
+                    <tr>
+                        <td>Account Vintage:</td>
+                        <td>7 Years 7 Months</td>
+                    </tr>
+                    <tr>
+                        <td>Credit Limit (High Credit):</td>
+                        <td>₹1,09,822</td>
+                    </tr>
+                    <tr>
+                        <td>Current Outstanding Balance:</td>
+                        <td>₹1,02,033</td>
+                    </tr>
+                    <tr>
+                        <td>Utilization %:</td>
+                        <td>92.87%</td>
+                    </tr>
+                    <tr>
+                        <td>Maximum Historical DPD:</td>
+                        <td>0 DPD (No delinquency)</td>
+                    </tr>
+                    <tr>
+                        <td>Payment Behaviour Summary:</td>
+                        <td>All payments marked as "000" (On-time/Standard) from July-20 to Oct-21</td>
+                    </tr>
+                    <tr>
+                        <td>Last Payment Date:</td>
+                        <td>August 31, 2021</td>
+                    </tr>
+                    <tr>
+                        <td>Risk Rating:</td>
+                        <td><span class="risk-badge risk-high">HIGH</span></td>
+                    </tr>
+                </table>
+                <div class="diagnostic-box critical">
+                    <strong>⚠️ Critical Observation:</strong> At 92.87% utilization, this card is near maxed-out. High utilization combined with revolving debt signals cash flow stress to lenders and negatively impacts credit score.
+                </div>
+            </div>
+
+            <!-- ACCOUNT 4: SBI PERSONAL LOAN (ACTIVE - SMALL) -->
+            <div class="account-card">
+                <h4>
+                    <span>SBI – Personal Loan (Ending: 0330824) – ACTIVE</span>
+                    <span class="risk-badge risk-low">LOW RISK</span>
+                </h4>
+                <table>
+                    <tr>
+                        <td>Account Opened:</td>
+                        <td>July 29, 2011</td>
+                    </tr>
+                    <tr>
+                        <td>Account Status:</td>
+                        <td><strong style="color: #10b981;">Active</strong></td>
+                    </tr>
+                    <tr>
+                        <td>Account Vintage:</td>
+                        <td>14 Years 6 Months (OLDEST ACCOUNT)</td>
+                    </tr>
+                    <tr>
+                        <td>Sanctioned Amount:</td>
+                        <td>₹13,332</td>
+                    </tr>
+                    <tr>
+                        <td>Current Outstanding Balance:</td>
+                        <td>₹4,552</td>
+                    </tr>
+                    <tr>
+                        <td>Utilization %:</td>
+                        <td>34.14%</td>
+                    </tr>
+                    <tr>
+                        <td>Maximum Historical DPD:</td>
+                        <td>0 DPD (No delinquency)</td>
+                    </tr>
+                    <tr>
+                        <td>Payment Behaviour Summary:</td>
+                        <td>All payments marked as "STD" (Standard/On-time) from Oct-18 to Sept-21</td>
+                    </tr>
+                    <tr>
+                        <td>Risk Rating:</td>
+                        <td><span class="risk-badge risk-low">LOW</span></td>
+                    </tr>
+                </table>
+                <div class="diagnostic-box" style="background: #f0fdf4; border-left-color: #10b981;">
+                    <strong>✓ Positive Note:</strong> This is your oldest account (14.5 years). Maintaining this account with consistent on-time payments helps establish long credit history and supports overall score.
+                </div>
+            </div>
+        </div>
+
+        <!-- SECTION 7: ISSUE-WISE DIAGNOSTIC ANALYSIS -->
+        <div class="section">
+            <h2>Section 7: Issue-Wise Diagnostic Analysis</h2>
+
+            <!-- ISSUE 1: HIGH CREDIT CARD UTILIZATION -->
+            <h3>Issue 1: Elevated Credit Card Utilization (Primary Concern)</h3>
+            <div class="diagnostic-box critical">
+                <strong>Problem Definition:</strong> 
+                Two active credit cards are carrying high balances relative to their limits:
+                <ul style="margin: 10px 0; padding-left: 20px;">
+                    <li>ICICI Card: ₹2,97,277 balance vs ₹37,762 limit (786.62% – exceeds limit)</li>
+                    <li>SBI Card: ₹1,02,033 balance vs ₹1,09,822 limit (92.87% – near maximum)</li>
+                </ul>
+            </div>
+
+            <div style="background: #fffbeb; border-left: 4px solid #f59e0b; padding: 15px; margin: 15px 0; border-radius: 4px;">
+                <strong>Why This Negatively Impacts Credit Score:</strong>
+                <ul style="margin: 10px 0; padding-left: 20px; font-size: 13px;">
+                    <li><strong>Bureau Logic:</strong> CIBIL gives high weight to credit utilization ratio. The formula considers utilized credit vs. available limit.</li>
+                    <li><strong>High Utilization (>50%):</strong> Signals to lenders that you are highly reliant on credit, increasing perceived default risk.</li>
+                    <li><strong>Exceeding Limit (ICICI):</strong> This is a red flag suggesting overextension or poor account management.</li>
+                    <li><strong>Revolving Debt:</strong> Credit card balances are viewed as "revolving debt" – more risky than installment loans.</li>
+                    <li><strong>Score Impact Direction:</strong> This factor currently pulls your score DOWN by estimated 30–50 points.</li>
+                </ul>
+            </div>
+
+            <div style="background: #f3f4f6; border-left: 4px solid #6b7280; padding: 15px; margin: 15px 0; border-radius: 4px;">
+                <strong>Short-term vs Long-term Impact:</strong>
+                <ul style="margin: 10px 0; padding-left: 20px; font-size: 13px;">
+                    <li><strong>Short-term (0–30 days):</strong> If you immediately reduce utilization to below 30%, bureau models can reflect this in next cycle (usually 20–30 days).</li>
+                    <li><strong>Long-term (3–6 months):</strong> Sustained low utilization can recover 20–40 points from current level.</li>
+                </ul>
+            </div>
+
+            <!-- ISSUE 2: HARD ENQUIRIES -->
+            <h3>Issue 2: Multiple Hard Enquiries (4 in Past 12 Months)</h3>
+            <div class="diagnostic-box">
+                <strong>Problem Definition:</strong> 
+                Bureau shows 4 credit enquiries in past 12 months:
+                <ul style="margin: 10px 0; padding-left: 20px;">
+                    <li>Jan 23, 2026 (Recent): General Enquiry (SBI)</li>
+                    <li>Nov 26, 2025: Personal Loan Enquiry – ₹10,00,000 (SBI)</li>
+                    <li>Nov 20, 2025: Purpose Code 13 – ₹1,00,000 (SBI)</li>
+                    <li>Aug 4, 2025: Personal Loan Enquiry – ₹5,00,000 (SBI)</li>
+                </ul>
+            </div>
+
+            <div style="background: #fffbeb; border-left: 4px solid #f59e0b; padding: 15px; margin: 15px 0; border-radius: 4px;">
+                <strong>Why This Negatively Impacts Credit Score:</strong>
+                <ul style="margin: 10px 0; padding-left: 20px; font-size: 13px;">
+                    <li><strong>Bureau Logic:</strong> Hard enquiries are recorded each time a lender pulls your credit report for a loan/card decision.</li>
+                    <li><strong>Signal of Credit Seeking:</strong> Multiple enquiries in short span suggest you are actively seeking new credit (elevates risk profile).</li>
+                    <li><strong>Threshold Concern:</strong> Industry standard: 3 enquiries in 12 months is acceptable; 4+ becomes concerning.</li>
+                    <li><strong>Lender Perspective:</strong> Suggests potential financial distress or aggressive borrowing behavior.</li>
+                    <li><strong>Score Impact Direction:</strong> Each hard enquiry typically reduces score by 5–10 points. Net impact: 15–40 points.</li>
+                    <li><strong>Temporary Effect:</strong> Enquiries age out; older enquiries have less impact (typically drop off significantly after 6 months).</li>
+                </ul>
+            </div>
+
+            <div style="background: #f3f4f6; border-left: 4px solid #6b7280; padding: 15px; margin: 15px 0; border-radius: 4px;">
+                <strong>Short-term vs Long-term Impact:</strong>
+                <ul style="margin: 10px 0; padding-left: 20px; font-size: 13px;">
+                    <li><strong>Short-term (0–3 months):</strong> Current enquiries from Aug–Nov 2025 still active; recommend avoiding new enquiries for next 2–3 months.</li>
+                    <li><strong>Long-term (6+ months):</strong> As enquiries age past 6 months, their impact diminishes significantly; oldest enquiry (Aug 2025) will be low-impact by Feb 2026.</li>
+                </ul>
+            </div>
+
+            <!-- ISSUE 3: NO DELINQUENCIES (POSITIVE) -->
+            <h3>✓ Positive Factor: Zero Delinquencies & On-time Payment History</h3>
+            <div style="background: #f0fdf4; border-left: 4px solid #10b981; padding: 15px; margin: 15px 0; border-radius: 4px;">
+                <strong>Positive Assessment:</strong> 
+                <ul style="margin: 10px 0; padding-left: 20px; font-size: 13px;">
+                    <li>All active accounts show 0 DPD (Days Past Due) – indicating 100% on-time payment history.</li>
+                    <li>Closed accounts show "STD" (Standard) status where recorded – no defaults or settlements.</li>
+                    <li><strong>Score Impact Direction:</strong> This factor is currently supporting your score, keeping it in "Good" band despite utilization issues.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- SECTION 8: PORTFOLIO-LEVEL RISK INTELLIGENCE -->
+        <div class="section">
+            <h2>Section 8: Portfolio-Level Risk Intelligence</h2>
+
+            <!-- CHART 6: ACCOUNT HEALTH HEATMAP -->
+            <h3>Account Health Status Overview</h3>
+            <div class="chart-container large">
+                <canvas id="healthHeatmapChart"></canvas>
+            </div>
+
+            <!-- CHART 7: RISK CATEGORY SUMMARY -->
+            <h3>Risk Exposure Breakdown</h3>
+            <div class="chart-container">
+                <canvas id="riskCategoryChart"></canvas>
+            </div>
+
+            <!-- Risk Concentration Insight -->
+            <h3>Risk Concentration Analysis</h3>
+            <div style="background: #f9fafb; padding: 20px; border-radius: 8px; margin: 20px 0;">
+                <p style="font-size: 13px; margin: 10px 0;">
+                    <strong>Top 3 Risk Contributors (by impact on score):</strong>
+                </p>
+                <table class="summary-table" style="margin-top: 15px;">
+                    <tr>
+                        <th style="width: 50px;">Rank</th>
+                        <th>Issue</th>
+                        <th>Account(s)</th>
+                        <th>Estimated Score Impact</th>
+                    </tr>
+                    <tr>
+                        <td><strong>1</strong></td>
+                        <td>High Credit Card Utilization (92.87% & 786.62%)</td>
+                        <td>ICICI Card, SBI Card (4575399)</td>
+                        <td><span style="color: var(--danger); font-weight: 600;">-30 to -50 points</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>2</strong></td>
+                        <td>Recent Multiple Hard Enquiries (4 in 12 months)</td>
+                        <td>SBI (various)</td>
+                        <td><span style="color: var(--danger); font-weight: 600;">-15 to -40 points</span></td>
+                    </tr>
+                    <tr>
+                        <td><strong>3</strong></td>
+                        <td>High Outstanding on Active Personal Loan (87.86%)</td>
+                        <td>SBI Personal Loan (2977429)</td>
+                        <td><span style="color: var(--warning); font-weight: 600;">-5 to -15 points</span></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <!-- SECTION 9: 90-DAY CREDIT IMPROVEMENT ACTION PLAN -->
+        <div class="section">
+            <h2>Section 9: 90-Day Credit Improvement Action Plan</h2>
+
+            <div style="background: #ecf0ff; border-left: 4px solid var(--primary); padding: 15px; margin: 15px 0; border-radius: 4px; font-size: 13px;">
+                <strong>🎯 Target Improvement:</strong> From current 751 to projected 780–800 within 90 days (realistic: +25 to +50 points)
+            </div>
+
+            <div class="action-plan">
+                <div class="month-plan">
+                    <h4>📅 MONTH 1 (Days 1–30): IMMEDIATE RISK CONTROL</h4>
+                    <ol>
+                        <li><strong>Pay Down Credit Card Balances (URGENT)</strong>
+                            <ul style="padding-left: 15px;">
+                                <li>Target: Reduce ICICI Card from ₹2,97,277 to below ₹11,328 (30% of ₹37,762 limit)</li>
+                                <li>Target: Reduce SBI Card from ₹1,02,033 to below ₹32,946 (30% of ₹1,09,822 limit)</li>
+                                <li>Expected impact: +20 to +30 points on score</li>
+                            </ul>
+                        </li>
+                        <li><strong>Verify ICICI Card Credit Limit</strong>
+                            <ul style="padding-left: 15px;">
+                                <li>Balance exceeds stated limit – clarify if limit was increased</li>
+                                <li>Contact ICICI for account history confirmation</li>
+                            </ul>
+                        </li>
+                        <li><strong>Collect Payment Proof</strong>
+                            <ul style="padding-left: 15px;">
+                                <li>Gather last 6 months of bank statements showing regular EMI payments</li>
+                                <li>This supports "good payment behavior" narrative when applying for credit</li>
+                            </ul>
+                        </li>
+                        <li><strong>Avoid New Credit Enquiries</strong>
+                            <ul style="padding-left: 15px;">
+                                <li>Do not apply for new loans/cards for next 45 days</li>
+                                <li>Each enquiry adds 5–10 point penalty</li>
+                            </ul>
+                        </li>
+                    </ol>
+                </div>
+
+                <div class="month-plan">
+                    <h4>📅 MONTH 2 (Days 31–60): STABILIZATION & OPTIMIZATION</h4>
+                    <ol>
+                        <li><strong>Maintain 100% EMI Compliance</strong>
+                            <ul style="padding-left: 15px;">
+                                <li>SBI Personal Loan: ₹17,469 monthly EMI – pay on or before due date</li>
+                                <li>SBI Old Loan: ₹0 – continue with any minimum payment required</li>
+                            </ul>
+                        </li>
+                        <li><strong>Verify Card Balances Below 30%</strong>
+                            <ul style="padding-left: 15px;">
+                                <li>ICICI Card: Target ₹11,328 or less</li>
+                                <li>SBI Card: Target ₹32,946 or less</li>
+                                <li>Check updated balance with lenders mid-month</li>
+                            </ul>
+                        </li>
+                        <li><strong>Monitor Bureau Updates</strong>
+                            <ul style="padding-left: 15px;">
+                                <li>Check if lenders have reported latest balances to CIBIL</li>
+                                <li>Updates typically reflect 20–30 days after payment posting</li>
+                            </ul>
+                        </li>
+                        <li><strong>Prepare Credit Limit Enhancement Request (Optional)</strong>
+                            <ul style="padding-left: 15px;">
+                                <li>After balances are reduced, request SBI Card limit increase from ₹1,09,822 to ₹1,50,000+</li>
+                                <li>Higher limit + low utilization = better score impact</li>
+                            </ul>
+                        </li>
+                    </ol>
+                </div>
+
+                <div class="month-plan">
+                    <h4>📅 MONTH 3 (Days 61–90): SCORE ACCELERATION & FUTURE PLANNING</h4>
+                    <ol>
+                        <li><strong>Verify Score Improvement</strong>
+                            <ul style="padding-left: 15px;">
+                                <li>Pull fresh CIBIL report (day 85–90) to confirm improvement</li>
+                                <li>Expected improvement: +25 to +50 points (target: 775–800)</li>
+                            </ul>
+                        </li>
+                        <li><strong>Continue Perfect Payment Behavior</strong>
+                            <ul style="padding-left: 15px;">
+                                <li>Maintain 0 DPD on all accounts (your current strength!)</li>
+                                <li>Every on-time payment adds credibility</li>
+                            </ul>
+                        </li>
+                        <li><strong>Plan for Sustainable Growth</strong>
+                            <ul style="padding-left: 15px;">
+                                <li>Once at 800+, you qualify for premium credit products</li>
+                                <li>Can negotiate better interest rates on refinances</li>
+                            </ul>
+                        </li>
+                        <li><strong>Build Lender-Ready Documentation</strong>
+                            <ul style="padding-left: 15px;">
+                                <li>Prepare letter from Credit Dost summarizing improvement journey</li>
+                                <li>Compile 12-month payment proof for future loan applications</li>
+                            </ul>
+                        </li>
+                    </ol>
+                </div>
+            </div>
+
+            <!-- CHART 8: 90-DAY GANTT CHART -->
+            <h3>90-Day Action Timeline</h3>
+            <div class="chart-container large">
+                <canvas id="ganttChart"></canvas>
+            </div>
+
+            <!-- CHART 9: SCORE PROJECTION -->
+            <h3>Credit Score Projection (Conservative)</h3>
+            <div class="chart-container large">
+                <canvas id="projectionChart"></canvas>
+            </div>
+        </div>
+
+        <!-- SECTION 10: DISCLOSURES & LIMITATIONS -->
+        <div class="section">
+            <h2>Section 10: Disclosures & Limitations</h2>
+
+            <div style="background: #f0f4f8; border-left: 4px solid var(--primary); padding: 20px; border-radius: 8px; margin: 20px 0; font-size: 13px; line-height: 1.8;">
+                <h3 style="margin-top: 0;">Expected Credit Score Improvement</h3>
+                <ul style="padding-left: 20px;">
+                    <li><strong>Conservative Estimate:</strong> +25 to +40 points over 90 days</li>
+                    <li><strong>Optimistic (if all actions executed):</strong> +40 to +60 points</li>
+                    <li><strong>Timeline:</strong> Most improvements visible within 30–45 days as lenders report updated balances to CIBIL</li>
+                    <li><strong>Key Driver:</strong> Credit card utilization reduction accounts for 60–70% of expected improvement</li>
+                </ul>
+            </div>
+
+            <h3>Key Assumptions & Limitations</h3>
+            <ul style="padding-left: 20px; font-size: 13px; line-height: 1.8;">
+                <li><strong>Data Currency:</strong> This report is based on CIBIL report dated January 23, 2026. Balances and enquiries may have changed since report generation.</li>
+                <li><strong>Lender Reporting Lag:</strong> Most lenders report to CIBIL monthly (by 10th of next month). Updates may take 20–30 days to reflect in your score.</li>
+                <li><strong>Payment Assumptions:</strong> Projections assume 100% on-time EMI/card payments going forward. Any missed payment will reset progress.</li>
+                <li><strong>No Guarantee:</strong> CIBIL's scoring algorithm is proprietary. While historical patterns suggest projected improvement, actual results may vary by ±5–10 points.</li>
+                <li><strong>External Factors:</strong> New hard enquiries, defaults, or late payments will negatively impact projections.</li>
+                <li><strong>Account Management:</strong> If you take on new loans or increase card balances, improvement timeline will extend.</li>
+            </ul>
+
+            <h3>Client Responsibilities</h3>
+            <ul style="padding-left: 20px; font-size: 13px; line-height: 1.8;">
+                <li><strong>Verify Information:</strong> All data in this report is extracted from CIBIL's CIR. If you notice discrepancies, file a dispute with CIBIL directly.</li>
+                <li><strong>Maintain Payment Discipline:</strong> Your 0 DPD history is your strongest asset. Protect it by ensuring no missed payments.</li>
+                <li><strong>Monitor Credit Cards:</strong> High utilization is your primary risk factor. Keep balances below 30% of limit on all cards.</li>
+                <li><strong>Avoid Over-borrowing:</strong> While your utilization ratio is technically healthy at portfolio level (26.55%), card-level concentration is concerning.</li>
+                <li><strong>Regular Monitoring:</strong> Pull your CIBIL report every 6 months to track improvements and identify errors early.</li>
+            </ul>
+
+            <h3>Legal & Regulatory Disclaimer</h3>
+            <div style="background: #fef2f2; border-left: 4px solid var(--danger); padding: 15px; border-radius: 4px; margin: 15px 0; font-size: 12px; line-height: 1.6;">
+                <ul style="padding-left: 20px;">
+                    <li>This report is <strong>NOT legal or financial advice.</strong> It is an analytical assessment based on CIBIL data.</li>
+                    <li><strong>Not a Credit Repair Guarantee:</strong> Credit improvement depends on your actions and lender policies. Credit Dost does not guarantee specific score improvements.</li>
+                    <li><strong>CIBIL Accuracy:</strong> Credit Dost does not independently verify CIBIL data accuracy. If you believe your data is inaccurate, file a dispute directly with CIBIL Limited.</li>
+                    <li><strong>Regulatory Compliance:</strong> This report is prepared in accordance with CIBIL TransUnion guidelines and RBI regulations for credit information bureaus.</li>
+                    <li><strong>Confidentiality:</strong> This report is prepared for the named consumer only. Unauthorized sharing may violate data privacy laws (DPDP Act, 2023).</li>
+                    <li><strong>Non-exhaustive:</strong> This report covers credit-related factors only. Other aspects like income, employment stability, and collateral are evaluated separately by lenders.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- FOOTER -->
+        <div class="footer">
+            <div style="font-size: 14px; font-weight: 600; margin-bottom: 10px;">
+                Report Generated by Credit Dost
+            </div>
+            <p>Professional Credit Intelligence & Risk Analytics Engine</p>
+            <p style="margin: 15px 0;">
+                <strong>Website:</strong> <a href="https://www.creditdost.co.in" target="_blank">https://www.creditdost.co.in</a>
+            </p>
+            <p>
+                <strong>Email:</strong> <a href="mailto:info@creditdost.co.in">info@creditdost.co.in</a>
+            </p>
+            <div class="social-links">
+                <a href="https://www.facebook.com/aapkacreditdost" target="_blank">Facebook</a>
+                <a href="https://www.instagram.com/aapkacreditdost" target="_blank">Instagram</a>
+                <a href="https://www.linkedin.com/company/aapkacreditdost" target="_blank">LinkedIn</a>
+                <a href="http://www.youtube.com/@aapkacreditdost" target="_blank">YouTube</a>
+                <a href="https://x.com/aapkacreditdost" target="_blank">X (Twitter)</a>
+            </div>
+            <div style="border-top: 1px solid rgba(255,255,255,0.2); margin-top: 20px; padding-top: 15px; font-size: 11px;">
+                <p><strong>Control No:</strong> AUTO-2026-01-23-10438419</p>
+                <p>© 2026 Credit Dost. All Rights Reserved. | CIBIL Data Source: TransUnion CIBIL Limited</p>
+                <p style="margin-top: 10px; opacity: 0.8;">
+                    This report is confidential and for authorized use only. Unauthorized reproduction or distribution is prohibited.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // CHART 1: Risk Severity Distribution
+        const ctx1 = document.getElementById('riskSeverityChart').getContext('2d');
+        new Chart(ctx1, {
+            type: 'bar',
+            data: {
+                labels: ['Critical', 'High', 'Medium', 'Low'],
+                datasets: [{
+                    label: 'Number of Accounts',
+                    data: [0, 2, 0, 12],
+                    backgroundColor: ['#dc2626', '#f97316', '#fbbf24', '#10b981'],
+                    borderRadius: 6,
+                    borderSkipped: false
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    title: { display: true, text: 'Risk Severity Distribution Across Portfolio' }
+                },
+                scales: {
+                    x: { beginAtZero: true, max: 14 }
+                }
+            }
+        });
+
+        // CHART 2: Portfolio Composition
+        const ctx2 = document.getElementById('portfolioCompositionChart').getContext('2d');
+        new Chart(ctx2, {
+            type: 'doughnut',
+            data: {
+                labels: ['Personal Loans', 'Credit Cards', 'Consumer Loans'],
+                datasets: [{
+                    data: [9, 4, 1],
+                    backgroundColor: ['#0066cc', '#10b981', '#f59e0b'],
+                    borderColor: ['#004999', '#059669', '#d97706']
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'bottom' },
+                    title: { display: true, text: 'Portfolio Composition by Account Type' }
+                }
+            }
+        });
+
+        // CHART 3: Exposure Comparison
+        const ctx3 = document.getElementById('exposureChart').getContext('2d');
+        new Chart(ctx3, {
+            type: 'bar',
+            data: {
+                labels: ['ICICI Card', 'SBI Personal', 'SBI Card', 'SBI Personal (Old)', 'Others'],
+                datasets: [
+                    {
+                        label: 'Sanctioned Amount',
+                        data: [37762, 905000, 109822, 13332, 3450594],
+                        backgroundColor: '#d1d5db'
+                    },
+                    {
+                        label: 'Outstanding Balance',
+                        data: [297277, 795198, 102033, 4552, 0],
+                        backgroundColor: '#0066cc'
+                    }
+                ]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: { stacked: true },
+                    y: { stacked: true }
+                },
+                plugins: {
+                    legend: { position: 'top' },
+                    title: { display: true, text: 'Sanctioned vs Outstanding Exposure' }
+                }
+            }
+        });
+
+        // CHART 4: Risk Matrix (Bubble)
+        const ctx4 = document.getElementById('riskMatrixChart').getContext('2d');
+        new Chart(ctx4, {
+            type: 'bubble',
+            data: {
+                datasets: [
+                    {
+                        label: 'ICICI Card (HIGH RISK)',
+                        data: [{ x: 786.62, y: 0, r: 15 }],
+                        backgroundColor: '#ef4444',
+                        borderColor: '#dc2626'
+                    },
+                    {
+                        label: 'SBI Card (HIGH RISK)',
+                        data: [{ x: 92.87, y: 0, r: 10 }],
+                        backgroundColor: '#ef4444',
+                        borderColor: '#dc2626'
+                    },
+                    {
+                        label: 'SBI Loan (MEDIUM RISK)',
+                        data: [{ x: 87.86, y: 0, r: 12 }],
+                        backgroundColor: '#f97316',
+                        borderColor: '#ea580c'
+                    },
+                    {
+                        label: 'SBI Old Loan (LOW RISK)',
+                        data: [{ x: 34.14, y: 0, r: 5 }],
+                        backgroundColor: '#10b981',
+                        borderColor: '#059669'
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: { title: { display: true, text: 'Credit Utilization %' }, max: 850 },
+                    y: { title: { display: true, text: 'Max DPD (Days Past Due)' }, min: -10, max: 100 }
+                },
+                plugins: {
+                    legend: { position: 'top' },
+                    title: { display: true, text: 'Risk Exposure Matrix (Bubble Size = Outstanding Balance)' }
+                }
+            }
+        });
+
+        // CHART 5: Account Health Heatmap
+        const ctx5 = document.getElementById('healthHeatmapChart').getContext('2d');
+        new Chart(ctx5, {
+            type: 'bar',
+            data: {
+                labels: ['Payment Behavior', 'Utilization', 'Account Age', 'Delinquency', 'Overall Health'],
+                datasets: [{
+                    label: 'Health Score (0-100)',
+                    data: [95, 35, 90, 100, 80],
+                    backgroundColor: ['#10b981', '#ef4444', '#10b981', '#10b981', '#f59e0b'],
+                    borderRadius: 4
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: { x: { max: 100 } },
+                plugins: {
+                    legend: { display: false },
+                    title: { display: true, text: 'Overall Account Health Assessment' }
+                }
+            }
+        });
+
+        // CHART 6: Risk Category Summary
+        const ctx6 = document.getElementById('riskCategoryChart').getContext('2d');
+        new Chart(ctx6, {
+            type: 'bar',
+            data: {
+                labels: ['High Risk', 'Medium Risk', 'Low Risk'],
+                datasets: [{
+                    label: 'Number of Accounts',
+                    data: [2, 1, 11],
+                    backgroundColor: ['#ef4444', '#f97316', '#10b981'],
+                    borderRadius: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: { y: { beginAtZero: true } },
+                plugins: {
+                    legend: { display: false },
+                    title: { display: true, text: 'Account Distribution by Risk Category' }
+                }
+            }
+        });
+
+        // CHART 7: 90-Day Gantt
+        const ctx7 = document.getElementById('ganttChart').getContext('2d');
+        new Chart(ctx7, {
+            type: 'bar',
+            data: {
+                labels: ['Reduce Card Balances', 'Verify Limits', 'Maintain EMI Payments', 'Monitor Bureau Updates', 'Verify Score Improvement'],
+                datasets: [{
+                    label: 'Month 1-3 Timeline',
+                    data: [30, 15, 90, 60, 10],
+                    backgroundColor: ['#ef4444', '#f97316', '#fbbf24', '#10b981', '#0066cc'],
+                    borderRadius: 4
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: { x: { max: 100 } },
+                plugins: {
+                    legend: { display: false },
+                    title: { display: true, text: '90-Day Action Plan Timeline (Days Allocated)' }
+                }
+            }
+        });
+
+        // CHART 8: Score Projection
+        const ctx8 = document.getElementById('projectionChart').getContext('2d');
+        new Chart(ctx8, {
+            type: 'line',
+            data: {
+                labels: ['Today (Jan 23)', 'Day 30', 'Day 60', 'Day 90'],
+                datasets: [
+                    {
+                        label: 'Conservative Projection',
+                        data: [751, 765, 775, 785],
+                        borderColor: '#f97316',
+                        backgroundColor: 'rgba(249, 115, 22, 0.1)',
+                        tension: 0.4,
+                        fill: true,
+                        pointRadius: 6
+                    },
+                    {
+                        label: 'Optimistic Projection (Full Execution)',
+                        data: [751, 780, 800, 810],
+                        borderColor: '#10b981',
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        tension: 0.4,
+                        fill: true,
+                        pointRadius: 6
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: { min: 700, max: 850, title: { display: true, text: 'CIBIL Score' } }
+                },
+                plugins: {
+                    legend: { position: 'top' },
+                    title: { display: true, text: 'Credit Score Projection Over 90 Days' }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
