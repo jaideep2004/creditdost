@@ -27,11 +27,11 @@ const AIAnalysis = () => {
   // Handle file selection
   const handleFileChange = (event) => {
     const file = event.target.files[0];
-    if (file && file.type === 'application/pdf') {
+    if (file && (file.type === 'application/pdf' || file.type === 'text/html' || file.name.toLowerCase().endsWith('.html'))) {
       setSelectedFile(file);
       setUploadError('');
     } else {
-      setUploadError('Please select a PDF file');
+      setUploadError('Please select a PDF or HTML file');
       setSelectedFile(null);
     }
   };
@@ -99,12 +99,13 @@ const AIAnalysis = () => {
             Upload Document for AI Analysis
           </Typography>
           <Typography variant="body2" paragraph>
-            Upload your credit report or any PDF document for AI-powered analysis.
-            Our team will review and provide insights.
+            Upload your credit report or any PDF/HTML document for AI-powered analysis.
+            Our team will review and provide insights. <br/>
+            The Response will be sent to your email.
           </Typography>
           
           <input
-            accept="application/pdf"
+            accept="application/pdf,.html,text/html"
             style={{ display: 'none' }}
             id="pdf-upload"
             type="file"
@@ -118,7 +119,7 @@ const AIAnalysis = () => {
               startIcon={<UploadIcon />}
               disabled={uploading}
             >
-              Select PDF File
+              Select PDF/HTML File
             </Button>
           </label>
           

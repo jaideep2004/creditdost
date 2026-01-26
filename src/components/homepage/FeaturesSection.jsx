@@ -6,8 +6,7 @@ const services = [
     description:
       "Expert credit repair services that fix errors, improve your score, and restore your financial credibility",
     icon: "👥",
-    image:
-      "/images/IMG 2-01.jpg",
+    image: "/images/IMG 2-01.jpg",
   },
 
   {
@@ -15,16 +14,14 @@ const services = [
     description:
       "Partner with Credit Dost and build a rewarding business helping people improve their credit scores and financial confidence.",
     icon: "📈",
-    image:
-      "/images/franchise-new.jpeg",
+    image: "/images/franchise-new.jpeg",
   },
   {
     title: "CreditDost Suvidha Centre",
     description:
       "Start a profitable credit repair business with Credit Dost Suvidha Centre and help people improve their credit scores.",
     icon: "📈",
-    image:
-      "/images/Suvidha-centre.jpg",
+    image: "/images/Suvidha-centre.jpg",
   },
 ];
 
@@ -388,8 +385,8 @@ const FeaturesSection = () => {
                   alt={service.title}
                   style={{
                     width: "100%",
-                    height: "200px",
-                    objectFit: "cover",
+                    height: "245px",
+
                     borderRadius: "12px",
                     display: "block",
                   }}

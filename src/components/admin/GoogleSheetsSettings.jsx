@@ -42,7 +42,8 @@ const GoogleSheetsSettings = () => {
       creditScoreRepair: { enabled: true, lastSync: null },
       contactUs: { enabled: true, lastSync: null },
       newRegistration: { enabled: true, lastSync: null },
-      franchiseOpportunity: { enabled: true, lastSync: null }
+      franchiseOpportunity: { enabled: true, lastSync: null },
+      businessLogin: { enabled: true, lastSync: null }
     },
     syncSettings: {
       autoSync: true,
@@ -170,6 +171,9 @@ const GoogleSheetsSettings = () => {
         case 'franchiseOpportunity':
           response = await api.post('/google-sheets/sync/franchise-opportunity');
           break;
+        case 'businessLogin':
+          response = await api.post('/google-sheets/sync/business-login');
+          break;
         case 'all':
           response = await api.post('/google-sheets/sync/all');
           break;
@@ -239,7 +243,8 @@ const GoogleSheetsSettings = () => {
     creditScoreRepair: 'Credit Score Repair',
     contactUs: 'Contact Us',
     newRegistration: 'New Registration',
-    franchiseOpportunity: 'Franchise Opportunity'
+    franchiseOpportunity: 'Franchise Opportunity',
+    businessLogin: 'Business Login/MIS'
   };
 
   if (loading) {

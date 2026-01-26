@@ -484,7 +484,7 @@ const HeroSection = () => {
                 <Box
                   sx={{
                     position: "relative",
-                    zIndex: 1,
+                    zIndex: 8,
                     borderRadius: {
                       xs: "120px 120px 15px",
                       sm: "160px 160px 15px",
@@ -519,7 +519,7 @@ const HeroSection = () => {
                   }}
                 >
                   <img
-                    src="/images/hero-new.jpeg"
+                    src="/images/hero-new.png"
                     alt="Business team collaboration"
                     style={{
                       width: "100%",

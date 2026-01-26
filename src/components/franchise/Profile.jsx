@@ -496,6 +496,11 @@ const Profile = () => {
         <Typography variant="h4" gutterBottom>
           Profile
         </Typography>
+        &nbsp;&nbsp;
+        <small>
+          Click "Save Profile" to save your profile information after entering
+          all details.
+        </small>
         <Button
           variant="contained"
           color="primary"

@@ -64,7 +64,7 @@ const HistorySection = () => {
           gridTemplateColumns: isMobile
             ? "1fr"
             : "repeat(auto-fit, minmax(300px, 1fr))",
-          gap: isMobile ? "40px" : "60px",
+          gap: isMobile ? "10px" : "60px",
           alignItems: "start",
           position: "relative",
           zIndex: 1,
@@ -244,7 +244,7 @@ const HistorySection = () => {
                 overflow: "hidden",
                 boxShadow: "0 10px 30px rgba(0, 0, 0, 0.15)",
                 backgroundColor: "#e2e8f0",
-                marginBottom: "30px",
+                marginBottom: "20px",
               }}
             >
               <div
@@ -265,35 +265,52 @@ const HistorySection = () => {
               ></div>
             </div>
 
-            {/* Secondary Image - Mobile */}
-            <div
+            {/* LinkedIn Button - Mobile */}
+            <a
+              href="https://www.linkedin.com/in/nitin-verma-creditdost"
+              target="_blank"
+              rel="noopener noreferrer"
               style={{
-                width: "100%",
-                height: "250px",
-                borderRadius: "12px",
-                overflow: "hidden",
-                boxShadow: "0 10px 30px rgba(0, 0, 0, 0.15)",
-                backgroundColor: "#e2e8f0",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: "10px",
+                backgroundColor: "#0077b5",
+                color: "white",
+                padding: "12px 24px",
+                borderRadius: "8px",
+                textDecoration: "none",
+                fontWeight: "600",
+                fontSize: "1rem",
+                boxShadow: "0 4px 12px rgba(0, 119, 181, 0.3)",
+                transition: "all 0.3s ease",
                 marginBottom: "30px",
+                maxWidth: "250px",
+                margin: "0 auto 30px auto",
+              }}
+              onMouseEnter={(e) => {
+                e.target.style.backgroundColor = "#005885";
+                e.target.style.transform = "translateY(-2px)";
+                e.target.style.boxShadow = "0 6px 16px rgba(0, 119, 181, 0.4)";
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.backgroundColor = "#0077b5";
+                e.target.style.transform = "translateY(0)";
+                e.target.style.boxShadow = "0 4px 12px rgba(0, 119, 181, 0.3)";
               }}
             >
-              <div
-                style={{
-                  width: "100%",
-                  height: "100%",
-                  background:
-                    "linear-gradient(135deg, #cbd5e1 0%, #e2e8f0 100%)",
-                  backgroundImage: 'url("./images/below founder image.jpg")',
-                  backgroundSize: "cover",
-                  backgroundPosition: "center",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  color: "#64748b",
-                  fontSize: "1rem",
-                }}
-              ></div>
-            </div>
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+              >
+                <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+              </svg>
+              Connect on LinkedIn
+            </a>
+
+            {/* Secondary Image - Mobile */}
 
             {/* Founder's Message - Mobile */}
             <div
@@ -354,14 +371,15 @@ const HistorySection = () => {
             <div
               style={{
                 position: "absolute",
-                top: "25px",
-                right: "0",
+                top: "54px",
+                left: "50%",
+                transform: "translateX(-50%)",
                 width: "68%",
                 height: "400px",
                 borderRadius: "12px",
                 overflow: "hidden",
-                boxShadow: "0 15px 40px rgba(0, 0, 0, 0.15)",
-                backgroundColor: "#e2e8f0",
+                boxShadow: "rgba(0, 0, 0, 0.15) 0px 15px 40px",
+                backgroundColor: "rgb(226, 232, 240)",
                 zIndex: 3,
               }}
             >
@@ -383,44 +401,60 @@ const HistorySection = () => {
               ></div>
             </div>
 
-            {/* Secondary Image */}
-            <div
+            {/* LinkedIn Button - Desktop */}
+            <a
+              href="https://www.linkedin.com/in/nitin-verma-creditdost"
+              target="_blank"
+              rel="noopener noreferrer"
               style={{
                 position: "absolute",
-                bottom: "-25px",
-                left: "0",
-                width: "60%",
-                height: "300px",
-                borderRadius: "12px",
-                overflow: "hidden",
-                boxShadow: "0 15px 40px rgba(0, 0, 0, 0.15)",
-                backgroundColor: "#e2e8f0",
-                zIndex: 2,
+                top: "470px",
+                left: "50%",
+                transform: "translateX(-50%)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: "10px",
+                backgroundColor: "rgb(0, 119, 181)",
+                color: "white",
+                padding: "12px 24px",
+                borderRadius: "8px",
+                textDecoration: "none",
+                fontWeight: 600,
+                fontSize: "1rem",
+                boxShadow: "rgba(0, 119, 181, 0.3) 0px 4px 12px",
+                transition: "0.3s",
+                zIndex: 4,
+                width: "max-content",
+                margin: "0 auto",
+              }}
+              onMouseEnter={(e) => {
+                e.target.style.backgroundColor = "#005885";
+                // e.target.style.transform = "translateY(-2px)";
+                e.target.style.boxShadow = "0 6px 16px rgba(0, 119, 181, 0.4)";
+              }}
+              onMouseLeave={(e) => {
+                e.target.style.backgroundColor = "#0077b5";
+                // e.target.style.transform = "translateY(0)";
+                e.target.style.boxShadow = "0 4px 12px rgba(0, 119, 181, 0.3)";
               }}
             >
-              <div
-                style={{
-                  width: "100%",
-                  height: "100%",
-                  background:
-                    "linear-gradient(135deg, #cbd5e1 0%, #e2e8f0 100%)",
-                  backgroundImage: 'url("./images/below founder image.jpg")',
-                  backgroundSize: "cover",
-                  backgroundPosition: "center",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  color: "#64748b",
-                  fontSize: "1.1rem",
-                }}
-              ></div>
-            </div>
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+              >
+                <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+              </svg>
+              Connect on LinkedIn
+            </a>
 
             {/* Experience Badge */}
             <div
               style={{
                 position: "absolute",
-                top: "30%",
+                top: "5%",
                 left: "10%",
                 backgroundColor: "#0891b2",
                 color: "white",
@@ -457,14 +491,15 @@ const HistorySection = () => {
             <div
               style={{
                 position: "absolute",
-                bottom: "-299px",
-                right: "20px",
+                bottom: "-253px",
+                left: "50%",
+                transform: "translateX(-50%)",
                 width: "75%",
                 backgroundColor: "white",
                 padding: "30px",
                 borderRadius: "12px",
-                boxShadow: "0 5px 20px rgba(0, 0, 0, 0.08)",
-                borderLeft: "4px solid #0891b2",
+                boxShadow: "rgba(0, 0, 0, 0.08) 0px 5px 20px",
+                borderLeft: "4px solid rgb(8, 145, 178)",
                 zIndex: 4,
               }}
             >

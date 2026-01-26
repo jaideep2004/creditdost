@@ -272,7 +272,7 @@ const CareersPage = () => {
               <Box
                 sx={{
                   width: "100%",
-                  height: "300px",
+                  height: "400px",
                   backgroundImage: 'url("./images/join our team.jpg")',
                   backgroundSize: "cover",
                   backgroundPosition: "center",
