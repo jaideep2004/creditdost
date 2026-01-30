@@ -267,7 +267,7 @@ const HistorySection = () => {
 
             {/* LinkedIn Button - Mobile */}
             <a
-              href="https://www.linkedin.com/in/nitin-verma-creditdost"
+              href="https://linkedin.com/in/itsnitinverma"
               target="_blank"
               rel="noopener noreferrer"
               style={{
@@ -403,7 +403,7 @@ const HistorySection = () => {
 
             {/* LinkedIn Button - Desktop */}
             <a
-              href="https://www.linkedin.com/in/nitin-verma-creditdost"
+              href="https://linkedin.com/in/itsnitinverma"
               target="_blank"
               rel="noopener noreferrer"
               style={{
