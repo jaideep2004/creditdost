@@ -15,20 +15,20 @@ import {
   FormControlLabel,
   Checkbox,
 } from "@mui/material";
+import { Download } from "@mui/icons-material";
 import { franchiseAPI } from "../../services/api";
 
 const DigitalAgreement = () => {
   const [agreement, setAgreement] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [downloading, setDownloading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [openEsignDialog, setOpenEsignDialog] = useState(false);
-  const [openSignDialog, setOpenSignDialog] = useState(false);
   const [initiatingEsign, setInitiatingEsign] = useState(false);
   const [agreeToTerms, setAgreeToTerms] = useState(false);
   const [requireProfileUpdate, setRequireProfileUpdate] = useState(false);
   const [missingFields, setMissingFields] = useState([]);
+  const [downloading, setDownloading] = useState(false);
   
   const [esignData, setEsignData] = useState({
     signerName: "",
@@ -73,41 +73,27 @@ const DigitalAgreement = () => {
     }
   };
 
-  const handleDownloadPdf = async () => {
+  const handleDownloadAgreement = async () => {
     try {
       setDownloading(true);
       setError("");
-
-      // Trigger PDF download
+      
       const response = await franchiseAPI.downloadDigitalAgreement();
-
-      // Create a blob from the response
-      const blob = new Blob([response.data], { type: "application/pdf" });
-
-      // Create download link
-      const url = window.URL.createObjectURL(blob);
-      const link = document.createElement("a");
+      
+      // Create a blob URL and trigger download
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
       link.href = url;
-      link.setAttribute(
-        "download",
-        `franchise_agreement_${agreement.userName.replace(/\s+/g, "_")}.pdf`
-      );
-
-      // Trigger download
+      link.setAttribute('download', `Digital_Agreement_${agreement.userName}.pdf`);
       document.body.appendChild(link);
       link.click();
-
-      // Clean up
-      link.parentNode.removeChild(link);
+      link.remove();
       window.URL.revokeObjectURL(url);
-
-      setSuccess("PDF downloaded successfully!");
-
-      // Refresh agreement status
-      fetchDigitalAgreement();
+      
+      setSuccess("Agreement downloaded successfully!");
     } catch (err) {
-      setError("Failed to download PDF");
-      console.error("Error downloading PDF:", err);
+      setError("Failed to download agreement");
+      console.error("Error downloading agreement:", err);
     } finally {
       setDownloading(false);
     }
@@ -160,13 +146,22 @@ const DigitalAgreement = () => {
       // Log the response for debugging
       console.log('eSign initiation response:', response);
 
-      setSuccess("eSign process initiated successfully!");
+      // Show appropriate success message based on PDF upload status
+      if (response.data.pdfUploadSuccess) {
+        setSuccess("eSign process initiated successfully! Your document was automatically uploaded. The system will track the signing status.");
+      } else {
+        setSuccess("eSign process initiated successfully! Please upload your agreement when prompted in the SurePass interface.");
+      }
       
       // Redirect user to Surepass eSign portal
       if (response.data.redirectUrl) {
         // Open in a new tab/window instead of the same tab
-        window.open(response.data.redirectUrl, '_blank');
-        setSuccess("eSign process opened in a new tab. The system will automatically track the signing status once completed.");
+        window.open(response.data.redirectUrl, '_blank');   
+        if (response.data.pdfUploadSuccess) {
+          setSuccess("eSign process opened in a new tab. Your document was auto-uploaded. The system will automatically track the signing status.");
+        } else {
+          setSuccess("eSign process opened in a new tab. Please upload your agreement when prompted in the SurePass interface. The system will track the signing status.");
+        }
       } else {
         setError("Failed to get redirect URL from Surepass");
       }
@@ -178,14 +173,6 @@ const DigitalAgreement = () => {
     } finally {
       setInitiatingEsign(false);
     }
-  };
-
-  const handleOpenSignDialog = () => {
-    setOpenSignDialog(true);
-  };
-
-  const handleCloseSignDialog = () => {
-    setOpenSignDialog(false);
   };
 
   const getStatusColor = (status) => {
@@ -322,30 +309,28 @@ const DigitalAgreement = () => {
               )}
 
               <Typography variant="body1" paragraph>
-                Please download the franchise agreement PDF and sign it
-                electronically using Surepass eSign. The system will automatically
-                track the signing status for admin review.
+                Your franchise agreement has been prepared. Click "eSign Agreement" to 
+                sign it electronically using Surepass. The system will attempt to 
+                automatically upload the document, or prompt you to upload it manually if needed.
               </Typography>
               <small>Note: Reload page after completing the Surepass Esign process</small>
 
               <Box sx={{ display: "flex", gap: 2, mt: 3, flexWrap: "wrap" }}>
-                <Button
-                  variant="contained"
-                  onClick={handleDownloadPdf}
-                  disabled={downloading}
-                  startIcon={downloading ? <CircularProgress size={20} /> : null}
-                >
-                  {downloading ? "Downloading..." : "Download Agreement"}
-                </Button>
-
-                {(agreement.status === "downloaded" ||
-                  agreement.status === "pending") && (
+                {(agreement.status === "pending" || agreement.status === "downloaded") && (
                   <>
                     <Button
-                      variant="outlined"
+                      variant="contained"
                       onClick={handleOpenEsignDialog}
                     >
                       eSign Agreement
+                    </Button>
+                    <Button
+                      variant="outlined"
+                      startIcon={<Download />}
+                      onClick={handleDownloadAgreement}
+                      disabled={downloading}
+                    >
+                      {downloading ? "Downloading..." : "Download Agreement"}
                     </Button>
                   </>
                 )}
@@ -358,6 +343,14 @@ const DigitalAgreement = () => {
                       disabled
                     >
                       eSign Agreement (In Progress)
+                    </Button>
+                    <Button
+                      variant="outlined"
+                      startIcon={<Download />}
+                      onClick={handleDownloadAgreement}
+                      disabled={downloading}
+                    >
+                      {downloading ? "Downloading..." : "Download Agreement"}
                     </Button>
                   </>
                 )}
@@ -373,10 +366,11 @@ const DigitalAgreement = () => {
                     </Button>
                     <Button
                       variant="outlined"
-                      onClick={handleOpenSignDialog}
-                      disabled
+                      startIcon={<Download />}
+                      onClick={handleDownloadAgreement}
+                      disabled={downloading}
                     >
-                      Submit Signed Agreement (Submitted)
+                      {downloading ? "Downloading..." : "Download Agreement"}
                     </Button>
                   </>
                 )}

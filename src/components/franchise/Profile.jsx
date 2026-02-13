@@ -678,18 +678,20 @@ const Profile = () => {
                     </Grid>
                     <Grid item xs={12}>
                       <Box sx={{ display: "flex", gap: 2 }}>
-                        <Button
-                          variant="outlined"
-                          onClick={handleFetchPanDetails}
-                          disabled={panLoading}
-                          sx={{ py: 1.5, px: 4 }}
-                        >
-                          {panLoading ? (
-                            <CircularProgress size={24} />
-                          ) : (
-                            "Fetch PAN Details"
-                          )}
-                        </Button>
+                        {!panDetails || !panDetails.data ? (
+                          <Button
+                            variant="outlined"
+                            onClick={handleFetchPanDetails}
+                            disabled={panLoading}
+                            sx={{ py: 1.5, px: 4 }}
+                          >
+                            {panLoading ? (
+                              <CircularProgress size={24} />
+                            ) : (
+                              "Fetch PAN Details"
+                            )}
+                          </Button>
+                        ) : null}
                       </Box>
                     </Grid>
 

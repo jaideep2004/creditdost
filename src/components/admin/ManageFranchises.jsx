@@ -81,7 +81,7 @@ const ManageFranchises = () => {
     ownerName: "",
   });
   const [tabValue, setTabValue] = useState(0);
-  
+
   // Certificate name update state
   const [certificateDialogOpen, setCertificateDialogOpen] = useState(false);
   const [certificateFranchise, setCertificateFranchise] = useState(null);
@@ -179,29 +179,31 @@ const ManageFranchises = () => {
     setFranchiseToReject(franchise);
     setRejectDialogOpen(true);
   };
-  
+
   // Certificate name update functions
   const handleCertificateNameClick = (franchise) => {
     setCertificateFranchise(franchise);
-    setCertificateName(franchise.certificateName || franchise.businessName || "");
+    setCertificateName(
+      franchise.certificateName || franchise.businessName || ""
+    );
     setCertificateDialogOpen(true);
   };
-  
+
   const handleCertificateNameChange = (e) => {
     setCertificateName(e.target.value);
   };
-  
+
   const handleCertificateNameSubmit = async () => {
     try {
       await adminAPI.updateFranchiseCertificateName({
         franchiseId: certificateFranchise._id,
         certificateName: certificateName,
       });
-      
+
       setCertificateSuccess("Certificate name updated successfully!");
       setCertificateSnackbarOpen(true);
       setCertificateDialogOpen(false);
-      
+
       // Refresh the franchise list
       fetchFranchises();
     } catch (err) {
@@ -209,13 +211,13 @@ const ManageFranchises = () => {
       console.error("Error updating certificate name:", err);
     }
   };
-  
+
   const handleCertificateDialogClose = () => {
     setCertificateDialogOpen(false);
     setCertificateFranchise(null);
     setCertificateName("");
   };
-  
+
   const handleCertificateSnackbarClose = () => {
     setCertificateSnackbarOpen(false);
     setCertificateSuccess("");
@@ -337,8 +339,8 @@ const ManageFranchises = () => {
       allPackages: franchise.allPackages || {
         assigned: franchise.assignedPackages || [],
         purchased: [],
-        all: franchise.assignedPackages || []
-      }
+        all: franchise.assignedPackages || [],
+      },
     });
     setEditDialogOpen(true);
   };
@@ -399,7 +401,8 @@ const ManageFranchises = () => {
         kycStatus: editFranchiseData.kycStatus,
         isActive: editFranchiseData.isActive,
         credits: parseInt(editFranchiseData.credits) || 0,
-        totalCreditsPurchased: parseInt(editFranchiseData.totalCreditsPurchased) || 0,
+        totalCreditsPurchased:
+          parseInt(editFranchiseData.totalCreditsPurchased) || 0,
       };
 
       await adminAPI.updateFranchise(editFranchiseData._id, updateData);
@@ -861,7 +864,14 @@ const ManageFranchises = () => {
                             {franchise.businessName}
                           </TableCell>
                           <TableCell>{franchise.ownerName}</TableCell>
-                          <TableCell>{franchise.email}</TableCell>
+                          <TableCell
+                            style={{
+                              minWidth:"170px",
+                              wordBreak: "break-word",
+                            }}
+                          >
+                            {franchise.email}
+                          </TableCell>
                           <TableCell>{franchise.phone}</TableCell>
                           <TableCell>
                             {getStatusChip(franchise.kycStatus)}
@@ -1031,7 +1041,11 @@ const ManageFranchises = () => {
 
                 {/* Package Selection */}
                 <Grid item xs={12}>
-                  <FormControl fullWidth margin="normal" style={{ minWidth: "200px" }}>
+                  <FormControl
+                    fullWidth
+                    margin="normal"
+                    style={{ minWidth: "200px" }}
+                  >
                     <InputLabel>Assign Packages (Optional)</InputLabel>
                     <Select
                       multiple
@@ -1043,7 +1057,7 @@ const ManageFranchises = () => {
                           .map((id) => {
                             const pkg = packages.find((p) => p._id === id);
                             return pkg ? pkg.name : "";
-                          })   
+                          })
                           .join(", ")
                       }
                     >
@@ -1161,15 +1175,17 @@ const ManageFranchises = () => {
                         {kycData.isDigiLockerSubmission ? (
                           <Grid item xs={12}>
                             <Alert severity="info" sx={{ mt: 1 }}>
-                              <strong>DigiLocker Submission:</strong> Documents were fetched directly from DigiLocker.
-                              No file uploads were provided as part of this submission.
+                              <strong>DigiLocker Submission:</strong> Documents
+                              were fetched directly from DigiLocker. No file
+                              uploads were provided as part of this submission.
                             </Alert>
                           </Grid>
                         ) : (
                           <Grid item xs={12}>
                             <Alert severity="info" sx={{ mt: 1 }}>
-                              <strong>Manual Submission:</strong> Documents were provided as Google Drive links.
-                              Please verify the links are accessible.
+                              <strong>Manual Submission:</strong> Documents were
+                              provided as Google Drive links. Please verify the
+                              links are accessible.
                             </Alert>
                           </Grid>
                         )}
@@ -1177,8 +1193,6 @@ const ManageFranchises = () => {
                     </CardContent>
                   </Card>
                 </Grid>
-
-               
               </Grid>
             </Box>
           ) : (
@@ -1323,7 +1337,7 @@ const ManageFranchises = () => {
 
               {/* Package Selection */}
               <Grid item xs={12}>
-                <FormControl fullWidth margin="normal">
+                <FormControl fullWidth margin="normal" style={{minWidth:"200px"}}>
                   <InputLabel>Assign Packages (Optional)</InputLabel>
                   <Select
                     multiple
@@ -1383,13 +1397,21 @@ const ManageFranchises = () => {
             {/* Basic Information Section */}
             <Grid container spacing={3} sx={{ mt: 1 }}>
               <Grid item xs={12}>
-                <Typography variant="h6" gutterBottom sx={{ fontWeight: 'bold', color: 'primary.main', textAlign: 'left' }}>
+                <Typography
+                  variant="h6"
+                  gutterBottom
+                  sx={{
+                    fontWeight: "bold",
+                    color: "primary.main",
+                    textAlign: "left",
+                  }}
+                >
                   Basic Information
                 </Typography>
                 <Divider sx={{ mb: 2 }} />
               </Grid>
             </Grid>
-            
+
             <Grid container spacing={3}>
               <Grid item xs={12} sm={6}>
                 <TextField
@@ -1402,7 +1424,7 @@ const ManageFranchises = () => {
                   margin="normal"
                 />
               </Grid>
-              
+
               <Grid item xs={12} sm={6}>
                 <TextField
                   fullWidth
@@ -1414,7 +1436,7 @@ const ManageFranchises = () => {
                   margin="normal"
                 />
               </Grid>
-              
+
               <Grid item xs={12} sm={6}>
                 <TextField
                   fullWidth
@@ -1427,7 +1449,7 @@ const ManageFranchises = () => {
                   margin="normal"
                 />
               </Grid>
-              
+
               <Grid item xs={12} sm={6}>
                 <TextField
                   fullWidth
@@ -1440,17 +1462,25 @@ const ManageFranchises = () => {
                 />
               </Grid>
             </Grid>
-            
+
             {/* Address Information Section */}
             <Grid container spacing={3} sx={{ mt: 3 }}>
               <Grid item xs={12}>
-                <Typography variant="h6" gutterBottom sx={{ fontWeight: 'bold', color: 'primary.main', textAlign: 'left' }}>
+                <Typography
+                  variant="h6"
+                  gutterBottom
+                  sx={{
+                    fontWeight: "bold",
+                    color: "primary.main",
+                    textAlign: "left",
+                  }}
+                >
                   Address Information
                 </Typography>
                 <Divider sx={{ mb: 2 }} />
               </Grid>
             </Grid>
-            
+
             <Grid container spacing={3}>
               <Grid item xs={12} sm={6}>
                 <TextField
@@ -1462,7 +1492,7 @@ const ManageFranchises = () => {
                   margin="normal"
                 />
               </Grid>
-              
+
               <Grid item xs={12} sm={6}>
                 <TextField
                   fullWidth
@@ -1473,7 +1503,7 @@ const ManageFranchises = () => {
                   margin="normal"
                 />
               </Grid>
-              
+
               <Grid item xs={12} sm={6}>
                 <TextField
                   fullWidth
@@ -1484,7 +1514,7 @@ const ManageFranchises = () => {
                   margin="normal"
                 />
               </Grid>
-              
+
               <Grid item xs={12} sm={6}>
                 <TextField
                   fullWidth
@@ -1495,7 +1525,7 @@ const ManageFranchises = () => {
                   margin="normal"
                 />
               </Grid>
-              
+
               <Grid item xs={12} sm={6}>
                 <TextField
                   fullWidth
@@ -1507,17 +1537,25 @@ const ManageFranchises = () => {
                 />
               </Grid>
             </Grid>
-            
+
             {/* Financial Information Section */}
             <Grid container spacing={3} sx={{ mt: 3 }}>
               <Grid item xs={12}>
-                <Typography variant="h6" gutterBottom sx={{ fontWeight: 'bold', color: 'primary.main', textAlign: 'left' }}>
+                <Typography
+                  variant="h6"
+                  gutterBottom
+                  sx={{
+                    fontWeight: "bold",
+                    color: "primary.main",
+                    textAlign: "left",
+                  }}
+                >
                   Financial Information
                 </Typography>
                 <Divider sx={{ mb: 2 }} />
               </Grid>
             </Grid>
-            
+
             <Grid container spacing={3}>
               <Grid item xs={12} sm={6}>
                 <TextField
@@ -1530,7 +1568,7 @@ const ManageFranchises = () => {
                   inputProps={{ maxLength: 10 }}
                 />
               </Grid>
-              
+
               <Grid item xs={12} sm={6}>
                 <TextField
                   fullWidth
@@ -1541,7 +1579,7 @@ const ManageFranchises = () => {
                   margin="normal"
                 />
               </Grid>
-              
+
               <Grid item xs={12} sm={6}>
                 <TextField
                   fullWidth
@@ -1553,7 +1591,7 @@ const ManageFranchises = () => {
                   inputProps={{ maxLength: 11 }}
                 />
               </Grid>
-              
+
               <Grid item xs={12} sm={6}>
                 <TextField
                   fullWidth
@@ -1566,17 +1604,25 @@ const ManageFranchises = () => {
                 />
               </Grid>
             </Grid>
-            
+
             {/* Credits Section */}
             <Grid container spacing={3} sx={{ mt: 3 }}>
               <Grid item xs={12}>
-                <Typography variant="h6" gutterBottom sx={{ fontWeight: 'bold', color: 'primary.main', textAlign: 'left' }}>
+                <Typography
+                  variant="h6"
+                  gutterBottom
+                  sx={{
+                    fontWeight: "bold",
+                    color: "primary.main",
+                    textAlign: "left",
+                  }}
+                >
                   Credits Information
                 </Typography>
                 <Divider sx={{ mb: 2 }} />
               </Grid>
             </Grid>
-            
+
             <Grid container spacing={3}>
               <Grid item xs={12} sm={6}>
                 <TextField
@@ -1589,7 +1635,7 @@ const ManageFranchises = () => {
                   margin="normal"
                 />
               </Grid>
-              
+
               <Grid item xs={12} sm={6}>
                 <TextField
                   fullWidth
@@ -1602,17 +1648,25 @@ const ManageFranchises = () => {
                 />
               </Grid>
             </Grid>
-            
+
             {/* Status Section */}
             <Grid container spacing={3} sx={{ mt: 3 }}>
               <Grid item xs={12}>
-                <Typography variant="h6" gutterBottom sx={{ fontWeight: 'bold', color: 'primary.main', textAlign: 'left' }}>
+                <Typography
+                  variant="h6"
+                  gutterBottom
+                  sx={{
+                    fontWeight: "bold",
+                    color: "primary.main",
+                    textAlign: "left",
+                  }}
+                >
                   Status Information
                 </Typography>
                 <Divider sx={{ mb: 2 }} />
               </Grid>
             </Grid>
-            
+
             <Grid container spacing={3}>
               <Grid item xs={12} sm={6}>
                 <FormControl fullWidth margin="normal">
@@ -1630,13 +1684,22 @@ const ManageFranchises = () => {
                   </Select>
                 </FormControl>
               </Grid>
-              
+
               <Grid item xs={12} sm={6}>
                 <FormControlLabel
                   control={
                     <Switch
-                      checked={editFranchiseData.isActive !== undefined ? editFranchiseData.isActive : true}
-                      onChange={(e) => setEditFranchiseData(prev => ({ ...prev, isActive: e.target.checked }))}
+                      checked={
+                        editFranchiseData.isActive !== undefined
+                          ? editFranchiseData.isActive
+                          : true
+                      }
+                      onChange={(e) =>
+                        setEditFranchiseData((prev) => ({
+                          ...prev,
+                          isActive: e.target.checked,
+                        }))
+                      }
                       name="isActive"
                       color="primary"
                     />
@@ -1650,62 +1713,183 @@ const ManageFranchises = () => {
           {/* Packages Information Section */}
           <Grid container spacing={3} sx={{ mt: 3 }}>
             <Grid item xs={12}>
-              <Typography variant="h6" gutterBottom sx={{ fontWeight: 'bold', color: 'primary.main', textAlign: 'left' }}>
+              <Typography
+                variant="h6"
+                gutterBottom
+                sx={{
+                  fontWeight: "bold",
+                  color: "primary.main",
+                  textAlign: "left",
+                }}
+              >
                 Package History
               </Typography>
               <Divider sx={{ mb: 2 }} />
             </Grid>
             <Grid item xs={12}>
               {/* Display both assigned and purchased packages */}
-              {(editFranchiseData.allPackages && editFranchiseData.allPackages.assigned && editFranchiseData.allPackages.assigned.length > 0) || 
-               (editFranchiseData.allPackages && editFranchiseData.allPackages.purchased && editFranchiseData.allPackages.purchased.length > 0) ||
-               (editFranchiseData.packageHistory && editFranchiseData.packageHistory.length > 0) ? (
+              {(editFranchiseData.allPackages &&
+                editFranchiseData.allPackages.assigned &&
+                editFranchiseData.allPackages.assigned.length > 0) ||
+              (editFranchiseData.allPackages &&
+                editFranchiseData.allPackages.purchased &&
+                editFranchiseData.allPackages.purchased.length > 0) ||
+              (editFranchiseData.packageHistory &&
+                editFranchiseData.packageHistory.length > 0) ? (
                 <Box>
                   {/* Package History Section */}
-                  {editFranchiseData.packageHistory && editFranchiseData.packageHistory.length > 0 && (
-                    <Box>
-                      <Typography variant="body1" fontWeight="bold" color="primary.main" gutterBottom>Package History:</Typography>
-                      {editFranchiseData.packageHistory.map((pkg, index) => (
-                        <Box key={pkg._id || `history-${index}`} sx={{ mb: 1, p: 2, bgcolor: '#e3f2fd', borderRadius: 1, border: '1px solid #2196f3' }}>
-                          <Typography variant="body1" fontWeight="bold" gutterBottom>{pkg.packageName}</Typography>
-                          <Typography variant="body2" color="textSecondary" gutterBottom>Price: ₹{pkg.price}</Typography>
-                          <Typography variant="body2" color="textSecondary" gutterBottom>Credits Included: {pkg.creditsIncluded}</Typography>
-                          <Typography variant="body2" color="textSecondary">Upgrade Date: {new Date(pkg.upgradeDate).toLocaleDateString()}</Typography>
-                        </Box>
-                      ))}
-                    </Box>
-                  )}
-                                
+                  {editFranchiseData.packageHistory &&
+                    editFranchiseData.packageHistory.length > 0 && (
+                      <Box>
+                        <Typography
+                          variant="body1"
+                          fontWeight="bold"
+                          color="primary.main"
+                          gutterBottom
+                        >
+                          Package History:
+                        </Typography>
+                        {editFranchiseData.packageHistory.map((pkg, index) => (
+                          <Box
+                            key={pkg._id || `history-${index}`}
+                            sx={{
+                              mb: 1,
+                              p: 2,
+                              bgcolor: "#e3f2fd",
+                              borderRadius: 1,
+                              border: "1px solid #2196f3",
+                            }}
+                          >
+                            <Typography
+                              variant="body1"
+                              fontWeight="bold"
+                              gutterBottom
+                            >
+                              {pkg.packageName}
+                            </Typography>
+                            <Typography
+                              variant="body2"
+                              color="textSecondary"
+                              gutterBottom
+                            >
+                              Price: ₹{pkg.price}
+                            </Typography>
+                            <Typography
+                              variant="body2"
+                              color="textSecondary"
+                              gutterBottom
+                            >
+                              Credits Included: {pkg.creditsIncluded}
+                            </Typography>
+                            <Typography variant="body2" color="textSecondary">
+                              Upgrade Date:{" "}
+                              {new Date(pkg.upgradeDate).toLocaleDateString()}
+                            </Typography>
+                          </Box>
+                        ))}
+                      </Box>
+                    )}
+
                   {/* Assigned Packages Section */}
-                  {editFranchiseData.allPackages && editFranchiseData.allPackages.assigned && editFranchiseData.allPackages.assigned.length > 0 && (
-                    <Box sx={{ mt: 2 }}>
-                      <Typography variant="body1" fontWeight="bold" color="primary.main" gutterBottom>Current Assigned Packages:</Typography>
-                      {editFranchiseData.allPackages.assigned.map((pkg, index) => (
-                        <Box key={pkg._id || `assigned-${index}`} sx={{ mb: 1, p: 2, bgcolor: 'lightblue', borderRadius: 1, border: '1px solid #b3d9ff' }}>
-                          <Typography variant="body1" fontWeight="bold" gutterBottom>{pkg.name}</Typography>
-                          <Typography variant="body2" color="textSecondary" gutterBottom>Price: ₹{pkg.price}</Typography>
-                          <Typography variant="body2" color="textSecondary">Credits Included: {pkg.creditsIncluded}</Typography>
-                        </Box>
-                      ))}
-                    </Box>
-                  )}
-                                
+                  {editFranchiseData.allPackages &&
+                    editFranchiseData.allPackages.assigned &&
+                    editFranchiseData.allPackages.assigned.length > 0 && (
+                      <Box sx={{ mt: 2 }}>
+                        <Typography
+                          variant="body1"
+                          fontWeight="bold"
+                          color="primary.main"
+                          gutterBottom
+                        >
+                          Current Assigned Packages:
+                        </Typography>
+                        {editFranchiseData.allPackages.assigned.map(
+                          (pkg, index) => (
+                            <Box
+                              key={pkg._id || `assigned-${index}`}
+                              sx={{
+                                mb: 1,
+                                p: 2,
+                                bgcolor: "lightblue",
+                                borderRadius: 1,
+                                border: "1px solid #b3d9ff",
+                              }}
+                            >
+                              <Typography
+                                variant="body1"
+                                fontWeight="bold"
+                                gutterBottom
+                              >
+                                {pkg.name}
+                              </Typography>
+                              <Typography
+                                variant="body2"
+                                color="textSecondary"
+                                gutterBottom
+                              >
+                                Price: ₹{pkg.price}
+                              </Typography>
+                              <Typography variant="body2" color="textSecondary">
+                                Credits Included: {pkg.creditsIncluded}
+                              </Typography>
+                            </Box>
+                          )
+                        )}
+                      </Box>
+                    )}
+
                   {/* Purchased Packages Section */}
-                  {editFranchiseData.allPackages && editFranchiseData.allPackages.purchased && editFranchiseData.allPackages.purchased.length > 0 && (
-                    <Box sx={{ mt: 2 }}>
-                      <Typography variant="body1" fontWeight="bold" color="secondary.main" gutterBottom>Purchased Packages:</Typography>
-                      {editFranchiseData.allPackages.purchased.map((pkg, index) => (
-                        <Box key={pkg._id || `purchased-${index}`} sx={{ mb: 1, p: 2, bgcolor: 'lightgreen', borderRadius: 1, border: '1px solid #90ee90' }}>
-                          <Typography variant="body1" fontWeight="bold" gutterBottom>{pkg.name}</Typography>
-                          <Typography variant="body2" color="textSecondary" gutterBottom>Price: ₹{pkg.price}</Typography>
-                          <Typography variant="body2" color="textSecondary">Credits Included: {pkg.creditsIncluded}</Typography>
-                        </Box>
-                      ))}
-                    </Box>
-                  )}
+                  {editFranchiseData.allPackages &&
+                    editFranchiseData.allPackages.purchased &&
+                    editFranchiseData.allPackages.purchased.length > 0 && (
+                      <Box sx={{ mt: 2 }}>
+                        <Typography
+                          variant="body1"
+                          fontWeight="bold"
+                          color="secondary.main"
+                          gutterBottom
+                        >
+                          Purchased Packages:
+                        </Typography>
+                        {editFranchiseData.allPackages.purchased.map(
+                          (pkg, index) => (
+                            <Box
+                              key={pkg._id || `purchased-${index}`}
+                              sx={{
+                                mb: 1,
+                                p: 2,
+                                bgcolor: "lightgreen",
+                                borderRadius: 1,
+                                border: "1px solid #90ee90",
+                              }}
+                            >
+                              <Typography
+                                variant="body1"
+                                fontWeight="bold"
+                                gutterBottom
+                              >
+                                {pkg.name}
+                              </Typography>
+                              <Typography
+                                variant="body2"
+                                color="textSecondary"
+                                gutterBottom
+                              >
+                                Price: ₹{pkg.price}
+                              </Typography>
+                              <Typography variant="body2" color="textSecondary">
+                                Credits Included: {pkg.creditsIncluded}
+                              </Typography>
+                            </Box>
+                          )
+                        )}
+                      </Box>
+                    )}
                 </Box>
               ) : (
-                <Typography variant="body2" color="textSecondary">No package history available</Typography>
+                <Typography variant="body2" color="textSecondary">
+                  No package history available
+                </Typography>
               )}
             </Grid>
           </Grid>
@@ -1863,7 +2047,7 @@ const ManageFranchises = () => {
                     {formatDate(selectedFranchise.createdAt)}
                   </Typography>
                 </Grid>
-                
+
                 {/* PAN Details */}
                 <Grid item xs={12}>
                   <Typography
@@ -1882,113 +2066,120 @@ const ManageFranchises = () => {
                     {selectedFranchise.panNumber || "N/A"}
                   </Typography>
                 </Grid>
-                {selectedFranchise.panDetails && selectedFranchise.panDetails.data && (
-                  <>
-                    <Grid item xs={12} sm={6}>
-                      <Typography variant="body2" color="textSecondary">
-                        Full Name
-                      </Typography>
-                      <Typography variant="body1">
-                        {selectedFranchise.panDetails.data.full_name || "N/A"}
-                      </Typography>
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                      <Typography variant="body2" color="textSecondary">
-                        Masked Aadhaar
-                      </Typography>
-                      <Typography variant="body1">
-                        {selectedFranchise.panDetails.data.masked_aadhaar || "N/A"}
-                      </Typography>
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                      <Typography variant="body2" color="textSecondary">
-                        Gender
-                      </Typography>
-                      <Typography variant="body1">
-                        {selectedFranchise.panDetails.data.gender || "N/A"}
-                      </Typography>
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                      <Typography variant="body2" color="textSecondary">
-                        Date of Birth
-                      </Typography>
-                      <Typography variant="body1">
-                        {selectedFranchise.panDetails.data.dob || "N/A"}
-                      </Typography>
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                      <Typography variant="body2" color="textSecondary">
-                        Category
-                      </Typography>
-                      <Typography variant="body1">
-                        {selectedFranchise.panDetails.data.category || "N/A"}
-                      </Typography>
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                      <Typography variant="body2" color="textSecondary">
-                        Status
-                      </Typography>
-                      <Typography variant="body1">
-                        {selectedFranchise.panDetails.data.status || "N/A"}
-                      </Typography>
-                    </Grid>
-                    
-                    {/* Address Information from PAN */}
-                    {selectedFranchise.panDetails.data.address && (
-                      <>
-                        <Grid item xs={12}>
-                          <Typography
-                            variant="subtitle1"
-                            fontWeight="bold"
-                            sx={{ mt: 2 }}
-                          >
-                            Address from PAN
-                          </Typography>
-                        </Grid>
-                        <Grid item xs={12} sm={6}>
-                          <Typography variant="body2" color="textSecondary">
-                            Address Line 1
-                          </Typography>
-                          <Typography variant="body1">
-                            {selectedFranchise.panDetails.data.address.line_1 || "N/A"}
-                          </Typography>
-                        </Grid>
-                        <Grid item xs={12} sm={6}>
-                          <Typography variant="body2" color="textSecondary">
-                            City
-                          </Typography>
-                          <Typography variant="body1">
-                            {selectedFranchise.panDetails.data.address.city || "N/A"}
-                          </Typography>
-                        </Grid>
-                        <Grid item xs={12} sm={6}>
-                          <Typography variant="body2" color="textSecondary">
-                            State
-                          </Typography>
-                          <Typography variant="body1">
-                            {selectedFranchise.panDetails.data.address.state || "N/A"}
-                          </Typography>
-                        </Grid>
-                        <Grid item xs={12} sm={6}>
-                          <Typography variant="body2" color="textSecondary">
-                            Zip Code
-                          </Typography>
-                          <Typography variant="body1">
-                            {selectedFranchise.panDetails.data.address.zip || "N/A"}
-                          </Typography>
-                        </Grid>
-                        <Grid item xs={12}>
-                          <Typography variant="body2" color="textSecondary">
-                            Full Address
-                          </Typography>
-                          <Typography variant="body1">
-                            {selectedFranchise.panDetails.data.address.full || "N/A"}
-                          </Typography>
-                        </Grid>
-                      </>
-                    )}
-                  </>
-                )}                
+                {selectedFranchise.panDetails &&
+                  selectedFranchise.panDetails.data && (
+                    <>
+                      <Grid item xs={12} sm={6}>
+                        <Typography variant="body2" color="textSecondary">
+                          Full Name
+                        </Typography>
+                        <Typography variant="body1">
+                          {selectedFranchise.panDetails.data.full_name || "N/A"}
+                        </Typography>
+                      </Grid>
+                      <Grid item xs={12} sm={6}>
+                        <Typography variant="body2" color="textSecondary">
+                          Masked Aadhaar
+                        </Typography>
+                        <Typography variant="body1">
+                          {selectedFranchise.panDetails.data.masked_aadhaar ||
+                            "N/A"}
+                        </Typography>
+                      </Grid>
+                      <Grid item xs={12} sm={6}>
+                        <Typography variant="body2" color="textSecondary">
+                          Gender
+                        </Typography>
+                        <Typography variant="body1">
+                          {selectedFranchise.panDetails.data.gender || "N/A"}
+                        </Typography>
+                      </Grid>
+                      <Grid item xs={12} sm={6}>
+                        <Typography variant="body2" color="textSecondary">
+                          Date of Birth
+                        </Typography>
+                        <Typography variant="body1">
+                          {selectedFranchise.panDetails.data.dob || "N/A"}
+                        </Typography>
+                      </Grid>
+                      <Grid item xs={12} sm={6}>
+                        <Typography variant="body2" color="textSecondary">
+                          Category
+                        </Typography>
+                        <Typography variant="body1">
+                          {selectedFranchise.panDetails.data.category || "N/A"}
+                        </Typography>
+                      </Grid>
+                      <Grid item xs={12} sm={6}>
+                        <Typography variant="body2" color="textSecondary">
+                          Status
+                        </Typography>
+                        <Typography variant="body1">
+                          {selectedFranchise.panDetails.data.status || "N/A"}
+                        </Typography>
+                      </Grid>
+
+                      {/* Address Information from PAN */}
+                      {selectedFranchise.panDetails.data.address && (
+                        <>
+                          <Grid item xs={12}>
+                            <Typography
+                              variant="subtitle1"
+                              fontWeight="bold"
+                              sx={{ mt: 2 }}
+                            >
+                              Address from PAN
+                            </Typography>
+                          </Grid>
+                          <Grid item xs={12} sm={6}>
+                            <Typography variant="body2" color="textSecondary">
+                              Address Line 1
+                            </Typography>
+                            <Typography variant="body1">
+                              {selectedFranchise.panDetails.data.address
+                                .line_1 || "N/A"}
+                            </Typography>
+                          </Grid>
+                          <Grid item xs={12} sm={6}>
+                            <Typography variant="body2" color="textSecondary">
+                              City
+                            </Typography>
+                            <Typography variant="body1">
+                              {selectedFranchise.panDetails.data.address.city ||
+                                "N/A"}
+                            </Typography>
+                          </Grid>
+                          <Grid item xs={12} sm={6}>
+                            <Typography variant="body2" color="textSecondary">
+                              State
+                            </Typography>
+                            <Typography variant="body1">
+                              {selectedFranchise.panDetails.data.address
+                                .state || "N/A"}
+                            </Typography>
+                          </Grid>
+                          <Grid item xs={12} sm={6}>
+                            <Typography variant="body2" color="textSecondary">
+                              Zip Code
+                            </Typography>
+                            <Typography variant="body1">
+                              {selectedFranchise.panDetails.data.address.zip ||
+                                "N/A"}
+                            </Typography>
+                          </Grid>
+                          <Grid item xs={12}>
+                            <Typography variant="body2" color="textSecondary">
+                              Full Address
+                            </Typography>
+                            <Typography variant="body1">
+                              {selectedFranchise.panDetails.data.address.full ||
+                                "N/A"}
+                            </Typography>
+                          </Grid>
+                        </>
+                      )}
+                    </>
+                  )}
                 {/* Bank Details */}
                 <Grid item xs={12}>
                   <Typography
@@ -2004,7 +2195,9 @@ const ManageFranchises = () => {
                     Bank Account Number
                   </Typography>
                   <Typography variant="body1">
-                    {selectedFranchise.bankAccountNumber ? `XXXXXX${selectedFranchise.bankAccountNumber.slice(-4)}` : "N/A"}
+                    {selectedFranchise.bankAccountNumber
+                      ? `XXXXXX${selectedFranchise.bankAccountNumber.slice(-4)}`
+                      : "N/A"}
                   </Typography>
                 </Grid>
                 <Grid item xs={12} sm={6}>
@@ -2015,77 +2208,94 @@ const ManageFranchises = () => {
                     {selectedFranchise.bankIfscCode || "N/A"}
                   </Typography>
                 </Grid>
-                {selectedFranchise.bankDetails && selectedFranchise.bankDetails.data && (
-                  <>
-                    <Grid item xs={12} sm={6}>
-                      <Typography variant="body2" color="textSecondary">
-                        Account Holder Name
-                      </Typography>
-                      <Typography variant="body1">
-                        {selectedFranchise.bankDetails.data.full_name || "N/A"}
-                      </Typography>
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                      <Typography variant="body2" color="textSecondary">
-                        Account Exists
-                      </Typography>
-                      <Typography variant="body1">
-                        {selectedFranchise.bankDetails.data.account_exists ? "Yes" : "No"}
-                      </Typography>
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                      <Typography variant="body2" color="textSecondary">
-                        Bank Name
-                      </Typography>
-                      <Typography variant="body1">
-                        {selectedFranchise.bankDetails.data.ifsc_details?.bank_name || "N/A"}
-                      </Typography>
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                      <Typography variant="body2" color="textSecondary">
-                        Branch
-                      </Typography>
-                      <Typography variant="body1">
-                        {selectedFranchise.bankDetails.data.ifsc_details?.branch || "N/A"}
-                      </Typography>
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                      <Typography variant="body2" color="textSecondary">
-                        RTGS Enabled
-                      </Typography>
-                      <Typography variant="body1">
-                        {selectedFranchise.bankDetails.data.ifsc_details?.rtgs ? "Yes" : "No"}
-                      </Typography>
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                      <Typography variant="body2" color="textSecondary">
-                        NEFT Enabled
-                      </Typography>
-                      <Typography variant="body1">
-                        {selectedFranchise.bankDetails.data.ifsc_details?.neft ? "Yes" : "No"}
-                      </Typography>
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                      <Typography variant="body2" color="textSecondary">
-                        MICR Check
-                      </Typography>
-                      <Typography variant="body1">
-                        {selectedFranchise.bankDetails.data.ifsc_details?.micr_check ? "Yes" : "No"}
-                      </Typography>
-                    </Grid>
-                    <Grid item xs={12} sm={6}>
-                      <Typography variant="body2" color="textSecondary">
-                        Status
-                      </Typography>
-                      <Typography variant="body1">
-                        {selectedFranchise.bankDetails.data.status || "N/A"}
-                      </Typography>
-                    </Grid>
-                  </>
-                )}
+                {selectedFranchise.bankDetails &&
+                  selectedFranchise.bankDetails.data && (
+                    <>
+                      <Grid item xs={12} sm={6}>
+                        <Typography variant="body2" color="textSecondary">
+                          Account Holder Name
+                        </Typography>
+                        <Typography variant="body1">
+                          {selectedFranchise.bankDetails.data.full_name ||
+                            "N/A"}
+                        </Typography>
+                      </Grid>
+                      <Grid item xs={12} sm={6}>
+                        <Typography variant="body2" color="textSecondary">
+                          Account Exists
+                        </Typography>
+                        <Typography variant="body1">
+                          {selectedFranchise.bankDetails.data.account_exists
+                            ? "Yes"
+                            : "No"}
+                        </Typography>
+                      </Grid>
+                      <Grid item xs={12} sm={6}>
+                        <Typography variant="body2" color="textSecondary">
+                          Bank Name
+                        </Typography>
+                        <Typography variant="body1">
+                          {selectedFranchise.bankDetails.data.ifsc_details
+                            ?.bank_name || "N/A"}
+                        </Typography>
+                      </Grid>
+                      <Grid item xs={12} sm={6}>
+                        <Typography variant="body2" color="textSecondary">
+                          Branch
+                        </Typography>
+                        <Typography variant="body1">
+                          {selectedFranchise.bankDetails.data.ifsc_details
+                            ?.branch || "N/A"}
+                        </Typography>
+                      </Grid>
+                      <Grid item xs={12} sm={6}>
+                        <Typography variant="body2" color="textSecondary">
+                          RTGS Enabled
+                        </Typography>
+                        <Typography variant="body1">
+                          {selectedFranchise.bankDetails.data.ifsc_details?.rtgs
+                            ? "Yes"
+                            : "No"}
+                        </Typography>
+                      </Grid>
+                      <Grid item xs={12} sm={6}>
+                        <Typography variant="body2" color="textSecondary">
+                          NEFT Enabled
+                        </Typography>
+                        <Typography variant="body1">
+                          {selectedFranchise.bankDetails.data.ifsc_details?.neft
+                            ? "Yes"
+                            : "No"}
+                        </Typography>
+                      </Grid>
+                      <Grid item xs={12} sm={6}>
+                        <Typography variant="body2" color="textSecondary">
+                          MICR Check
+                        </Typography>
+                        <Typography variant="body1">
+                          {selectedFranchise.bankDetails.data.ifsc_details
+                            ?.micr_check
+                            ? "Yes"
+                            : "No"}
+                        </Typography>
+                      </Grid>
+                      <Grid item xs={12} sm={6}>
+                        <Typography variant="body2" color="textSecondary">
+                          Status
+                        </Typography>
+                        <Typography variant="body1">
+                          {selectedFranchise.bankDetails.data.status || "N/A"}
+                        </Typography>
+                      </Grid>
+                    </>
+                  )}
                 {/* Package Assignment for Approval */}
                 <Grid item xs={12}>
-                  <FormControl fullWidth margin="normal" style={{minWidth:"200px"}}>
+                  <FormControl
+                    fullWidth
+                    margin="normal"
+                    style={{ minWidth: "200px" }}
+                  >
                     <InputLabel>Assign Packages (Optional)</InputLabel>
                     <Select
                       multiple
@@ -2134,7 +2344,11 @@ const ManageFranchises = () => {
                   startIcon={<Close />}
                   disabled={loading}
                 >
-                  {loading ? <CircularProgress size={24} /> : "Reject Registration"}
+                  {loading ? (
+                    <CircularProgress size={24} />
+                  ) : (
+                    "Reject Registration"
+                  )}
                 </Button>
                 <Button
                   onClick={() =>
@@ -2145,7 +2359,11 @@ const ManageFranchises = () => {
                   startIcon={<Check />}
                   disabled={loading}
                 >
-                  {loading ? <CircularProgress size={24} /> : "Approve Registration"}
+                  {loading ? (
+                    <CircularProgress size={24} />
+                  ) : (
+                    "Approve Registration"
+                  )}
                 </Button>
               </Box>
             </Box>
@@ -2155,7 +2373,7 @@ const ManageFranchises = () => {
           <Button onClick={handleCloseRegistrationDialog}>Close</Button>
         </DialogActions>
       </Dialog>
-      
+
       {/* Certificate Name Update Dialog */}
       <Dialog
         open={certificateDialogOpen}
@@ -2175,7 +2393,8 @@ const ManageFranchises = () => {
         <DialogContent>
           <Box sx={{ mt: 2 }}>
             <Typography variant="body1" paragraph>
-              Update the certificate name for {certificateFranchise?.businessName}
+              Update the certificate name for{" "}
+              {certificateFranchise?.businessName}
             </Typography>
             <TextField
               fullWidth
@@ -2189,10 +2408,7 @@ const ManageFranchises = () => {
           </Box>
         </DialogContent>
         <DialogActions>
-          <Button
-            onClick={handleCertificateDialogClose}
-            color="primary"
-          >
+          <Button onClick={handleCertificateDialogClose} color="primary">
             Cancel
           </Button>
           <Button
@@ -2205,7 +2421,7 @@ const ManageFranchises = () => {
           </Button>
         </DialogActions>
       </Dialog>
-      
+
       {/* Certificate Success Snackbar */}
       <Snackbar
         open={certificateSnackbarOpen}

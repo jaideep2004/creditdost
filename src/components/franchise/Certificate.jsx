@@ -248,7 +248,7 @@ const Certificate = () => {
           <Box sx={{ mt: 3 }}>
             <Typography variant="body1" paragraph>
               This certificate confirms that {certificateData?.franchiseName} is
-              an authorized franchise partner of CreditDost.
+              an authorized franchise partner of Credit Dost.
             </Typography>
             <Typography variant="body1" paragraph>
               Certificate Status:{" "}

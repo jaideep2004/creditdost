@@ -1,6 +1,6 @@
 # Digital Agreement Implementation Summary
 
-This document outlines the implementation of the digital agreement feature with PDF editing and Surepass eSign integration for the CreditDost franchise management platform.
+This document outlines the implementation of the digital agreement feature with PDF editing and Surepass eSign integration for the Credit Dost franchise management platform.
 
 ## Features Implemented
 
@@ -149,4 +149,4 @@ The implementation uses the following environment variables:
 - `axios`: For API requests to Surepass
 - Existing project dependencies (Express, Mongoose, etc.)
 
-This simplified implementation provides a reliable digital agreement workflow that integrates seamlessly with the existing CreditDost platform architecture.
+This simplified implementation provides a reliable digital agreement workflow that integrates seamlessly with the existing Credit Dost platform architecture.

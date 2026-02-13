@@ -93,7 +93,7 @@ const Home = () => {
               mb: 2
             }}
           >
-            CreditDost Franchise Platform
+            Credit Dost Franchise Platform
           </Typography>
           <Typography 
             variant="h5" 
@@ -159,7 +159,7 @@ const Home = () => {
           mb={2}
           sx={{ color: 'text.primary' }}
         >
-          Why Choose CreditDost?
+          Why Choose Credit Dost?
         </Typography>
         <Typography 
           variant="body1" 

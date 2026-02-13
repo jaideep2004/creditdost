@@ -228,7 +228,7 @@ const PackagesPage = () => {
         key: import.meta.env.VITE_RAZORPAY_KEY_ID,
         amount: selectedPackage.price * 100,
         currency: "INR",
-        name: "CreditDost",
+        name: "Credit Dost",
         description: `Purchase of ${selectedPackage.name} package`,
         order_id: orderId,
         handler: function (response) {

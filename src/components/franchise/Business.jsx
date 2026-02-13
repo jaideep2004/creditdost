@@ -203,7 +203,7 @@ const Business = () => {
       key: import.meta.env.VITE_RAZORPAY_KEY_ID, // Use the correct variable
       amount: selectedPackage.price * 100,
       currency: "INR",
-      name: "CreditDost",
+      name: "Credit Dost",
       description: selectedPackage.name,
       order_id: razorpayOrderId,
       handler: async function (response) {

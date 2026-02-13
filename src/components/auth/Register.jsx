@@ -322,7 +322,7 @@ const Register = () => {
                 {referralId && (
                   <Box sx={{ mt: 3, p: 2, bgcolor: 'rgba(98, 0, 234, 0.1)', borderRadius: 2 }}>
                     <Typography variant="body2" color="primary.main" fontWeight="bold">
-                      You've been referred to CreditDost!
+                      You've been referred to Credit Dost!
                     </Typography>
                     <Typography variant="caption" color="text.secondary">
                       Complete your registration to get started.

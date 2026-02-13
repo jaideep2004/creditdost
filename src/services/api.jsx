@@ -245,6 +245,13 @@ export const ifscAPI = {
   getBankDetails: (ifscCode) => axios.get(`https://ifsc.razorpay.com/${ifscCode}`),
 };
 
+// SMS API functions
+export const smsAPI = {
+  sendOTP: (data) => api.post('/sms/send-otp', data),
+  verifyOTP: (data) => api.post('/sms/verify-otp', data),
+  resendOTP: (data) => api.post('/sms/resend-otp', data),
+};
+
 // Careers API functions
 export const careersAPI = {
   submitApplication: (formData) => {

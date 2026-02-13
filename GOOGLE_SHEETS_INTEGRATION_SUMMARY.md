@@ -1,7 +1,7 @@
 # Google Sheets Integration Implementation Summary
 
 ## Overview
-This implementation adds Google Sheets integration to the CreditDost application with two-way synchronization for various data types. The integration includes:
+This implementation adds Google Sheets integration to the Credit Dost application with two-way synchronization for various data types. The integration includes:
 
 1. Backend models, controllers, and services for Google Sheets synchronization
 2. Frontend components for admin configuration

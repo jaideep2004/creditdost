@@ -1,4 +1,4 @@
-# CreditDost Franchise Management Platform
+# Credit Dost Franchise Management Platform
 
 A full-stack MERN application for managing franchise partnerships with credit verification capabilities.
 
@@ -229,6 +229,19 @@ The backend API is organized into the following routes:
 3. Commit your changes
 4. Push to the branch
 5. Create a pull request
+
+## Rate Limiting Configuration
+
+The application includes built-in rate limiting for SurePass API calls to prevent 429 (Too Many Requests) errors. You can configure the following environment variables:
+
+```
+# SurePass API Rate Limiting
+SUREPASS_MIN_DELAY_MS=1500                    # Minimum delay between requests in milliseconds (default: 1500)
+SUREPASS_MAX_REQUESTS_PER_WINDOW=20           # Maximum requests per time window (default: 20)
+SUREPASS_RATE_LIMIT_WINDOW_MS=60000           # Time window in milliseconds (default: 60000 = 1 minute)
+```
+
+These settings help distribute API calls evenly and prevent hitting SurePass rate limits during high-traffic periods.
 
 ## License
 

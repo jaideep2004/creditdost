@@ -80,6 +80,7 @@ const CreditCheck = () => {
     try {
       setLoading(true);
       const response = await franchiseAPI.getCreditReports();
+      console.log('Credit reports loaded:', response.data);
       setCreditReports(response.data);
       setLoading(false);
     } catch (err) {
@@ -188,6 +189,8 @@ const CreditCheck = () => {
             response.data.remainingCredits
           } credits remaining.`
         );
+        console.log('Credit report response:', response.data);
+        console.log('Credit report data:', response.data.creditReport);
         setRecentReport(response.data.creditReport);
         setAvailableCredits(response.data.remainingCredits);
 
@@ -261,6 +264,10 @@ const CreditCheck = () => {
   };
 
   const getScoreColor = (score) => {
+    // Handle null/undefined scores
+    if (score === null || score === undefined) {
+      return "default";
+    }
     if (score >= 750) return "success";
     if (score >= 700) return "info";
     if (score >= 650) return "warning";
@@ -268,6 +275,10 @@ const CreditCheck = () => {
   };
 
   const getScoreLabel = (score) => {
+    // Handle null/undefined scores
+    if (score === null || score === undefined) {
+      return "No Credit History";
+    }
     if (score >= 750) return "Excellent";
     if (score >= 700) return "Good";
     if (score >= 650) return "Fair";
@@ -444,7 +455,7 @@ const CreditCheck = () => {
                   sx={{ minWidth: { xs: "0px", md: "500px" } }}
                 >
                   <FormControl fullWidth style={{ minWidth: "200px" }}>
-                    <InputLabel>Gender (Optional)</InputLabel>
+                    <InputLabel>Gender</InputLabel>
                     <Select
                       id="gender"
                       name="gender"
@@ -548,17 +559,21 @@ const CreditCheck = () => {
                       />
                     </Grid>
                     <Grid item xs={12}>
-                      {recentReport.reportUrl && (
+                      {getReportUrl(recentReport) ? (
                         <Button
                           variant="outlined"
                           startIcon={<PictureAsPdf />}
                           endIcon={<Download />}
                           component={Link}
-                          href={recentReport.reportUrl}
+                          href={getReportUrl(recentReport)}
                           target="_blank"
                         >
                           Download PDF Report
                         </Button>
+                      ) : (
+                        <Typography variant="body2" color="textSecondary">
+                          No PDF report available for this credit check
+                        </Typography>
                       )}
                     </Grid>
                   </Grid>
@@ -618,21 +633,26 @@ const CreditCheck = () => {
                           />
                         </TableCell>
                         <TableCell>
-                          {report.score ? (
+                          {report.score !== null && report.score !== undefined ? (
                             <Chip
-                              label={report.score}
+                              label={`${report.score} (${getScoreLabel(report.score)})`}
                               color={getScoreColor(report.score)}
                               size="small"
                             />
                           ) : (
-                            <Chip label="N/A" size="small" />
+                            <Chip 
+                              label={getScoreLabel(report.score)} 
+                              color={getScoreColor(report.score)}
+                              size="small"
+                              variant="outlined"
+                            />
                           )}
                         </TableCell>
                         <TableCell>
                           {new Date(report.createdAt).toLocaleDateString()}
                         </TableCell>
                         <TableCell>
-                          {getReportUrl(report) && (
+                          {getReportUrl(report) ? (
                             <Button
                               size="small"
                               startIcon={<PictureAsPdf />}
@@ -642,6 +662,10 @@ const CreditCheck = () => {
                             >
                               PDF
                             </Button>
+                          ) : (
+                            <Typography variant="caption" color="textSecondary">
+                              No PDF
+                            </Typography>
                           )}
                         </TableCell>
                       </TableRow>

@@ -1,6 +1,6 @@
 # Google Analytics 4 (GA4) Integration with React-GA4
 
-This document outlines the complete implementation of Google Analytics 4 using the `react-ga4` library in the CreditDost application.
+This document outlines the complete implementation of Google Analytics 4 using the `react-ga4` library in the Credit Dost application.
 
 ## Implementation Overview
 

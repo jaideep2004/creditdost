@@ -112,7 +112,7 @@ const HistorySection = () => {
             }}
           >
             <strong>
-              CreditDost is a trusted credit education and credit score
+              Credit Dost is a trusted credit education and credit score
               improvement platform in India
             </strong>
             , founded by <b>Mr. Nitin Verma</b>, with a mission to promote
@@ -145,10 +145,10 @@ const HistorySection = () => {
               textAlign: isMobile ? "justify" : "left",
             }}
           >
-            To address this challenge, <b>CreditDost</b> was established in 2020
+            To address this challenge, <b>Credit Dost</b> was established in 2020
             as a technology-enabled platform focused on credit score education,
             credit report analysis, and compliant credit correction support.
-            Today, <b>CreditDost</b> helps individuals across India understand
+            Today, <b>Credit Dost</b> helps individuals across India understand
             how credit scores work, identify errors in their credit reports, and
             adopt structured strategies to improve creditworthiness.
           </p>

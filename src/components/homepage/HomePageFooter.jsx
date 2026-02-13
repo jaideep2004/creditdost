@@ -146,7 +146,7 @@ const HomePageFooter = () => {
         <Grid item xs={12} md={4} style={{ flex: "1.5" }}>
           <img
             src="/images/white-logo.png"
-            alt="CreditDost Logo"
+            alt="Credit Dost Logo"
             style={{ width: "200px", marginBottom: "20px" }}
           />
           <Typography variant="body2" color="grey.300" mb={3} lineHeight={1.6}>
@@ -279,7 +279,7 @@ const HomePageFooter = () => {
         textAlign="center"
       >
         <Typography variant="body2" color="grey.400">
-          © {new Date().getFullYear()} CreditDost. All rights reserved.
+          © {new Date().getFullYear()} Credit Dost. All rights reserved.
         </Typography>
         <Typography variant="caption" display="block" color="grey.500" mt={1}>
           Optimystic Auxiliary Services Private Limited &nbsp; (Designed by{" "}
@@ -303,7 +303,7 @@ const HomePageFooter = () => {
       <MobileFooterSection>
         <img
           src="/images/white-logo.png"
-          alt="CreditDost Logo"
+          alt="Credit Dost Logo"
           style={{ width: "180px", marginBottom: "16px" }}
         />
         <Typography
@@ -476,7 +476,7 @@ const HomePageFooter = () => {
         textAlign="center"
       >
         <Typography variant="body2" color="grey.400" fontSize="0.85rem">
-          © {new Date().getFullYear()} CreditDost. All rights reserved.
+          © {new Date().getFullYear()} Credit Dost. All rights reserved.
         </Typography>
         <Typography
           variant="caption"

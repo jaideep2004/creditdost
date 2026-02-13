@@ -201,7 +201,7 @@ const Referrals = () => {
                 Referral Program
               </Typography>
               <Typography variant="body1" paragraph>
-                Earn credits by referring new franchise partners to CreditDost.
+                Earn credits by referring new franchise partners to Credit Dost.
               </Typography>
               <Typography variant="body1" paragraph>
                 <strong>How it works:</strong>

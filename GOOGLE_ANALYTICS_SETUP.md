@@ -2,7 +2,7 @@
 
 ## Prerequisites
 
-To integrate Google Analytics 4 (GA4) with your CreditDost application, you'll need:
+To integrate Google Analytics 4 (GA4) with your Credit Dost application, you'll need:
 
 1. A Google Analytics 4 property set up for your website
 2. A Google Cloud Platform project with the Google Analytics Data API enabled

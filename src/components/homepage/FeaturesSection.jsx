@@ -17,7 +17,7 @@ const services = [
     image: "/images/franchise-new.jpeg",
   },
   {
-    title: "CreditDost Suvidha Centre",
+    title: "Credit Dost Suvidha Centre",
     description:
       "Start a profitable credit repair business with Credit Dost Suvidha Centre and help people improve their credit scores.",
     icon: "📈",
