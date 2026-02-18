@@ -40,8 +40,17 @@ import {
   Visibility as VisibilityIcon,
   Link as LinkIcon
 } from '@mui/icons-material';
+import { useEditor, EditorContent } from '@tiptap/react';
+import StarterKit from '@tiptap/starter-kit';
+import Underline from '@tiptap/extension-underline';
 import { adminAPI } from '../../services/api';
 import { getImagePreviewUrl } from '../../utils/googleDriveUtils';
+
+// Import Tiptap editor styles
+// import '@tiptap/react/dist/ReactEditor.css';
+
+// Import custom editor styles
+import './TiptapEditor.css';
 
 const ManageBlogs = () => {
   const [blogs, setBlogs] = useState([]);
@@ -59,6 +68,22 @@ const ManageBlogs = () => {
     tags: '',
     categories: '',
     featuredImage: ''
+  });
+  
+  // Initialize Tiptap editor
+  const editor = useEditor({
+    extensions: [
+      StarterKit,
+      Underline,
+    ],
+    content: formData.content,
+    onUpdate: ({ editor }) => {
+      // Update formData content when editor content changes
+      setFormData(prev => ({
+        ...prev,
+        content: editor.getHTML()
+      }));
+    },
   });
   
   // State for image upload
@@ -94,6 +119,13 @@ const ManageBlogs = () => {
   useEffect(() => {
     fetchBlogs();
   }, [filters]);
+
+  // Update editor content when formData.content changes
+  useEffect(() => {
+    if (editor && formData.content !== editor.getHTML()) {
+      editor.commands.setContent(formData.content);
+    }
+  }, [formData.content, editor]);
 
   const showSnackbar = (message, severity = 'success') => {
     setSnackbar({ open: true, message, severity });
@@ -143,6 +175,8 @@ const ManageBlogs = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+    // Skip updating content field as it's handled by Tiptap editor
+    if (name === 'content') return;
     setFormData({ ...formData, [name]: value });
   };
   
@@ -453,7 +487,12 @@ const ManageBlogs = () => {
           {editingBlog ? 'Edit Blog' : 'Create New Blog'}
         </DialogTitle>
         <DialogContent>
-          <Box component="form" onSubmit={handleSubmit} sx={{ mt: 2 }}>
+          <Box component="form" onSubmit={handleSubmit} onKeyDown={(e) => {
+            // Prevent form submission when pressing Enter inside the editor
+            if (e.key === 'Enter' && e.target.closest('.tiptap-editor')) {
+              e.preventDefault();
+            }
+          }} sx={{ mt: 2 }}>
             <Grid container spacing={3} style={{ flexDirection: 'column' }}>
               <Grid item xs={12} md={8}>
                 <TextField
@@ -534,18 +573,129 @@ const ManageBlogs = () => {
               </Grid>
               
               <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  label="Content"
-                  name="content"
-                  value={formData.content}
-                  onChange={handleChange}
-                  multiline
-                  rows={15}
-                  required
-                  variant="outlined"
-                  helperText={`Write your blog content here (${formData.content.length} characters)`}
-                />
+                <div className="editor-container" style={{ border: '1px solid #ccc', borderRadius: '4px', padding: '0', minHeight: '300px' }} onKeyDown={(e) => e.stopPropagation()} onKeyPress={(e) => e.stopPropagation()} onKeyUp={(e) => e.stopPropagation()}>
+                  <div style={{ marginBottom: '8px', fontSize: '12px', color: '#666', paddingLeft: '10px', paddingRight: '10px' }}>
+                    Content Editor ({formData.content.length > 0 ? formData.content.replace(/<[^>]*>/g, '').length : 0} characters)
+                  </div>
+                  {editor && (
+                    <>
+                      <div className="editor-menu-bar">
+                        <button
+                          type="button"
+                          className={`editor-menu-button ${editor.isActive('bold') ? 'active' : ''}`}
+                          onClick={() => editor.chain().focus().toggleBold().run()}
+                          title="Bold"
+                        >
+                          <strong>B</strong>
+                        </button>
+                        <button
+                          type="button"
+                          className={`editor-menu-button ${editor.isActive('italic') ? 'active' : ''}`}
+                          onClick={() => editor.chain().focus().toggleItalic().run()}
+                          title="Italic"
+                        >
+                          <em>I</em>
+                        </button>
+                        <button
+                          type="button"
+                          className={`editor-menu-button ${editor.isActive('underline') ? 'active' : ''}`}
+                          onClick={() => editor.chain().focus().toggleUnderline().run()}
+                          title="Underline"
+                        >
+                          <u>U</u>
+                        </button>
+                        <button
+                          type="button"
+                          className={`editor-menu-button ${editor.isActive('strike') ? 'active' : ''}`}
+                          onClick={() => editor.chain().focus().toggleStrike().run()}
+                          title="Strikethrough"
+                        >
+                          <s>S</s>
+                        </button>
+                        <div style={{ height: '24px', borderLeft: '1px solid #ddd', margin: '0 4px' }}></div>
+                        <button
+                          type="button"
+                          className={`editor-menu-button ${editor.isActive('heading', { level: 1 }) ? 'active' : ''}`}
+                          onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
+                          title="Heading 1"
+                        >
+                          H1
+                        </button>
+                        <button
+                          type="button"
+                          className={`editor-menu-button ${editor.isActive('heading', { level: 2 }) ? 'active' : ''}`}
+                          onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
+                          title="Heading 2"
+                        >
+                          H2
+                        </button>
+                        <button
+                          type="button"
+                          className={`editor-menu-button ${editor.isActive('heading', { level: 3 }) ? 'active' : ''}`}
+                          onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
+                          title="Heading 3"
+                        >
+                          H3
+                        </button>
+                        <div style={{ height: '24px', borderLeft: '1px solid #ddd', margin: '0 4px' }}></div>
+                        <button
+                          type="button"
+                          className={`editor-menu-button ${editor.isActive('bulletList') ? 'active' : ''}`}
+                          onClick={() => editor.chain().focus().toggleBulletList().run()}
+                          title="Bullet List"
+                        >
+                          • List
+                        </button>
+                        <button
+                          type="button"
+                          className={`editor-menu-button ${editor.isActive('orderedList') ? 'active' : ''}`}
+                          onClick={() => editor.chain().focus().toggleOrderedList().run()}
+                          title="Ordered List"
+                        >
+                          1. List
+                        </button>
+                        <button
+                          type="button"
+                          className={`editor-menu-button ${editor.isActive('blockquote') ? 'active' : ''}`}
+                          onClick={() => editor.chain().focus().toggleBlockquote().run()}
+                          title="Blockquote"
+                        >
+                          "
+                        </button>
+                        <button
+                          type="button"
+                          className={`editor-menu-button ${editor.isActive('codeBlock') ? 'active' : ''}`}
+                          onClick={() => editor.chain().focus().toggleCodeBlock().run()}
+                          title="Code Block"
+                        >
+                          &lt;/&gt;
+                        </button>
+                        <div style={{ height: '24px', borderLeft: '1px solid #ddd', margin: '0 4px' }}></div>
+                        <button
+                          type="button"
+                          className="editor-menu-button"
+                          onClick={() => editor.chain().focus().undo().run()}
+                          title="Undo"
+                          disabled={!editor.can().undo()}
+                        >
+                          ↶ Undo
+                        </button>
+                        <button
+                          type="button"
+                          className="editor-menu-button"
+                          onClick={() => editor.chain().focus().redo().run()}
+                          title="Redo"
+                          disabled={!editor.can().redo()}
+                        >
+                          ↷ Redo
+                        </button>
+                      </div>
+                      <div onKeyDown={(e) => e.stopPropagation()}>
+                                            <EditorContent editor={editor} className="tiptap-editor" />
+                                          </div>
+                    </>
+                  )}
+                </div>
               </Grid>
               
               <Grid item xs={12}>

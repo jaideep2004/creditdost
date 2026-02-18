@@ -1367,6 +1367,20 @@ const ApplyForLoanPage = () => {
                             </Select>
                           </FormControl>
                         </Grid>
+
+                        <Grid item xs={12} md={6} style={{ width: "100%" }}>
+                          <TextField
+                            fullWidth
+                            required
+                            label="Pincode"
+                            name="pincode"
+                            value={formData.pincode}
+                            onChange={handleChange}
+                            variant="outlined"
+                            size="medium"
+                            inputProps={{ maxLength: 6, minLength: 6 }}
+                          />
+                        </Grid>
                       </div>
 
                       <div style={{ display: "flex", gap: "15px" }}>
@@ -1400,20 +1414,6 @@ const ApplyForLoanPage = () => {
                           />
                         </Grid>
                       </div>
-
-                      <Grid item xs={12} md={6}>
-                        <TextField
-                          fullWidth
-                          required
-                          label="Pincode"
-                          name="pincode"
-                          value={formData.pincode}
-                          onChange={handleChange}
-                          variant="outlined"
-                          size="medium"
-                          inputProps={{ maxLength: 6, minLength: 6 }}
-                        />
-                      </Grid>
 
                       {/* Financial Information Section */}
 

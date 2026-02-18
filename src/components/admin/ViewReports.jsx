@@ -172,7 +172,7 @@ const ViewReports = () => {
                       sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                     >
                       <TableCell>
-                        {report.franchiseId ? report.franchiseId.businessName : 'N/A'}
+                        {report.franchiseId ? report.franchiseId.businessName : 'Website'}
                       </TableCell>
                       <TableCell component="th" scope="row">
                         {report.name}

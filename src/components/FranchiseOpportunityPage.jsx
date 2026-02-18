@@ -1452,7 +1452,7 @@ const FranchiseOpportunityPage = () => {
                           <Button
                             variant="contained"
                             href={
-                              "https://chat.whatsapp.com/BM7OdjpeVu23HZt3465c9L"
+                              "https://chat.whatsapp.com/J9D0d2qF1PHFiecQyFw7PW"
                             }
                             target="_blank"
                             sx={{

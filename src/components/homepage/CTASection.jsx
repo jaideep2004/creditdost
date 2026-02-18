@@ -119,14 +119,14 @@ const CTASection = () => {
                             <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                             <circle cx="12" cy="7" r="4"></circle>
                           </svg>
-                          <span>By {blog.author}</span>
+                          <span>By Credit Dost</span>
                         </div>
-                        <div className="meta-item">
+                        {/* <div className="meta-item">
                           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                             <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
                           </svg>
                           <span>Comments ({blog.comments})</span>
-                        </div>
+                        </div> */}
                       </div>
                       <h3 className="blog-title">{blog.title}</h3>
                       <div className="read-more">
@@ -253,7 +253,7 @@ const CTASection = () => {
           position: relative;
           max-width: 1300px;
           margin: 0 auto;
-          padding: 0 60px;
+          padding: 0 40px;
         }
 
         .nav-button {
@@ -301,6 +301,7 @@ const CTASection = () => {
         .blog-cards-container {
           display: flex;
           gap: 24px;
+          padding:10px 0px;
           transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
 

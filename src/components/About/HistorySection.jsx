@@ -253,7 +253,7 @@ const HistorySection = () => {
                   height: "100%",
                   background:
                     "linear-gradient(135deg, #94a3b8 0%, #cbd5e1 100%)",
-                  backgroundImage: 'url("./images/founder image-01.jpg")',
+                  backgroundImage: 'url("./images/about-h-new.jpeg")',
                   backgroundSize: "cover",
                   backgroundPosition: "center",
                   display: "flex",
@@ -389,7 +389,7 @@ const HistorySection = () => {
                   height: "100%",
                   background:
                     "linear-gradient(135deg, #94a3b8 0%, #cbd5e1 100%)",
-                  backgroundImage: 'url("./images/founder image-01.jpg")',
+                  backgroundImage: 'url("./images/about-h-new.jpeg")',
                   backgroundSize: "cover",
                   backgroundPosition: "center",
                   display: "flex",

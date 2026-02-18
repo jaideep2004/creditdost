@@ -1,5 +1,10 @@
 import React, { useState } from "react";
 import api from "../services/api";
+
+import {
+  Verified,
+  // Star,
+} from "@mui/icons-material";
 import {
   Container,
   Box,
@@ -112,6 +117,46 @@ const FormSection = styled(StyledCard)(({ theme }) => ({
     "100%": { opacity: 1, transform: "translateY(0)" },
   },
 }));
+
+// Indian states list
+const indianStates = [
+  "Andhra Pradesh",
+  "Arunachal Pradesh",
+  "Assam",
+  "Bihar",
+  "Chhattisgarh",
+  "Goa",
+  "Gujarat",
+  "Haryana",
+  "Himachal Pradesh",
+  "Jharkhand",
+  "Karnataka",
+  "Kerala",
+  "Madhya Pradesh",
+  "Maharashtra",
+  "Manipur",
+  "Meghalaya",
+  "Mizoram",
+  "Nagaland",
+  "Odisha",
+  "Punjab",
+  "Rajasthan",
+  "Sikkim",
+  "Tamil Nadu",
+  "Telangana",
+  "Tripura",
+  "Uttar Pradesh",
+  "Uttarakhand",
+  "West Bengal",
+  "Andaman and Nicobar Islands",
+  "Chandigarh",
+  "Dadra and Nagar Haveli and Daman and Diu",
+  "Delhi",
+  "Jammu and Kashmir",
+  "Ladakh",
+  "Lakshadweep",
+  "Puducherry",
+];
 
 const SuvidhaCentrePage = () => {
   const [hoveredCard, setHoveredCard] = useState(null);
@@ -1177,7 +1222,11 @@ const SuvidhaCentrePage = () => {
               />
             </Box>
 
-            <Grid container spacing={4} sx={{ flexDirection: { xs: "column", md: "row" } }}>
+            <Grid
+              container
+              spacing={4}
+              sx={{ flexDirection: { xs: "column", md: "row" } }}
+            >
               {[
                 {
                   step: "01",
@@ -1404,16 +1453,25 @@ const SuvidhaCentrePage = () => {
                     </Grid>
 
                     <Grid item xs={12} md={6} style={{ flex: "1" }}>
-                      <TextField
-                        fullWidth
-                        required
-                        label="State"
-                        name="state"
-                        value={formData.state}
-                        onChange={handleChange}
-                        variant="outlined"
-                        size="medium"
-                      />
+                      <FormControl fullWidth required>
+                        <InputLabel>State</InputLabel>
+                        <Select
+                          value={formData.state}
+                          label="State"
+                          name="state"
+                          onChange={handleChange}
+                          size="medium"
+                        >
+                          <MenuItem value="">
+                            <em>Select State</em>
+                          </MenuItem>
+                          {indianStates.map((state) => (
+                            <MenuItem key={state} value={state}>
+                              {state}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
                     </Grid>
                   </Grid>
 

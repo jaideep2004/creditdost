@@ -118,9 +118,17 @@ const CreditCheckPage = () => {
   const [otpVerified, setOtpVerified] = useState(false);
 
   const handleChange = (e) => {
+    const { name, value } = e.target;
+    
+    // Auto-capitalize PAN number
+    let newValue = value;
+    if (name === 'pan') {
+      newValue = value.toUpperCase();
+    }
+    
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value,
+      [name]: newValue,
     });
   };
 
@@ -143,6 +151,10 @@ const CreditCheckPage = () => {
     }
     if (!formData.state) {
       setError("Please select your state");
+      return false;
+    }
+    if (!formData.occupation) {
+      setError("Please select your occupation");
       return false;
     }
     return true;
@@ -433,7 +445,10 @@ const CreditCheckPage = () => {
                       onChange={handleChange}
                       required
                       variant="outlined"
-                      inputProps={{ maxLength: 10 }}
+                      inputProps={{
+                        maxLength: 10,
+                        style: { textTransform: "uppercase" },
+                      }}
                       InputProps={{
                         sx: {
                           borderRadius: "8px",
@@ -549,12 +564,7 @@ const CreditCheckPage = () => {
                     >
                       <MenuItem value="">Select Occupation</MenuItem>
                       <MenuItem value="salaried">Salaried Employee</MenuItem>
-                      <MenuItem value="business_owner">Business Owner</MenuItem>
-                      <MenuItem value="freelancer">Freelancer</MenuItem>
-                      <MenuItem value="student">Student</MenuItem>
-                      <MenuItem value="retired">Retired</MenuItem>
-                      <MenuItem value="unemployed">Unemployed</MenuItem>
-                      <MenuItem value="other">Other</MenuItem>
+                      <MenuItem value="self_employed">Self Employed</MenuItem>
                     </TextField>
 
                     <TextField

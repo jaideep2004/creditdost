@@ -1200,17 +1200,8 @@ const CreditScoreRepairPage = () => {
                               }}
                             >
                               <MenuItem value="">Select Occupation</MenuItem>
-                              <MenuItem value="salaried">
-                                Salaried Employee
-                              </MenuItem>
-                              <MenuItem value="business_owner">
-                                Business Owner
-                              </MenuItem>
-                              <MenuItem value="freelancer">Freelancer</MenuItem>
-                              <MenuItem value="student">Student</MenuItem>
-                              <MenuItem value="retired">Retired</MenuItem>
-                              <MenuItem value="unemployed">Unemployed</MenuItem>
-                              <MenuItem value="other">Other</MenuItem>
+                              <MenuItem value="salaried">Salaried</MenuItem>
+                              <MenuItem value="self_employed">Self Employed</MenuItem>
                             </Select>
                           </FormControl>
                         </Grid>
