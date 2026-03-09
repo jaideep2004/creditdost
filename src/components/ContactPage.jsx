@@ -168,7 +168,11 @@ const ContactPage = () => {
 
       {/* Main Content */}
       <Container sx={{ py: 8 }} style={{ maxWidth: "1300px" }}>
-        <Grid container spacing={6}>
+        <Grid
+          container
+          spacing={6}
+          sx={{ flexDirection: { md: "row", sm: "column", xs: "column" } }}
+        >
           {/* Contact Form */}
           <Grid item xs={12} md={7} style={{ flex: "1" }}>
             <Paper

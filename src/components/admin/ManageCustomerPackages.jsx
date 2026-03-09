@@ -46,6 +46,7 @@ const ManageCustomerPackages = () => {
     name: '',
     description: '',
     price: '',
+    gstPercentage: 0,
     creditsIncluded: '',
     features: [],
     isActive: true,
@@ -93,6 +94,7 @@ const ManageCustomerPackages = () => {
         name: pkg.name,
         description: pkg.description,
         price: pkg.price,
+        gstPercentage: pkg.gstPercentage || 0,
         creditsIncluded: pkg.creditsIncluded,
         features: pkg.features || [],
         isActive: pkg.isActive,
@@ -108,6 +110,7 @@ const ManageCustomerPackages = () => {
         name: '',
         description: '',
         price: '',
+        gstPercentage: 0,
         creditsIncluded: '',
         features: [],
         isActive: true,
@@ -170,6 +173,7 @@ const ManageCustomerPackages = () => {
       const packageData = {
         ...formData,
         price: Number(formData.price),
+        gstPercentage: Number(formData.gstPercentage),
         creditsIncluded: Number(formData.creditsIncluded),
         availableForPackages: formData.availableForPackages || [],
       };
@@ -274,11 +278,11 @@ const ManageCustomerPackages = () => {
                   <TableRow>
                     <TableCell>Name</TableCell>
                     <TableCell>Description</TableCell>
-                    <TableCell>Price</TableCell>
-                   
+                    <TableCell>Base Price</TableCell>
+                    <TableCell>GST</TableCell>
+                    <TableCell>Total Price</TableCell>
                     <TableCell>Features</TableCell>
                     <TableCell>Available For</TableCell>
-                    
                     <TableCell>Status</TableCell>
                     <TableCell>Actions</TableCell>
                   </TableRow>
@@ -294,6 +298,8 @@ const ManageCustomerPackages = () => {
                       </TableCell>
                       <TableCell>{pkg.description}</TableCell>
                       <TableCell>₹{pkg.price}</TableCell>
+                      <TableCell>{pkg.gstPercentage || 0}%</TableCell>
+                      <TableCell>₹{Number(pkg.price) + (Number(pkg.price) * (pkg.gstPercentage || 0) / 100)}</TableCell>
                                             
                       <TableCell>
                         {pkg.features && pkg.features.length > 0 ? (
@@ -403,7 +409,7 @@ const ManageCustomerPackages = () => {
                 <TextField
                   required
                   fullWidth
-                  label="Price (₹)"
+                  label="Base Price (₹)"
                   name="price"
                   type="number"
                   value={formData.price}
@@ -411,6 +417,19 @@ const ManageCustomerPackages = () => {
                 />
               </Grid>
               
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  required
+                  fullWidth
+                  label="GST Percentage (%)"
+                  name="gstPercentage"
+                  type="number"
+                  value={formData.gstPercentage}
+                  onChange={handleInputChange}
+                  InputProps={{ inputProps: { min: 0, max: 100 } }}
+                  helperText={`Total Price: ₹${Number(formData.price) + (Number(formData.price) * (Number(formData.gstPercentage) || 0) / 100)}`}
+                />
+              </Grid>
               <Grid item xs={12}>
                 <TextField
                   fullWidth

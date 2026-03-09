@@ -24,6 +24,7 @@ const CTASection = () => {
           author: blog.author?.name || 'admin',
           comments: blog.comments || 0,
           title: blog.title,
+          categories: blog.categories || [],
         }));
         setBlogs(formattedBlogs);
       } catch (err) {
@@ -107,10 +108,6 @@ const CTASection = () => {
                   <article key={blog.id} className="blog-card" onClick={() => navigate(`/blog/${blog.slug || blog.id}`)}>
                     <div className="blog-image-wrapper">
                       <img src={blog.image} alt={blog.title} className="blog-image" />
-                      <div className="date-badge">
-                        <div className="date-number">{blog.date}</div>
-                        <div className="date-month">{blog.month}</div>
-                      </div>
                     </div>
                     <div className="blog-content">
                       <div className="meta-info">
@@ -121,6 +118,20 @@ const CTASection = () => {
                           </svg>
                           <span>By Credit Dost</span>
                         </div>
+                        
+                        {/* Date Badge moved here */}
+                        <div className="date-badge-inline">
+                          <div className="date-number">{blog.date}</div>
+                          <div className="date-month">{blog.month}</div>
+                        </div>
+                        
+                        {/* Category */}
+                        {blog.categories && blog.categories.length > 0 && (
+                          <div className="category-tag">
+                            {blog.categories[0]}
+                          </div>
+                        )}
+                        
                         {/* <div className="meta-item">
                           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                             <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
@@ -331,30 +342,7 @@ const CTASection = () => {
           height: 100%;
         }
 
-        .date-badge {
-          position: absolute;
-          bottom: 16px;
-          right: 16px;
-          background-color: white;
-          border-radius: 8px;
-          padding: 12px 20px;
-          text-align: center;
-          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        }
-
-        .date-number {
-          font-size: 1.5rem;
-          font-weight: 700;
-          color: #0096c8;
-          line-height: 1;
-        }
-
-        .date-month {
-          font-size: 0.875rem;
-          color: #6c757d;
-          text-transform: capitalize;
-          margin-top: 4px;
-        }
+        /* Removed the original date-badge as it's now inline in meta-info */
 
         .blog-content {
           padding: 24px;
@@ -367,12 +355,51 @@ const CTASection = () => {
           margin-bottom: 16px;
           color: #6c757d;
           font-size: 0.9rem;
+          flex-wrap: wrap;
         }
 
         .meta-item {
           display: flex;
           align-items: center;
           gap: 6px;
+        }
+        
+        .date-badge-inline {
+          background-color: white;
+          border-radius: 8px;
+          padding: 8px 12px;
+          text-align: center;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+          display: flex;
+          gap:5px;
+          // flex-direction: column;
+          align-items: center;
+          min-width: 50px;
+        }
+        
+        .date-badge-inline .date-number {
+          font-size: 1.1rem;
+          font-weight: 700;
+          color: #0096c8;
+          line-height: 1;
+        }
+        
+        .date-badge-inline .date-month {
+          font-size: 0.75rem;
+          color: #6c757d;
+          text-transform: capitalize;
+          margin-top: 2px;
+        }
+        
+        .category-tag {
+          background-color: #e3f2fd;
+          color: #0096c8;
+          padding: 4px 10px;
+          border-radius: 12px;
+          font-size: 0.75rem;
+          font-weight: 600;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
         }
 
         .meta-item svg {

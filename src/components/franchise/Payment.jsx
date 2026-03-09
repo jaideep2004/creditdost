@@ -32,6 +32,9 @@ const Payment = () => {
   const [error, setError] = useState("");
   const [toast, setToast] = useState({ open: false, message: "", severity: "success" }); // Toast state
   const pkg = location.state?.package;
+  
+  // Calculate total price with GST
+  const totalPrice = pkg ? Number(pkg.price) + (Number(pkg.price) * (pkg.gstPercentage || 0) / 100) : 0;
 
   // Handle toast close
   const handleToastClose = (event, reason) => {
@@ -54,7 +57,8 @@ const Payment = () => {
       
       // Create order on backend
       const response = await api.post("/payments/create-order", {
-        packageId: pkg._id
+        packageId: pkg._id,
+        amount: totalPrice, // Use total price including GST
       });
       
       const { orderId } = response.data;
@@ -62,7 +66,7 @@ const Payment = () => {
       // Initialize Razorpay
       const options = {
         key: import.meta.env.VITE_RAZORPAY_KEY_ID,
-        amount: pkg.price * 100,
+        amount: totalPrice * 100, // Use total price in paise
         currency: "INR",
         name: "Credit Dost",
         description: `Purchase of ${pkg.name} package`,
@@ -150,7 +154,7 @@ const Payment = () => {
   const steps = [
     {
       label: "Review Package",
-      description: `You've selected the ${pkg.name} package for ₹${pkg.price}`
+      description: `You've selected the ${pkg.name} package for ₹${totalPrice}`
     },
     {
       label: "Make Payment",
@@ -202,10 +206,13 @@ const Payment = () => {
                           </Typography>
                           <Box sx={{ mt: 2 }}>
                             <Typography variant="h4" component="div" fontWeight="bold">
-                              ₹{pkg.price}
+                              ₹{totalPrice}
                             </Typography>
                             <Typography variant="body2" color="text.secondary">
                               {pkg.creditsIncluded} credits for {pkg.validityDays} days
+                              {pkg.gstPercentage > 0 && (
+                                <span> (₹{pkg.price} + {pkg.gstPercentage}% GST)</span>
+                              )}
                             </Typography>
                           </Box>
                         </CardContent>

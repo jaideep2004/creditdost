@@ -11,8 +11,7 @@ const FranchiseSuccessStories = () => {
       content:
         "Credit Dost provides a very structured and professional credit score improvement process. The reporting system and dispute handling are transparent, which helps in building strong client trust.",
       rating: 5,
-      avatar:
-        "/images/Poni.jpg",
+      avatar: "/images/Poni.jpg",
     },
     {
       name: "Sunil Kumar",
@@ -21,8 +20,7 @@ const FranchiseSuccessStories = () => {
       content:
         "Working with Credit Dost has helped us offer genuine credit improvement solutions to our clients. The process is clear, ethical, and results are delivered within realistic timelines.",
       rating: 5,
-      avatar:
-        "/images/Sunil.jpg",
+      avatar: "/images/Sunil.jpg",
     },
     {
       name: "Krishna Dhan Shil",
@@ -31,8 +29,7 @@ const FranchiseSuccessStories = () => {
       content:
         "Credit Dost ke solutions practical aur result-oriented hain. Northeast region ke clients ko process clearly samajh aata hai, aur improvement noticeable hota hai.",
       rating: 5,
-      avatar:
-        "/images/Krishna.jpg",
+      avatar: "/images/Krishna.jpg",
     },
     {
       name: "Gopal Rathore",
@@ -41,8 +38,7 @@ const FranchiseSuccessStories = () => {
       content:
         "Credit Dost ka backend support kaafi strong hai. Client onboarding se leke progress tracking tak sab kuch systematic aur transparent hai.",
       rating: 5,
-      avatar:
-        "/images/GopalRathore.jpg",
+      avatar: "/images/GopalRathore.jpg",
     },
     {
       name: "B. Rasmita Dora",
@@ -51,8 +47,7 @@ const FranchiseSuccessStories = () => {
       content:
         "After associating with Credit Dost, our loan clients are better prepared and more confident. Credit score improvement has directly supported faster loan approvals.",
       rating: 5,
-      avatar:
-        "/images/Rasmita.jpg",
+      avatar: "/images/Rasmita.jpg",
     },
     {
       name: "Shruti",
@@ -61,8 +56,7 @@ const FranchiseSuccessStories = () => {
       content:
         "In a competitive market like Mumbai, Credit Dost stands out because of its professionalism and realistic approach. Clients appreciate the clarity and genuine guidance.",
       rating: 5,
-      avatar:
-        "/images/shruti.jpg",
+      avatar: "/images/shruti.jpg",
     },
     {
       name: "Pavan Kumar Naini",
@@ -71,8 +65,7 @@ const FranchiseSuccessStories = () => {
       content:
         "Credit Dost ke credit analysis aur dispute management process kaafi detailed hain. Fintech businesses ke liye yeh ek reliable partner hai.",
       rating: 5,
-      avatar:
-        "/images/pavan.jpg",
+      avatar: "/images/pavan.jpg",
     },
     {
       name: "Rohit Kumar Jain",
@@ -81,8 +74,7 @@ const FranchiseSuccessStories = () => {
       content:
         "Credit Dost ke saath kaam karke clients ko credit score ke basics samjhana easy ho gaya hai. Improvement process transparent hai aur over-promising bilkul nahi hoti.",
       rating: 5,
-      avatar:
-        "/images/Rohit.jpg",
+      avatar: "/images/Rohit.jpg",
     },
     {
       name: "Chaturbhuj",
@@ -91,8 +83,7 @@ const FranchiseSuccessStories = () => {
       content:
         "Credit Dost follows an ethical and compliance-driven approach. Clients get honest guidance, which helps in long-term credibility and repeat business.",
       rating: 5,
-      avatar:
-        "/images/Chaturbhuj.jpg",
+      avatar: "/images/Chaturbhuj.jpg",
     },
     {
       name: "Dharmendra Baghel",
@@ -101,8 +92,7 @@ const FranchiseSuccessStories = () => {
       content:
         "Credit Dost ke professional documentation aur clear communication ne client trust ko kaafi strong banaya hai. Service quality consistently good rahi hai.",
       rating: 5,
-      avatar:
-        "/images/dharmendra bhagel.jpg",
+      avatar: "/images/dharmendra bhagel.jpg",
     },
     {
       name: "M. Vinay Arun Kumar",
@@ -110,8 +100,7 @@ const FranchiseSuccessStories = () => {
       content:
         "Partnering with Credit Dost has added real value to our financial services. The credit improvement journey is systematic, measurable, and client-friendly.",
       rating: 5,
-      avatar:
-        "/images/M Vinay Arun.jpg",
+      avatar: "/images/M Vinay Arun.jpg",
     },
   ];
 
@@ -244,7 +233,11 @@ const FranchiseSuccessStories = () => {
                 <Box
                   key={storyIndex}
                   sx={{
-                    flex: "0 0 calc(50% - 8px)", // Two items with gap
+                    flex: {
+                      xs: "0 0 100%", // optional, for extra small screens
+                      sm: "0 0 100%", // 1 item
+                      md: "0 0 calc(50% - 8px)", // 2 items
+                    },
                   }}
                 >
                   <TestimonialCard {...story} />

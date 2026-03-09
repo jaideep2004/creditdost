@@ -185,7 +185,7 @@ const PackagesPage = () => {
       setLoading(true);
       const response = await axios.get(
         `${
-          import.meta.env.VITE_REACT_APP_API_URL || "https://reactbackend.creditdostlearning.com/api"
+          import.meta.env.VITE_REACT_APP_API_URL || "https://reactbackend.creditdost.co.in/api"
         }/packages`
       );
       setPackages(response.data);
@@ -199,7 +199,11 @@ const PackagesPage = () => {
   };
 
   const handleSelectPackage = (pkg) => {
-    setSelectedPackage(pkg);
+    const totalPrice = Number(pkg.price) + (Number(pkg.price) * (pkg.gstPercentage || 0) / 100);
+    setSelectedPackage({
+      ...pkg,
+      totalPrice // Store total price for payment
+    });
     setPaymentDialogOpen(true);
     setActiveStep(0);
     setPaymentError("");
@@ -219,6 +223,7 @@ const PackagesPage = () => {
       // Create order on backend
       const response = await api.post("/payments/create-order", {
         packageId: selectedPackage._id,
+        amount: selectedPackage.totalPrice, // Use total price including GST
       });
 
       const { orderId } = response.data;
@@ -226,7 +231,7 @@ const PackagesPage = () => {
       // Initialize Razorpay
       const options = {
         key: import.meta.env.VITE_RAZORPAY_KEY_ID,
-        amount: selectedPackage.price * 100,
+        amount: selectedPackage.totalPrice * 100, // Use total price in paise
         currency: "INR",
         name: "Credit Dost",
         description: `Purchase of ${selectedPackage.name} package`,
@@ -322,7 +327,7 @@ const PackagesPage = () => {
     {
       label: "Review Package",
       description: selectedPackage
-        ? `You've selected the ${selectedPackage.name} package for ₹${selectedPackage.price}`
+        ? `You've selected the ${selectedPackage.name} package for ₹${selectedPackage.totalPrice}`
         : "",
     },
     {
@@ -442,10 +447,22 @@ const PackagesPage = () => {
                     </PackageHeader>
 
                     <CardContent sx={{ flexGrow: 1, pt: 3 }}>
-                      <PriceDisplay>
-                        <span className="currency">₹</span>
-                        <span className="amount">{pkg.price}</span>
-                      </PriceDisplay>
+                      <Box sx={{ mb: 2 }}>
+                        <PriceDisplay>
+                          <span className="currency">₹</span>
+                          <span className="amount">{pkg.price}</span>
+                          {pkg.gstPercentage > 0 && (
+                            <span className="period" style={{ fontSize: '1rem', marginLeft: '8px' }}>
+                              + {pkg.gstPercentage}% GST
+                            </span>
+                          )}
+                        </PriceDisplay>
+                        {pkg.gstPercentage > 0 && (
+                          <Typography variant="body2" color="text.secondary" align="center">
+                            Total: ₹{Number(pkg.price) + (Number(pkg.price) * pkg.gstPercentage / 100)}
+                          </Typography>
+                        )}
+                      </Box>
 
                       <Box sx={{ textAlign: "center", mb: 3 }}>
                         <Typography
@@ -627,10 +644,13 @@ const PackagesPage = () => {
                               component="div"
                               fontWeight="bold"
                             >
-                              ₹{selectedPackage.price}
+                              ₹{selectedPackage.totalPrice}
                             </Typography>
                             <Typography variant="body2" color="text.secondary">
                               {selectedPackage.creditsIncluded} credits
+                              {selectedPackage.gstPercentage > 0 && (
+                                <span> (₹{selectedPackage.price} + {selectedPackage.gstPercentage}% GST)</span>
+                              )}
                             </Typography>
                           </Box>
                         </CardContent>

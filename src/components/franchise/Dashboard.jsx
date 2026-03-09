@@ -289,11 +289,11 @@ const FranchiseDashboard = () => {
       icon: <AssessmentIcon />,
       path: "/franchise/reports",
     },
-    {
-      text: "Digital Agreement",
-      icon: <DescriptionIcon />,
-      path: "/franchise/agreement",
-    },
+    // {
+    //   text: "Digital Agreement",
+    //   icon: <DescriptionIcon />,
+    //   path: "/franchise/agreement",
+    // },
     {
       text: "Certificate",
       icon: <CardMembershipIcon />,

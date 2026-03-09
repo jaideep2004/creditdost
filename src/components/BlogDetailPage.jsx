@@ -62,7 +62,7 @@ const BlogDetailPage = () => {
     hero: {
       background: "linear-gradient(135deg, #1e3a5f 0%, #2c5282 100%)",
       color: "white",
-      padding: "80px 20px",
+      padding: "50px 20px",
       position: "relative",
       overflow: "hidden",
     },
@@ -88,7 +88,7 @@ const BlogDetailPage = () => {
       gap: "20px",
     },
     heroTitle: {
-      fontSize: "3.5rem",
+      fontSize: "3rem",
       fontWeight: 700,
       margin: 0,
       lineHeight: 1.2,
@@ -123,7 +123,7 @@ const BlogDetailPage = () => {
       padding: "40px",
     },
     blogTitle: {
-      fontSize: "2.5rem",
+      fontSize: "2rem",
       fontWeight: 700,
       color: "#1e3a5f",
       marginBottom: "24px",
@@ -328,6 +328,7 @@ const BlogDetailPage = () => {
     <div style={styles.container}>
       <Header />
       <style>{`
+      
         @keyframes spin {
           0% { transform: rotate(0deg); }
           100% { transform: rotate(360deg); }
@@ -367,12 +368,16 @@ const BlogDetailPage = () => {
         <div style={styles.heroPattern}></div>
         <div style={styles.heroContent}>
           <div>
-            <h1 style={styles.heroTitle} className="blog-det-h1">
-              Blog Details
+            <h1
+              style={styles.heroTitle}
+              className="blog-det-h1"
+              sx={{ fontSize: { xs: "1.5rem", md: "2rem" } }}
+            >
+              {blog?.title || "Blog Details"}
             </h1>
           </div>
           <div style={styles.breadcrumb}>
-            Home → <strong>Blog Details</strong>
+            Home → <strong>{blog?.title || "Blog Details"}</strong>
           </div>
         </div>
       </div>
@@ -404,11 +409,10 @@ const BlogDetailPage = () => {
                 </h1>
 
                 <div style={styles.blogMeta}>
-                  By {blog?.author?.name || "Admin"} |{" "}
+                  By Credit Dost | &nbsp;
                   {blog?.createdAt
                     ? formatDate(blog.createdAt)
                     : "October 19, 2024"}{" "}
-                  | 0 Comments
                 </div>
 
                 <div
@@ -446,6 +450,10 @@ const BlogDetailPage = () => {
                     key={index}
                     style={styles.categoryItem}
                     className="category-item"
+                    onClick={() => {
+                      // Filter blogs by category
+                      window.location.href = `/blogs?category=${encodeURIComponent(category.name)}`;
+                    }}
                   >
                     <span>
                       <svg
@@ -521,7 +529,15 @@ const BlogDetailPage = () => {
               <h3 style={styles.widgetTitle}>Tags</h3>
               <div style={styles.tagsContainer}>
                 {tags.map((tag, index) => (
-                  <button key={index} style={styles.tag} className="tag">
+                  <button 
+                    key={index} 
+                    style={styles.tag} 
+                    className="tag"
+                    onClick={() => {
+                      // Filter blogs by tag
+                      window.location.href = `/blogs?tag=${encodeURIComponent(tag.name)}`;
+                    }}
+                  >
                     {tag.name}
                   </button>
                 ))}
@@ -542,7 +558,7 @@ const BlogDetailPage = () => {
           <path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z" />
         </svg>
       </button>
-      <HomePageFooter/>
+      <HomePageFooter />
     </div>
   );
 };

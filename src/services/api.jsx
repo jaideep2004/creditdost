@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Create axios instance
 const api = axios.create({
-  baseURL: import.meta.env.VITE_REACT_APP_API_URL || 'https://reactbackend.creditdostlearning.com/api',
+  baseURL: import.meta.env.VITE_REACT_APP_API_URL || 'https://reactbackend.creditdost.co.in/api',
   withCredentials: true,
 });
 
@@ -50,12 +50,12 @@ export const franchiseAPI = {
   updateProfile: (data) => api.put('/franchises/profile', data),
   getKycStatus: () => api.get('/kyc/status'),
   submitKyc: (data) => {
-    // Check if data contains file uploads or just links
+    // Check if data contains file uploads or just links 
     const isFormData = data instanceof FormData;
     
     if (isFormData) {
       // For file uploads
-      const config = {
+      const config = { 
         headers: {
           'Content-Type': 'multipart/form-data',
         },
