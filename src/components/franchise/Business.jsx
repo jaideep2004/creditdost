@@ -201,7 +201,7 @@ const Business = () => {
 
     const options = {
       key: import.meta.env.VITE_RAZORPAY_KEY_ID, // Use the correct variable
-      amount: selectedPackage.price * 100,
+      amount: (selectedPackage.price + (selectedPackage.price * (selectedPackage.gstPercentage || 0)) / 100) * 100,
       currency: "INR",
       name: "Credit Dost",
       description: selectedPackage.name,
@@ -746,7 +746,7 @@ const Business = () => {
                                         fontSize: "2rem",
                                       }}
                                     >
-                                      ₹{pkg.price}
+                                      ₹{pkg.price + (pkg.price * (pkg.gstPercentage || 0)) / 100}
                                     </Typography>
                                     <p>(Inclusive of GST)</p>
                                   </Box>
@@ -842,8 +842,16 @@ const Business = () => {
                             >
                               {selectedPackage.description}
                             </Typography>
-                            <Typography variant="h4" color="primary.main">
-                              ₹{selectedPackage.price}
+                            <Typography variant="h6" color="text.secondary" sx={{ mb: 1, fontSize: '1rem' }}>
+                              Base Price: ₹{selectedPackage.price}
+                            </Typography>
+                            {selectedPackage.gstPercentage > 0 && (
+                              <Typography variant="h6" color="text.secondary" sx={{ mb: 1, fontSize: '1rem' }}>
+                                GST ({selectedPackage.gstPercentage}%): ₹{(selectedPackage.price * selectedPackage.gstPercentage / 100).toFixed(2)}
+                              </Typography>
+                            )}
+                            <Typography variant="h4" color="primary.main" sx={{ mt: 2 , fontSize: '1.5rem' }}>
+                              Total (with GST): ₹{selectedPackage.price + (selectedPackage.price * (selectedPackage.gstPercentage || 0)) / 100}
                             </Typography>
                           </CardContent>
                         </Card>

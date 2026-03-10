@@ -285,9 +285,6 @@ const ManagePayouts = () => {
                     <Typography variant="h6" gutterBottom>
                       Payout Calculation Summary
                     </Typography>
-                    <Typography variant="caption" color="text.secondary" display="block" gutterBottom>
-                      Note: Payout calculated on base price only. Only TDS deducted (GST not deducted).
-                    </Typography>
                     <Grid container spacing={2}>
                       <Grid item xs={12} md={3}>
                         <Typography variant="body1">
@@ -300,8 +297,8 @@ const ManagePayouts = () => {
                         </Typography>
                       </Grid>
                       <Grid item xs={12} md={3}>
-                        <Typography variant="body1" color="text.secondary">
-                          <strong>GST:</strong> ₹0.00 (Not deducted)
+                        <Typography variant="body1" color="error">
+                          <strong>GST (18%):</strong> -₹{calculatedPayout.gstDeducted?.toFixed(2) || '0.00'}
                         </Typography>
                       </Grid>
                       <Grid item xs={12} md={3}>
@@ -338,7 +335,7 @@ const ManagePayouts = () => {
                         <TableCell>Period</TableCell>
                         <TableCell align="right">Gross Amount (₹)</TableCell>
                         <TableCell align="right">TDS (2%)</TableCell>
-                        <TableCell align="right">GST</TableCell>
+                        <TableCell align="right">GST (18%)</TableCell>
                         <TableCell align="right">Net Payout (₹)</TableCell>
                         <TableCell align="right">Credits</TableCell>
                         <TableCell align="right">Referral Bonus</TableCell>
@@ -357,9 +354,9 @@ const ManagePayouts = () => {
                             <TableCell align="right">₹{payout.grossAmount?.toFixed(2) || (payout.amount + payout.referralBonus).toFixed(2)}</TableCell>
                             <TableCell align="right">₹{payout.tdsAmount?.toFixed(2) || ((payout.amount + payout.referralBonus) * 0.02).toFixed(2)}</TableCell>
                             <TableCell align="right">
-                              {payout.gstAmount !== undefined && payout.gstAmount > 0 ? 
-                                `₹${payout.gstAmount.toFixed(2)}*` :
-                                '₹0.00'
+                              {payout.gstAmount !== undefined ? 
+                                `₹${payout.gstAmount.toFixed(2)}` : 
+                                `₹${((payout.amount + payout.referralBonus) * 0.18).toFixed(2)}*`
                               }
                             </TableCell>
                             <TableCell align="right">₹{payout.totalAmount.toFixed(2)}</TableCell>
@@ -395,7 +392,7 @@ const ManagePayouts = () => {
                   {/* Legend for historical records */}
                   <Box sx={{ p: 2, bgcolor: '#f5f5f5', borderTop: '1px solid #e0e0e0' }}>
                     <Typography variant="caption" color="text.secondary">
-                      * Historical records may have been calculated under previous rules
+                      * Historical records calculated under previous rules (GST not deducted)
                     </Typography>
                   </Box>
                 </TableContainer>
@@ -424,18 +421,18 @@ const ManagePayouts = () => {
                 <Typography variant="subtitle1" color="error">
                   TDS ({selectedPayout.tdsPercentage || 2}%): -₹{selectedPayout.tdsAmount?.toFixed(2) || ((selectedPayout.amount + selectedPayout.referralBonus) * 0.02).toFixed(2)}
                 </Typography>
-                <Typography variant="subtitle1" color="text.secondary">
-                  {selectedPayout.gstAmount !== undefined && selectedPayout.gstAmount > 0 ? 
-                    `GST (${selectedPayout.gstPercentage || 0}%): -₹${selectedPayout.gstAmount.toFixed(2)}*` :
-                    'GST: ₹0.00 (Not deducted)'
+                <Typography variant="subtitle1" color="error">
+                  {selectedPayout.gstAmount !== undefined ? 
+                    `GST (${selectedPayout.gstPercentage || 18}%): -₹${selectedPayout.gstAmount.toFixed(2)}` :
+                    `GST (18%): -₹${((selectedPayout.amount + selectedPayout.referralBonus) * 0.18).toFixed(2)}*`
                   }
                 </Typography>
                 <Typography variant="subtitle1" color="success.main">
                   Net Payout: ₹{selectedPayout.totalAmount.toFixed(2)}
                 </Typography>
-                {selectedPayout.gstAmount !== undefined && selectedPayout.gstAmount > 0 && (
+                {selectedPayout.gstAmount === undefined && (
                   <Typography variant="caption" color="text.secondary">
-                    * Calculated under previous rules
+                    * Calculated under previous rules (GST not deducted)
                   </Typography>
                 )}
               </Grid>
