@@ -113,6 +113,8 @@ export const franchiseAPI = {
     return api.post('/ai-analysis/upload', formData, config);
   },
   getAIAnalysisDocuments: () => api.get('/ai-analysis/franchise/documents'),
+  analyzeWithClaude: (docId) => api.post(`/ai-analysis/franchise/analyze/${docId}`),
+  downloadClaudeAnalysis: (docId) => api.get(`/ai-analysis/franchise/download-analysis/${docId}`, { responseType: 'blob' }),
 };
 
 // Blog API functions
