@@ -228,6 +228,7 @@ export const adminAPI = {
     };
     return api.post(`/ai-analysis/admin/respond/${id}`, formData, config);
   },
+  downloadClaudeAnalysis: (id) => api.get(`/ai-analysis/admin/download-analysis/${id}`, { responseType: 'blob' }),
 };
 
 // Credit API functions
