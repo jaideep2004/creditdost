@@ -32,3 +32,4 @@ config/service-account-key.json
 .env.production.local
 
 Backend/.env
+Backend/node_modules
